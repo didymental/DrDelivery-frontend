@@ -1,23 +1,23 @@
 import React from 'react';
-import Logo from './Logo.js';
-import OrderCard from './OrderCard.js';
+import { BrowserRouter, Route} from 'react-router-dom';
+import Home from './pages/Home.js';
+import OrderAddress from './pages/OrderAddress.js';
 
-const Greeting = () => {
-    return (
-        <div> 
-            <h2 className="greeting">Hey Yuxin,</h2>
-        </div>
-    );
-}
-
-const App = () => {
-    return (
-        <div>
-            <Logo/>
-            <Greeting/>
-            <OrderCard/>
-        </div>
-    );
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <BrowserRouter>
+                    <div>
+                        <Route path="/" exact component={Home}/>
+                        <Route path="/order/address" exact component={OrderAddress}/>
+                    </div>
+                
+                </BrowserRouter>
+                
+            </div>
+        );
+    }
 }
 
 export default App;
