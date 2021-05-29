@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import HorizontalLabelPositionBelowStepper from '../HorizontalLabelPositionBelowStepper.js';
-import SavedAddressCard from '../SavedAddressCard.js';
 import YourAddressHeader from '../YourAddressHeader.js';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 
@@ -14,7 +13,6 @@ const OrderAddress = () => {
             </Link>
             <YourAddressHeader/>
             <HorizontalLabelPositionBelowStepper/>
-            <SavedAddressCard/>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-// to fetch from backend server API
+/* to fetch from backend server API*/
 
 const addressConfig = {
     name: 'Home',

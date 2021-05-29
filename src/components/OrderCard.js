@@ -34,6 +34,7 @@ const useStyles = makeStyles( (theme) => ({
         maxWidth: 300,
         maxHeight: 300,
         margin: 'auto',
+        borderRadius: '8%',
     },
     alignItemsAndJustifyContent: {
         padding: '5%',
