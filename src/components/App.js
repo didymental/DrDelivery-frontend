@@ -12,9 +12,7 @@ class App extends React.Component {
                         <Route path="/" exact component={Home}/>
                         <Route path="/order/address" exact component={OrderAddress}/>
                     </div>
-                
                 </BrowserRouter>
-                
             </div>
         );
     }
