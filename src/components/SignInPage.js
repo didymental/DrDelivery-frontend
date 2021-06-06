@@ -5,7 +5,7 @@ import Box from '@material-ui/core/Box';
 const SignInPage = () => {
     return (
         <Box>
-            <GoogleAuth />
+            <GoogleAuth/>
         </Box>
     );
 }

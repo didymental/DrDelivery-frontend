@@ -3,6 +3,7 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import {connect} from 'react-redux';
 import {signIn, signOut} from '../actions';
+import {makeStyles } from '@material-ui/core/styles';
 
 class GoogleAuth extends React.Component {
 
@@ -49,12 +50,16 @@ class GoogleAuth extends React.Component {
             );
         } else {
             return (
-                <Button onClick={this.onSignInClick}>
-                    <Box>
+                <Box borderRadius={5} bgcolor="#FBBC05"> 
+                    <Button onClick={this.onSignInClick}>
+                    <div>
                         <i className="google icon"/>
-                        Sign In with Google
-                    </Box>
-                </Button>
+                    </div>
+                    <div>
+                        Login with Google
+                    </div>
+                    </Button>
+                </Box>
             );
         }
     }
@@ -67,6 +72,11 @@ class GoogleAuth extends React.Component {
             </div>
         );
     }
+}
+
+const actionButton = {
+    backgroundColor: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
 }
 
 const mapStateToProps = (state) => {
