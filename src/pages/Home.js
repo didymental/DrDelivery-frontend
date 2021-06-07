@@ -8,7 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 const Home = () => {
     return (
         <div>
-            <AppBar></AppBar>
+            <AppBar>Sign Out details</AppBar>
             <Logo/>
             
             <hr></hr>
