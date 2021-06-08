@@ -15,6 +15,18 @@ const Login = () => {
         });
     const classes = useStyles();
 
+    const handleEmailInput = (input) => {
+        setState({...state, email: input.target.value});
+    }
+
+    const handlePasswordInput = (input) => {
+        setState({...state, password: input.target.value});
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
     return (
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
@@ -29,7 +41,7 @@ const Login = () => {
                         id="standard-required"
                         label="Email"
                         variant="outlined"
-                        onChange={(input)=>console.log(input.target.value)}
+                        onChange={handleEmailInput}
                     />
                 </div>
                 <br/>
@@ -40,7 +52,7 @@ const Login = () => {
                         type="password"
                         autoComplete="current-password"
                         variant="outlined"
-                        onChange={(input)=> console.log(input.target.value)}
+                        onChange={handlePasswordInput}
                         />
                 </div>
                 <br/>
