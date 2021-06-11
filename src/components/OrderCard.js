@@ -10,6 +10,7 @@ const OrderCard = (props) => {
     
     const classes = useStyles();
     return (
+        <div>
         <Card className={classes.root}>
             <div className={classes.alignItemsAndJustifyContent}>
                 <CardMedia image='drone.png' className={classes.droneIcon}/>  
@@ -18,7 +19,7 @@ const OrderCard = (props) => {
                         <Button 
                             className={classes.actionCard} 
                             variant="contained" 
-                            size="large" 
+                            size="small" 
                             color="primary">
                             Make an Order   
                         </Button>
@@ -26,26 +27,27 @@ const OrderCard = (props) => {
                 </Link>
             </div>
         </Card>
+        </div>
     );
 }
 
 const useStyles = makeStyles( (theme) => ({
     root: {
-        maxWidth: 300,
-        maxHeight: 300,
+        maxWidth: 150,
+        maxHeight: 150,
         margin: 'auto',
         borderRadius: '8%',
     },
     alignItemsAndJustifyContent: {
         padding: '5%',
         backgroundColor: "#FFC774",
-        maxWidth: 300,
+        maxWidth: 150,
     },
     droneIcon: {
-        width: 150,
-        height: 150,
+        width: 75,
+        height: 75,
         margin: 'auto',
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(0.1),
         paddingTop: '50%',
     },
     actionCard: {

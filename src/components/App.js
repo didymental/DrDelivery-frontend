@@ -6,6 +6,7 @@ import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
 import SignUpPage from '../pages/SignUpPage';
+import AppHeader from './AppHeader';
 
 class App extends React.Component {
     constructor(props) {
@@ -42,11 +43,19 @@ class App extends React.Component {
         this.loginStatus();
     }
 
+    haveAppHeader = () => {
+        if (this.state.isLoggedIn) {
+            return (
+                <AppHeader/>
+            );
+        }
+    }
 
 
     render() {
         return (
             <div>
+                {this.haveAppHeader()}
                 <BrowserRouter>
                     <div>
                         <Route path="/" exact component={SignIn}/>

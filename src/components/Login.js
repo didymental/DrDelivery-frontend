@@ -69,10 +69,6 @@ const Login = () => {
                 </div>
                 
             </form>
-            
-            <div className={classes.actionCard}>
-                <GoogleAuth/>
-            </div>
             <br/>
             </Box>
         </div>
