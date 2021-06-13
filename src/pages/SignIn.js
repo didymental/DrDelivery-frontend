@@ -1,28 +1,35 @@
 import React from 'react';
 import {makeStyles } from '@material-ui/core/styles';
-import droneBackground from '../assets/dronelol.gif';
 import Login from '../components/Login';
-import SignUp from '../components/SignUp';
-
-
 
 const SignIn = () => {
     const classes = useStyles();
 
     return (
-        <div style={{backgroundColor: "#DCDCDC"}} >
-            <div style={{backgroundImage: `url(${droneBackground}`}} className={classes.root}>
-                <Login/>
-            </div>
-
-            <div className={classes.root}>
-                <SignUp/>
+        <div className={classes.main}>
+            <div className={classes.form}>
+                <Login />
             </div>
         </div>
+        
     );
 }
 
 const useStyles = makeStyles((theme) => ({
+    main: {
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        background: `url(https://cdn.mos.cms.futurecdn.net/DGyKoxRLtJmrijCxEcLmea-1366-80.jpg.webp)`,
+        backgroundRepeat:'no-repeat',
+        backgroundSize:'cover',
+    },
+    form: {
+        marginTop: '6em',
+        padding: '0 1em 1em 1em',
+    },
     root: {
       display: 'flex',
       flexDirection: 'column',

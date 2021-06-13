@@ -32,7 +32,10 @@ class App extends React.Component {
     }
 
     loginStatus = () => {
-        axios.get(userAPI, {withCredentials: true}).then(
+        axios.get(userAPI, 
+            { headers: {
+                'Access-Control-Allow-Origin': '*',
+            }}).then(
             response => {
                 console.log(response);
             }
