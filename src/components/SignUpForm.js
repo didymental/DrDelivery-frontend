@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import {userAPI} from '../apis/rails-backend';
+import Logo from './Logo';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -71,15 +72,10 @@ const SignUpForm = () => {
         });
     }
 
-    
-
-
     return (
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
-            <h2 className={classes.root}>
-                Welcome to Dr Delivery
-            </h2>
+            <Logo color='black'/>
             <form className={classes.root} onSubmit={handleSubmit}>
                 <div className={classes.actionCard}>
                     <TextField

@@ -1,5 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
+import Logo from './Logo';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles } from '@material-ui/core/styles';
@@ -54,49 +55,46 @@ const Login = () => {
     return (
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
-            
-            <h2 className={classes.root}>
-                Welcome to Dr Delivery
-            </h2>
-            <form className={classes.root}>
-            
-                <div className={classes.actionCard}>
-                    <TextField
-                        id="standard-required"
-                        label="Email"
-                        variant="outlined"
-                        onChange={handleEmailInput}
-                    />
-                </div>
-                <br/>
-                <div className={classes.actionCard}>
-                    <TextField
-                        id="outlined-password-input"
-                        label="Password"
-                        type="password"
-                        autoComplete="current-password"
-                        variant="outlined"
-                        onChange={handlePasswordInput}
-                        />
-                </div>
-                <br/>
-                <div>
-                    <Link to="/home">
-                            <div className={classes.login}>
-                                <Button
-                                    onClick={() => console.log('submit')}
-                                    type="submit">
-                                        <span className={classes.loginText}>
-                                            Login
-                                        </span>   
-                                        <PlayArrowIcon className={classes.icon}/>        
-                                </Button>
-                            </div>    
-                        
-                    </Link>
-                </div>
+                <Logo color='black'/>
+                <form className={classes.root}>
                 
-            </form>
+                    <div className={classes.actionCard}>
+                        <TextField
+                            id="standard-required"
+                            label="Email"
+                            variant="outlined"
+                            onChange={handleEmailInput}
+                        />
+                    </div>
+                    <br/>
+                    <div className={classes.actionCard}>
+                        <TextField
+                            id="outlined-password-input"
+                            label="Password"
+                            type="password"
+                            autoComplete="current-password"
+                            variant="outlined"
+                            onChange={handlePasswordInput}
+                            />
+                    </div>
+                    <br/>
+                    <div>
+                        <Link to="/home">
+                                <div className={classes.login}>
+                                    <Button
+                                        onClick={() => console.log('submit')}
+                                        type="submit">
+                                            <span className={classes.loginText}>
+                                                Login
+                                            </span>   
+                                            <PlayArrowIcon className={classes.icon}/>        
+                                    </Button>
+                                </div>    
+                            
+                        </Link>
+                    </div>
+                    
+                </form>
             <div className={classes.footer}>
                 {SignUp()}
             </div>
