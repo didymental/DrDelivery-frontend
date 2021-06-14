@@ -139,7 +139,8 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
     },
     login: {
-        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+        // 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
+        background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
         border: 0,
         boxShadow: '0 3px 5px 2px rgba(135, 105, 235, .3)',
         color: 'white',

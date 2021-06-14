@@ -2,12 +2,10 @@ import React from 'react';
 import {useState} from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 const Form = () => {
     const [state, setState] = useState({
@@ -32,36 +30,42 @@ const Form = () => {
 
     return (
         <div>
-            <form onSubmit={handleSubmit}>
-                <TextField 
-                    className={classes.textFields}
-                    id="address-input"
-                    label="Enter Your Address"
-                    type="text"
-                    variant="filled"
-                    onChange={(input) => console.log(input.target.value)}
-                    color="secondary"
-                />
-                <TextField 
-                    className={classes.textFields}
-                    id="postal-input"
-                    label="Postal Code"
-                    type="text"
-                    variant="filled"
-                    color="secondary"
-                    onChange={(input) => console.log(input.target.value)}
-                />
-                
-                <Button 
-                    className={classes.orderButton}
-                    variant="contained" 
-                    size="medium" 
-                    
-                    type="submit"
-                >
-                    Make an Order   
-                </Button>
-            </form>
+            <Box className={classes.outerbox}>
+            <Box className={classes.box} boxShadow={1} borderRadius={1}>
+                <div>
+                    <form onSubmit={handleSubmit}>
+                        
+                            <TextField 
+                                className={classes.textFields}
+                                id="address-input"
+                                label="Enter Your Address"
+                                type="text"
+                                onChange={(input) => console.log(input.target.value)}
+                                color="primary"
+                            />
+                            <TextField 
+                                className={classes.textFields}
+                                id="postal-input"
+                                label="Postal Code"
+                                type="text"
+                                color="#09203f"
+                                onChange={(input) => console.log(input.target.value)}
+                            />
+            
+                        
+                            <Button 
+                                className={classes.orderButton}
+                                variant="contained" 
+                                size="medium" 
+                                type="submit"
+                            >
+                                <Typography variant="span">Fly with us</Typography>
+                            </Button>
+                        
+                    </form>
+                </div>
+            </Box>
+            </Box>
         </div>
     )
 }
@@ -80,10 +84,25 @@ const OrderCard = (props) => {
 const useStyles = makeStyles( (theme) => ({
     textFields: {
         marginLeft: '10px',
+        color: '#09203f',
     },
     orderButton: {
         marginLeft: '50px',
         minHeight: '50px',
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+    }, 
+    box: {
+        padding: theme.spacing(2),
+        background: '#FFFFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    outerbox: {
+        padding: theme.spacing(2),
+        maxWidth: '550px'
+    },
+    buttonContainer: {
+        display: 'inline-blcok'
     }
 }))
 

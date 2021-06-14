@@ -5,14 +5,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import ListIcon from '@material-ui/icons/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import Logo from './Logo';
 
 const AppHeader = () => {
     const [state, setState] = useState({
@@ -32,7 +30,7 @@ const AppHeader = () => {
     const drawer = () => {
         return (
             <Drawer
-                classes={{paper: classes.paper}}
+                classes={{paper: classes.drawer}}
                 anchor='left'
                 open={state.open}
                 variant='temporary'
@@ -45,11 +43,13 @@ const AppHeader = () => {
     
     const drawerList = () => {
         return (
-            <List>
-                <ListSubheader className={classes.title} color="inherit ">Menu</ListSubheader>
+            <List >
+                <ListSubheader className={classes.title}>
+                  DrDelivery
+                </ListSubheader>
                 <ListItem button key={1} onClick={() => toggleDrawer()}>
                     <ListItemText
-                        primary={'LOGOUT'}/>
+                        primary={'Logout'}/>
                 </ListItem>
             </List>
         );
@@ -57,16 +57,18 @@ const AppHeader = () => {
   
     return (
       <div className={classes.root}>
-        <AppBar position="static" elevation='0' style={{backgroundColor: "#FF7474"}}>
+        <AppBar position="static" elevation='0' className={classes.paper}>
           <Toolbar>
             <IconButton 
                 edge="start" 
                 className={classes.menuButton} 
-                color="inherit" 
                 aria-label="menu" 
                 onClick={ () => toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>
+            <div className={classes.logoPosition}>
+              <Logo width="120" />
+            </div>
           </Toolbar>
         </AppBar>
         {drawer()}
@@ -80,12 +82,24 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    color: 'white',
   },
   title: {
     flexGrow: 1,
+    color: 'orange',
   },
   paper: {
-      background: "#FF7474",
+    background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+  },
+  logoPosition: {
+    margin: 'auto',
+  },
+  drawer: {
+    border: 0,
+    boxShadow: '0 3px 5px 2px rgba(205, 205, 235, 0.5)',
+    color: 'white',
+    borderRadius: 5,
+    background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
   }
 }));
 

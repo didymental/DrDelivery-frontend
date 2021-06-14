@@ -13,12 +13,17 @@ const Logo = (props) => {
         url = 'https://res.cloudinary.com/didymusne/image/upload/v1623594012/DrDeliveryLogo_svcub2.png';
     }
 
+    let width = "250";
+    if (props.width) {
+        width = props.width;
+    }
+    
     return (
         <div className={classes.root}>
             <img 
                 src={url}
                 alt='logo'
-                width="250"
+                width={width}
                  />
         </div>
     );
