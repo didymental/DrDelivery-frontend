@@ -1,75 +1,56 @@
 import React from 'react';
+import {useState} from 'react';
 import axios from 'axios';
-import { userAPI } from '../apis/rails-backend';
+import { loginAPI } from '../apis/rails-backend';
 import { BrowserRouter, Route} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
 import SignUpPage from '../pages/SignUpPage';
-import AppHeader from './AppHeader';
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+const App = () => {
+    const [state, setState] = useState({
             isLoggedIn: false,
-            user: {},
-        };
-    };
+            user: '',
+    });
 
-    handleLogin = (data) => {
-        this.setState({
+    const handleLogin = (data) => {
+        setState({
             isLoggedIn: true,
             user: data.user,
         });
     }
 
-    handleLogOut = () => {
-        this.setState({
+    const handleLogOut = () => {
+        setState({
             isLoggedIn: false,
-            user: {},
+            user: '',
         })
     }
 
-    loginStatus = () => {
-        axios.get(userAPI, 
-            { headers: {
-                'Access-Control-Allow-Origin': '*',
-            }}).then(
-            response => {
-                console.log(response);
-            }
-        )
-    }
-
-    componentDidMount() {
-        this.loginStatus();
-    }
-
-    haveAppHeader = () => {
-        if (this.state.isLoggedIn) {
-            return (
-                <AppHeader/>
-            );
+    const renderPage = () => {
+        if (state.isLoggedIn) {
+            return (<div><Home /></div>);
+        } else {
+            return (<div><SignIn handleLogin={handleLogin}/></div>);
         }
     }
 
-
-    render() {
-        return (
-            <div>
-                {this.haveAppHeader()}
-                <BrowserRouter>
-                    <div>
-                        <Route path="/" exact component={SignIn}/>
-                        <Route path="/signup" exact component={SignUpPage}/>
-                        <Route path="/home" exact component={Home}/>
-                        <Route path="/order/address" exact component={OrderAddress}/>
-                    </div>
-                </BrowserRouter>
-            </div>
-        );
-    }
+    
+    return (
+        <div>
+            <BrowserRouter>
+                <div>
+                    <Route path="/" exact component={SignIn}>
+                        {renderPage()}
+                    </Route>
+                    <Route path="/signup" exact component={SignUpPage}/>
+                    <Route path="/home" exact component={Home}/>
+                    <Route path="/order/address" exact component={OrderAddress}/>
+                </div>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;

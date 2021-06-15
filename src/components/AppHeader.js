@@ -57,7 +57,7 @@ const AppHeader = () => {
   
     return (
       <div className={classes.root}>
-        <AppBar position="static" elevation='0' className={classes.paper}>
+        <AppBar position="static" elevation={0} className={classes.paper}>
           <Toolbar>
             <IconButton 
                 edge="start" 

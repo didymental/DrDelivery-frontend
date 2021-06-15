@@ -1,6 +1,9 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import {loginAPI} from '../apis/rails-backend';
 import Logo from './Logo';
+import Home from '../pages/Home.js';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles } from '@material-ui/core/styles';
@@ -32,7 +35,7 @@ const SignUp = () => {
 
 }
 
-const Login = () => {
+const Login = (props) => {
     const [state, setState] = useState(
         {
             email: '',
@@ -50,13 +53,26 @@ const Login = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        let user = {...state};
+        axios.post(loginAPI, user, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        }).then(response => {
+            console.log('login');
+            console.log(response);
+            localStorage.setItem('token', response.data.token);
+            props.handleLogin(response.data.token);
+        });
+        setState({...state, email: '', password: ''});
     }
 
     return (
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
                 <Logo color='black'/>
-                <form className={classes.root}>
+                <form className={classes.root} onSubmit={handleSubmit}>
                 
                     <div className={classes.actionCard}>
                         <TextField
@@ -79,19 +95,15 @@ const Login = () => {
                     </div>
                     <br/>
                     <div>
-                        <Link to="/home">
-                                <div className={classes.login}>
-                                    <Button
-                                        onClick={() => console.log('submit')}
-                                        type="submit">
-                                            <span className={classes.loginText}>
-                                                Login
-                                            </span>   
-                                            <PlayArrowIcon className={classes.icon}/>        
-                                    </Button>
-                                </div>    
-                            
-                        </Link>
+                        <div className={classes.login}>
+                            <Button
+                                type="submit">
+                                    <span className={classes.loginText}>
+                                        Login
+                                    </span>   
+                                    <PlayArrowIcon className={classes.icon}/>        
+                            </Button>
+                        </div>    
                     </div>
                     
                 </form>

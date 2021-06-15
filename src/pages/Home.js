@@ -15,7 +15,8 @@ const Home = () => {
                     <Typography variant="h3"> 
                         Faster Deliveries, Lower Fees. 
                     </Typography>
-                    <Typography variant="span"> 
+                    <br/>
+                    <Typography variant="overline"> 
                         Drones make your delivery. You control their speed.
                     </Typography>
                 </div>

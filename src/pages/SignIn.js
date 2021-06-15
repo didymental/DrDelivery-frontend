@@ -2,13 +2,13 @@ import React from 'react';
 import {makeStyles } from '@material-ui/core/styles';
 import Login from '../components/Login';
 
-const SignIn = () => {
+const SignIn = (props) => {
     const classes = useStyles();
 
     return (
         <div className={classes.main}>
             <div className={classes.form}>
-                <Login />
+                <Login handleLogin={props.handleLogin}/>
             </div>
         </div>
         

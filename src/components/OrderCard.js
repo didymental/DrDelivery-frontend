@@ -48,7 +48,7 @@ const Form = () => {
                                 id="postal-input"
                                 label="Postal Code"
                                 type="text"
-                                color="#09203f"
+                                color="primary"
                                 onChange={(input) => console.log(input.target.value)}
                             />
             
@@ -59,7 +59,7 @@ const Form = () => {
                                 size="medium" 
                                 type="submit"
                             >
-                                <Typography variant="span">Fly with us</Typography>
+                                <Typography variant="subtitle2">Fly with us</Typography>
                             </Button>
                         
                     </form>

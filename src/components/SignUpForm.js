@@ -13,12 +13,11 @@ const SignUpForm = () => {
 
     const [state, setState] = useState(
         {
-            name: '',
             email: '',
-            address: '',
-            contact_no: parseInt(''),
             password: '', 
             password_confirmation: '',
+            contact_no: parseInt(''),
+            name: '',
         });
 
     const classes = useStyles();
@@ -35,10 +34,6 @@ const SignUpForm = () => {
         setState({...state, contact_no: input.target.value});
     };
 
-    const handleAddressInput = (input) => {
-        setState({...state, address: input.target.value});
-    }
-
     const handlePasswordInput = (input) => {
         setState({...state, password: input.target.value});
     }
@@ -51,7 +46,7 @@ const SignUpForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        let user = {...state};
+        let user = {user: {...state}};
         console.log(user);
         console.log('posting');
         axios.post(userAPI, user, {
@@ -101,15 +96,6 @@ const SignUpForm = () => {
                         label="Contact Number"
                         variant="outlined"
                         onChange={handleNumberInput}
-                    />
-                </div>
-                <br/>
-                <div className={classes.actionCard}>
-                    <TextField
-                        id="cust-address"
-                        label="Your Address"
-                        variant="outlined"
-                        onChange={handleAddressInput}
                     />
                 </div>
                 <br/>
