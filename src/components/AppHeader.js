@@ -4,6 +4,9 @@ import Drawer from '@material-ui/core/Drawer';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Fade from '@material-ui/core/Fade';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -12,7 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Logo from './Logo';
 
-const AppHeader = () => {
+const AppHeader = (props) => {
     const [state, setState] = useState({
         open: false,
     });
@@ -26,6 +29,21 @@ const AppHeader = () => {
     }
 
     const classes = useStyles();
+
+    // const menuOptions = () => {
+    //   return (
+    //     <Menu 
+    //       id="fade-menu"
+    //       open={state.open}
+    //       onClose={toggleDrawer()}
+    //       TransitionComponent={Fade}
+    //     >
+    //       <MenuItem onClick={props.handleLogout}>Logout</MenuItem>
+    //     </Menu>
+    //   );
+    // };
+
+
 
     const drawer = () => {
         return (
@@ -47,7 +65,7 @@ const AppHeader = () => {
                 <ListSubheader className={classes.title}>
                   DrDelivery
                 </ListSubheader>
-                <ListItem button key={1} onClick={() => toggleDrawer()}>
+                <ListItem button key={1} onClick={props.handleLogout}>
                     <ListItemText
                         primary={'Logout'}/>
                 </ListItem>

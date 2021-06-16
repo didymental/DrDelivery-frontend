@@ -1,5 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
+import axios from 'axios';
+import {userAddressAPI} from '../apis/rails-backend';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -28,13 +30,25 @@ const Form = () => {
 
     const classes = useStyles();
 
+    const savedAddresses = async () => { 
+        const response = await axios.get(userAddressAPI, {
+            headers: {
+                'Authorization': `token ${localStorage.getItem('token')}`
+            }
+        });
+        const info = await response.data;
+        let addresses = await info.map(infoObj => infoObj.street_address);
+        let postalCodes = await info.map(infoObj => infoObj.postcode);
+        
+        return [addresses, postalCodes];
+    }
+
     return (
         <div>
             <Box className={classes.outerbox}>
             <Box className={classes.box} boxShadow={1} borderRadius={1}>
                 <div>
                     <form onSubmit={handleSubmit}>
-                        
                             <TextField 
                                 className={classes.textFields}
                                 id="address-input"
@@ -51,17 +65,20 @@ const Form = () => {
                                 color="primary"
                                 onChange={(input) => console.log(input.target.value)}
                             />
-            
                         
                             <Button 
                                 className={classes.orderButton}
                                 variant="contained" 
                                 size="medium" 
                                 type="submit"
+                                onClick={ async () => {
+                                    let addresses =  await savedAddresses();
+                                    console.log(addresses);
+                                }}
                             >
                                 <Typography variant="subtitle2">Fly with us</Typography>
                             </Button>
-                        
+                            
                     </form>
                 </div>
             </Box>
@@ -69,14 +86,13 @@ const Form = () => {
         </div>
     )
 }
-// <Link to="/order/address">
+
 const OrderCard = (props) => {
     const classes = useStyles();
 
     return (
         <div>
             {Form()}
-                    
         </div>
     );
 }
@@ -88,8 +104,10 @@ const useStyles = makeStyles( (theme) => ({
     },
     orderButton: {
         marginLeft: '50px',
-        minHeight: '50px',
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        marginTop: '10px',
+        minHeight: '30px',
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    
     }, 
     box: {
         padding: theme.spacing(2),

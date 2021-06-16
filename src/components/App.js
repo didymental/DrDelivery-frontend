@@ -1,8 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import axios from 'axios';
-import { loginAPI } from '../apis/rails-backend';
-import { BrowserRouter, Route} from 'react-router-dom';
+import { BrowserRouter, Route, Redirect} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
@@ -14,38 +12,40 @@ const App = () => {
             user: '',
     });
 
-    const handleLogin = (data) => {
+    const handleLogin = (token) => {
         setState({
             isLoggedIn: true,
-            user: data.user,
+            user: token,
         });
+        localStorage.setItem('token', token);
     }
 
     const handleLogOut = () => {
         setState({
             isLoggedIn: false,
             user: '',
-        })
+        });
+        localStorage.removeItem('token');
     }
 
     const renderPage = () => {
         if (state.isLoggedIn) {
-            return (<div><Home /></div>);
+            return (<Redirect to="/home" />);
         } else {
-            return (<div><SignIn handleLogin={handleLogin}/></div>);
+            return (<Redirect to="/" /> );
         }
     }
 
     
     return (
         <div>
+            
             <BrowserRouter>
                 <div>
-                    <Route path="/" exact component={SignIn}>
-                        {renderPage()}
-                    </Route>
+                    {renderPage()}
+                    <Route path="/" exact component={ () => <SignIn handleLogin={handleLogin}/> }/>
                     <Route path="/signup" exact component={SignUpPage}/>
-                    <Route path="/home" exact component={Home}/>
+                    <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut}/> }/>
                     <Route path="/order/address" exact component={OrderAddress}/>
                 </div>
             </BrowserRouter>

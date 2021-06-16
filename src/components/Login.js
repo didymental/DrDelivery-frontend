@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
+import {useHistory} from 'react-router-dom';
 import {loginAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import Home from '../pages/Home.js';
@@ -60,9 +61,6 @@ const Login = (props) => {
                 'Accept': 'application/json',
             },
         }).then(response => {
-            console.log('login');
-            console.log(response);
-            localStorage.setItem('token', response.data.token);
             props.handleLogin(response.data.token);
         });
         setState({...state, email: '', password: ''});

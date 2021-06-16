@@ -5,11 +5,11 @@ import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
 
-const Home = () => {
+const Home = (props) => {
     const classes = useStyles();
     return (
         <div className={classes.overallPage}>
-            <AppHeader/>
+            <AppHeader handleLogout={props.handleLogout}/>
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 
