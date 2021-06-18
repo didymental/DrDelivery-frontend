@@ -11,13 +11,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-const sleep = (delay=0) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, delay);
-    });
-};
+// const sleep = (delay=0) => {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, delay);
+//     });
+// };
 
-const AddressTextField = () => {
+let address = [];
+let postcode = [];
+
+const AddressTextField = (props) => {
     const [options, setOptions] = useState([]);
     const loading = options.length === 0;
 
@@ -29,14 +32,19 @@ const AddressTextField = () => {
         }
 
         const savedAddresses = async () => {
+            const token = localStorage.getItem('token');
             const response = await axios.get(userAddressAPI, {
                 headers: {
-                    'Authorization': `token ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`,
                 }
             });
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.street_address);
-            // let postalCodes = await info.map(infoObj => infoObj.postcode);
+            postcode = await info.map(infoObj => infoObj.postcode);
+            address = addresses;
+
+            console.log(postcode);
+            console.log(address);
             
             if (active) {
                 setOptions(addresses);
@@ -50,14 +58,19 @@ const AddressTextField = () => {
         };
     }, [loading]);
 
+
     return (
         <Autocomplete 
             id="address"
             freeSolo
             options={options}
+            getOptionLabel={(option)=> option}
+            getOptionSelected={(option, value) => option === value}
             loading={loading}
-            onChange={(input) => console.log(input.target.outerText)}
-            renderInput={(params) => (
+            defaultValue={null}
+            autoSelect={true}
+            onChange={(event, value) => props.change(value)}
+            renderInput={ (params) => (
                 <TextField
                     {...params}
                     label="Enter Your Addresss"
@@ -65,12 +78,11 @@ const AddressTextField = () => {
                         ...params.InputProps,
                         endAdornment: (
                             <React.Fragment>
-                                {loading ? <CircularProgress color="inherit" size={20}/> : null}
+                                {loading ? <CircularProgress color="inherit" size={10}/> : null}
                                 {params.InputProps.endAdornment}
                             </React.Fragment>
                         )
-                    }}
-                    />
+                    }} />
             )}
         />
     );
@@ -83,17 +95,36 @@ const Form = () => {
     })
 
     const handleStreetInput = (input) => {
-        setState({...state, street: input.target.value});
+        console.log(input);
+        setState({...state, street: input});
+        console.log(state.street);
     }
 
     const handlePostalInput = (input) => {
-        setState({...state, postal: input.target.value});
+        console.log(input);
+        setState({...state, postal: input});
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('submit');
     }
+
+    const findPostalCode = () => {
+        if (state.street) {
+            let postVal = '';
+            for (let i = 0; i < address.length; i++) {
+                if (state.street === address[i]) {
+                    postVal = postcode[i];
+                    break;
+                }
+            }
+        }
+    }
+
+    useEffect(() => {
+        findPostalCode();
+    })
 
     const classes = useStyles();
 
@@ -104,7 +135,7 @@ const Form = () => {
                 <div>
                     <form onSubmit={handleSubmit}>
                         <div className={classes.textFields}>
-                        <AddressTextField/>
+                        <AddressTextField change={(input) => handleStreetInput(input)}/>
                         </div>
                             <TextField 
                                 className={classes.textFields}
