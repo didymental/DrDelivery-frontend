@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import {userAPI} from '../apis/rails-backend';
+import {signUpAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -9,7 +9,7 @@ import {makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
 
     const [state, setState] = useState(
         {
@@ -46,16 +46,19 @@ const SignUpForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        console.log(state);
         let user = {user: {...state}};
         console.log(user);
         console.log('posting');
-        axios.post(userAPI, user, {
+        axios.post(signUpAPI, user, {
             headers: {
-                'Access-Control-Allow-Origin': '*',
-            }
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
         }).then(response => {
             console.log('post');
             console.log(response);
+            props.handleLogin({email: state.email, password: state.password});
         }).catch(error => {
             if (error.response) {
                 console.log(error.response);

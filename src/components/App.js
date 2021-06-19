@@ -12,6 +12,17 @@ const App = () => {
             user: '',
     });
 
+    const [order, setOrder] = useState({
+        hasOrder: false,
+    })
+
+    const handleOrder = (address) => {
+        console.log('here');
+        if (address) {
+            setOrder({...order, hasOrder: true});
+        }
+    }
+
     const handleLogin = (token) => {
         setState({
             isLoggedIn: true,
@@ -29,8 +40,12 @@ const App = () => {
     }
 
     const renderPage = () => {
+        console.log(order.hasOrder);
         if (state.isLoggedIn) {
             return (<Redirect to="/home" />);
+        } else if (order.hasOrder) {
+            console.log(order.hasOrder);
+            return (<Redirect to="/order/address"/>);
         } else {
             return (<Redirect to="/" /> );
         }
@@ -44,8 +59,8 @@ const App = () => {
                 <div>
                     {renderPage()}
                     <Route path="/" exact component={ () => <SignIn handleLogin={handleLogin}/> }/>
-                    <Route path="/signup" exact component={SignUpPage}/>
-                    <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut}/> }/>
+                    <Route path="/signup" exact component={ () => <SignUpPage handleLogin={handleLogin}/>}/>
+                    <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut} handleOrder={handleOrder} order={order}/> }/>
                     <Route path="/order/address" exact component={OrderAddress}/>
                 </div>
             </BrowserRouter>

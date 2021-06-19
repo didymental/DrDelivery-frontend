@@ -11,18 +11,16 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-// const sleep = (delay=0) => {
-//     return new Promise((resolve) => {
-//         setTimeout(resolve, delay);
-//     });
-// };
-
-let address = [];
-let postcode = [];
-
 const AddressTextField = (props) => {
     const [options, setOptions] = useState([]);
     const loading = options.length === 0;
+    const [state, setState] = useState({
+        address: [],
+        postal: [],
+    });
+    const [hasError, setError] = useState({
+        error: false,
+    })
 
     useEffect(() => {
         let active = true;
@@ -35,28 +33,41 @@ const AddressTextField = (props) => {
             const token = localStorage.getItem('token');
             const response = await axios.get(userAddressAPI, {
                 headers: {
+                    'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
             });
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.street_address);
-            postcode = await info.map(infoObj => infoObj.postcode);
-            address = addresses;
-
-            console.log(postcode);
-            console.log(address);
+            let postal = await info.map(infoObj => infoObj.postcode);
             
             if (active) {
                 setOptions(addresses);
+                setState({...state, address: addresses, postal: postal});
             }
         };
 
-        savedAddresses();
+        savedAddresses().catch(() => setError({...hasError, error: true}));
 
         return () => {
             active = false;
         };
     }, [loading]);
+
+    const displayAddressDetails = (event, value) => {
+        let postcode = '';
+        for (let i = 0; i < state.address.length; i++) {
+            if (value === state.address[i]) {
+                postcode = state.postal[i];
+                props.change(value, postcode)
+                break;
+            }
+        }
+
+        if (postcode === '' && value === null) { // changing address
+            props.change('', '');
+        }
+    }
 
 
     return (
@@ -67,13 +78,13 @@ const AddressTextField = (props) => {
             getOptionLabel={(option)=> option}
             getOptionSelected={(option, value) => option === value}
             loading={loading}
-            defaultValue={null}
             autoSelect={true}
-            onChange={(event, value) => props.change(value)}
+            onChange={(event, value) => displayAddressDetails(event, value)}            
             renderInput={ (params) => (
                 <TextField
                     {...params}
-                    label="Enter Your Addresss"
+                    disabled={hasError.error}
+                    label="Where to fly to?"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
@@ -88,78 +99,64 @@ const AddressTextField = (props) => {
     );
 }
 
-const Form = () => {
+const Form = (props) => {
     const [state, setState] = useState({
         street: '',
         postal: parseInt(''),
     })
 
-    const handleStreetInput = (input) => {
-        console.log(input);
-        setState({...state, street: input});
-        console.log(state.street);
-    }
-
-    const handlePostalInput = (input) => {
-        console.log(input);
-        setState({...state, postal: input});
+    const handleStreetInput = (streetInput, postalInput) => {
+        console.log(streetInput);
+        console.log(postalInput);
+        setState({...state, street: streetInput, postal: postalInput});
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('submit');
+        props.handleOrder(state.street);
     }
-
-    const findPostalCode = () => {
-        if (state.street) {
-            let postVal = '';
-            for (let i = 0; i < address.length; i++) {
-                if (state.street === address[i]) {
-                    postVal = postcode[i];
-                    break;
-                }
-            }
-        }
-    }
-
-    useEffect(() => {
-        findPostalCode();
-    })
 
     const classes = useStyles();
 
     return (
         <div>
             <Box className={classes.outerbox}>
-            <Box className={classes.box} boxShadow={1} borderRadius={1}>
-                <div>
-                    <form onSubmit={handleSubmit}>
-                        <div className={classes.textFields}>
-                        <AddressTextField change={(input) => handleStreetInput(input)}/>
-                        </div>
+                <Box className={classes.box} boxShadow={1} borderRadius={1}>
+                    <div>
+                        <form onSubmit={handleSubmit}>
+                            <div className={classes.textFields}>
+                                <AddressTextField 
+                                    change={(streetInput, postalInput) => handleStreetInput(streetInput, postalInput)}
+                                />
+                                </div>
                             <TextField 
-                                className={classes.textFields}
-                                id="postal-input"
-                                label="Postal Code"
-                                type="text"
-                                color="primary"
-                                onChange={(input) => console.log(input.target.value)}
+                                    className={classes.textFields}
+                                    id="postal-input"
+                                    label="Postal Code"
+                                    type="text"
+                                    color="primary"
+                                    value={state.postal ? state.postal : ''}
+                                    disabled={true}
                             />
-                        
                             <Button 
                                 className={classes.orderButton}
                                 variant="contained" 
                                 size="medium" 
                                 type="submit"
-                                onClick={ async () => {
-                                }}
                             >
-                                <Typography variant="subtitle2">Fly with us</Typography>
-                            </Button>
-                            
-                    </form>
-                </div>
-            </Box>
+                                <Typography variant="subtitle2">Fly Now</Typography>
+                            </Button>                                
+                        </form>
+                    </div>
+                </Box>
+                <Button 
+                    className={classes.updateButton}
+                    variant="contained" 
+                    size="small"
+                >
+                    <Typography variant="caption">Or Update Address</Typography>
+                </Button>
             </Box>
         </div>
     )
@@ -170,7 +167,7 @@ const OrderCard = (props) => {
     
     return (
         <div>
-            {Form()}
+            <Form handleOrder={props.handleOrder}/>
         </div>
     );
 }
@@ -179,24 +176,33 @@ const useStyles = makeStyles( (theme) => ({
     textFields: {
         marginLeft: '10px',
         color: '#09203f',
-        width: '175px',
+        width: '200px',
     },
     orderButton: {
-        marginLeft: '50px',
-        marginTop: '10px',
-        minHeight: '30px',
+        position: 'absolute',
+        right: '20px',
+        bottom: '35%',
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     
     }, 
+    updateButton: {
+        marginTop: '30px',
+        background: '#09203f',
+        color: 'white',
+        justifyContent: 'flex-end'
+    }, 
+    someSpan: {
+        // display: 'flex',
+        justifyContent: 'space-between'
+    },
     box: {
+        position: 'relative',
         padding: theme.spacing(2),
         background: '#FFFFFF',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     outerbox: {
         padding: theme.spacing(2),
-        maxWidth: '550px'
+        maxWidth: '650px'
     },
     buttonContainer: {
         display: 'inline-blcok'

@@ -1,4 +1,6 @@
 import React from 'react';
+import {useState} from 'react';
+import {Redirect} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
@@ -6,7 +8,16 @@ import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
 
 const Home = (props) => {
+
     const classes = useStyles();
+
+    const renderPage = () => {
+        if (props.order.hasOrder) {
+            return (<Redirect to="/order/address" />);
+        }
+    }
+
+
     return (
         <div className={classes.overallPage}>
             <AppHeader handleLogout={props.handleLogout}/>
@@ -21,8 +32,8 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
-            <OrderCard/> 
-            
+            <OrderCard handleOrder={(address) => props.handleOrder(address)}/> 
+            {renderPage()}
         </div>
     );
 }
