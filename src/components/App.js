@@ -1,5 +1,7 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import {loginAPI} from '../apis/rails-backend';
 import { BrowserRouter, Route, Redirect} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
@@ -44,13 +46,27 @@ const App = () => {
         if (state.isLoggedIn) {
             return (<Redirect to="/home" />);
         } else if (order.hasOrder) {
-            console.log(order.hasOrder);
             return (<Redirect to="/order/address"/>);
         } else {
             return (<Redirect to="/" /> );
         }
     }
 
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        console.log(token);
+        if (token) {
+            axios.post(loginAPI, token, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+            }).then(response => {
+                handleLogin(token);
+            });
+        }
+    })
     
     return (
         <div>

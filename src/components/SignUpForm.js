@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import {signUpAPI} from '../apis/rails-backend';
+import {userDataBaseAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -18,6 +18,7 @@ const SignUpForm = (props) => {
             password_confirmation: '',
             contact_no: parseInt(''),
             name: '',
+            role: 'customer',
         });
 
     const classes = useStyles();
@@ -50,7 +51,7 @@ const SignUpForm = (props) => {
         let user = {user: {...state}};
         console.log(user);
         console.log('posting');
-        axios.post(signUpAPI, user, {
+        axios.post(userDataBaseAPI, user, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

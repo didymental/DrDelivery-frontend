@@ -1,5 +1,4 @@
 import React from 'react';
-import {useState} from 'react';
 import {Redirect} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';

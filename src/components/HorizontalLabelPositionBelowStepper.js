@@ -1,18 +1,22 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
+import {userDataBaseAPI} from '../apis/rails-backend';
 import Box from '@material-ui/core/Box';
-import SavedAddressCard from './SavedAddressCard.js';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import MerchantHolder from './MerchantCard';
 
-const HorizontalLabelPositionBelowStepper = () => {
+
+const HorizontalLabelPositionBelowStepper = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
+  const [merchants, setMerchants] = useState([]);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -25,6 +29,21 @@ const HorizontalLabelPositionBelowStepper = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const getMerchants = () => {
+    const token = localStorage.getItem('token');
+    axios.get(userDataBaseAPI, {
+      headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      }
+    }).then(response => {
+      let merchantList = response.data.filter(x => x.role === 'merchant');
+      setMerchants(merchantList);
+    });
+  };
+  
+  getMerchants();
 
   return (
     <div className={classes.root}>
@@ -45,7 +64,14 @@ const HorizontalLabelPositionBelowStepper = () => {
           </div>
         ) : activeStep === 0
             ? (
-              <Box className={classes.root}><SavedAddressCard onClick={handleNext} /></Box>)
+              <Box className={classes.root}>
+                {merchants.map(elem => {
+                  console.log(elem.name);
+                  return <MerchantHolder data={elem}
+                  />
+                  })}
+              </Box>
+              )
             : (
               <div>
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
@@ -81,11 +107,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getSteps() {
-  return ['Select address', 'Choose your item', 'Check out', 'test'];
-}
+const getSteps = () => {
+  return ['Browse Our Merchants', 'Choose an Item', 'Add to Cart', 'Check Out'];
+};
 
-function getStepContent(stepIndex) {
+const getStepContent = (stepIndex) => {
   switch (stepIndex) {
     case 0: {
       return '';
@@ -97,6 +123,6 @@ function getStepContent(stepIndex) {
     default:
       return '';
   }
-}
+};
 
 export default HorizontalLabelPositionBelowStepper;
