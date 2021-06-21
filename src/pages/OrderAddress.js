@@ -6,12 +6,12 @@ import HorizontalLabelPositionBelowStepper from '../components/HorizontalLabelPo
 import YourAddressHeader from '../components/YourAddressHeader.js';
 import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 
-const OrderAddress = () => {
+const OrderAddress = (props) => {
     const classes = useStyles();
 
     return (
         <div>
-            <AppHeader/>
+            <AppHeader handleLogout={props.handleLogout}/>
             {/* <Link to="/home">
                 <ArrowBackIosOutlinedIcon style={{fill: "#979797"}}/>
             </Link> */}

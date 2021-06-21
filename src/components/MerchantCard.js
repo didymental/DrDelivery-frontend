@@ -38,9 +38,10 @@ const useStyles = makeStyles((theme) => ({
 
 export const MerchantCard = (props) => {
   const classes = useStyles();
-
   const name = props.data.name;
-  const location = props.data.location;
+  const location = props.data.addresses[0].street_address;
+  const action = props.action;
+  console.log(action);
 
   return (
     <Card className={classes.root}>
@@ -51,7 +52,7 @@ export const MerchantCard = (props) => {
           </Avatar>
         }
         action={
-          <IconButton aria-label="product">
+          <IconButton aria-label="product" onClick={props.action}>
             <ArrowForwardIosIcon />
           </IconButton>
         }

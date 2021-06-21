@@ -1,7 +1,5 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import axios from 'axios';
-import {loginAPI} from '../apis/rails-backend';
 import { BrowserRouter, Route, Redirect} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
@@ -12,6 +10,7 @@ const App = () => {
     const [state, setState] = useState({
             isLoggedIn: false,
             user: '',
+            userID: '',
     });
 
     const [order, setOrder] = useState({
@@ -19,18 +18,19 @@ const App = () => {
     })
 
     const handleOrder = (address) => {
-        console.log('here');
         if (address) {
             setOrder({...order, hasOrder: true});
         }
     }
 
-    const handleLogin = (token) => {
+    const handleLogin = (token, user_id) => {
         setState({
             isLoggedIn: true,
             user: token,
+            userID: user_id,
         });
         localStorage.setItem('token', token);
+        localStorage.setItem('userID', user_id);
     }
 
     const handleLogOut = () => {
@@ -39,13 +39,15 @@ const App = () => {
             user: '',
         });
         localStorage.removeItem('token');
+        localStorage.removeItem('userID');
+        setOrder({...order, hasOrder: false});
     }
 
     const renderPage = () => {
         console.log(order.hasOrder);
         if (state.isLoggedIn) {
             return (<Redirect to="/home" />);
-        } else if (order.hasOrder) {
+        } else if (state.isLoggedIn && order.hasOrder) {
             return (<Redirect to="/order/address"/>);
         } else {
             return (<Redirect to="/" /> );
@@ -54,30 +56,24 @@ const App = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        console.log(token);
-        if (token) {
-            axios.post(loginAPI, token, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            }).then(response => {
-                handleLogin(token);
-            });
+        if (!state.isLoggedIn) {
+            const token = localStorage.getItem('token');
+            const id = localStorage.getItem('userID');
+            if (token) {
+                handleLogin(token, id);
+            }
         }
     })
     
     return (
         <div>
-            
             <BrowserRouter>
                 <div>
                     {renderPage()}
                     <Route path="/" exact component={ () => <SignIn handleLogin={handleLogin}/> }/>
                     <Route path="/signup" exact component={ () => <SignUpPage handleLogin={handleLogin}/>}/>
                     <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut} handleOrder={handleOrder} order={order}/> }/>
-                    <Route path="/order/address" exact component={OrderAddress}/>
+                    <Route path="/order/address" exact component={ () => <OrderAddress handleLogout={handleLogOut}/>}/>
                 </div>
             </BrowserRouter>
         </div>

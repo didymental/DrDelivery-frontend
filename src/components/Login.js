@@ -61,7 +61,7 @@ const Login = (props) => {
                 'Accept': 'application/json',
             },
         }).then(response => {
-            props.handleLogin(response.data.token);
+            props.handleLogin(response.data.token, response.data.user_id);
         });
         setState({...state, email: '', password: ''});
     }

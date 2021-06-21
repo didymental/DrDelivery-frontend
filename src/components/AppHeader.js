@@ -8,6 +8,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import List from '@material-ui/core/List';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -65,10 +66,17 @@ const AppHeader = (props) => {
                 <ListSubheader className={classes.title}>
                   DrDelivery
                 </ListSubheader>
-                <ListItem button key={1} onClick={props.handleLogout}>
+                <ListItem button key={1} onClick={() => console.log('edit profile')}>
+                  <AccountCircleIcon/>
+                  <ListItemText
+                      primary={'Profile'}/>
+                </ListItem>
+                <ListItem button key={2} onClick={props.handleLogout}>
+                  
                     <ListItemText
                         primary={'Logout'}/>
                 </ListItem>
+                
             </List>
         );
     }

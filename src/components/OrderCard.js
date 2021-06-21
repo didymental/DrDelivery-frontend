@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {userAddressAPI} from '../apis/rails-backend';
+import {customerAPI, custAddressAPI} from '../apis/rails-backend';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -18,8 +18,8 @@ const AddressTextField = (props) => {
         address: [],
         postal: [],
     });
-    const [hasError, setError] = useState({
-        error: false,
+    const [error, setError] = useState({
+        hasError: false,
     })
 
     useEffect(() => {
@@ -31,12 +31,19 @@ const AddressTextField = (props) => {
 
         const savedAddresses = async () => {
             const token = localStorage.getItem('token');
-            const response = await axios.get(userAddressAPI, {
+            console.log(customerAPI + '/' + localStorage.getItem('userID') + '/addresses');
+            // const response = await axios.get(customerAPI + '/' + localStorage.getItem('userID') + '/addresses', {
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Authorization': `Bearer ${token}`,
+            //     }
+            // });
+            const response = await axios.get(custAddressAPI, {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
-            });
+            })
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.street_address);
             let postal = await info.map(infoObj => infoObj.postcode);
@@ -47,7 +54,7 @@ const AddressTextField = (props) => {
             }
         };
 
-        savedAddresses().catch(() => setError({...hasError, error: true}));
+        savedAddresses().catch(() => setError({...error, hasError: true}));
 
         return () => {
             active = false;
@@ -83,7 +90,7 @@ const AddressTextField = (props) => {
             renderInput={ (params) => (
                 <TextField
                     {...params}
-                    disabled={hasError.error}
+                    disabled={error.hasError}
                     label="Where to fly to?"
                     InputProps={{
                         ...params.InputProps,
@@ -106,8 +113,6 @@ const Form = (props) => {
     })
 
     const handleStreetInput = (streetInput, postalInput) => {
-        console.log(streetInput);
-        console.log(postalInput);
         setState({...state, street: streetInput, postal: postalInput});
     }
 

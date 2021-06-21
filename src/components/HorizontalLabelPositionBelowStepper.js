@@ -2,7 +2,8 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import {userDataBaseAPI} from '../apis/rails-backend';
+import {merchantAPI, loginAPI} from '../apis/rails-backend';
+import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -10,7 +11,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import MerchantHolder from './MerchantCard';
-
 
 const HorizontalLabelPositionBelowStepper = (props) => {
   const classes = useStyles();
@@ -30,20 +30,53 @@ const HorizontalLabelPositionBelowStepper = (props) => {
     setActiveStep(0);
   };
 
-  const getMerchants = () => {
-    const token = localStorage.getItem('token');
-    axios.get(userDataBaseAPI, {
+  const getAdminToken = async () => {
+    const adminLogin = {
+      email: 'example@railstutorial.org',
+      password: 'foobar'
+    };
+
+    const response = await axios.post(loginAPI, adminLogin, {
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+      },
+    });
+    return response.data.token;
+  }
+
+  const getMerchants = async () => {
+    const token = await getAdminToken();
+    axios.get(merchantAPI, {
       headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`,
       }
     }).then(response => {
-      let merchantList = response.data.filter(x => x.role === 'merchant');
+      let merchantList = [...response.data];
       setMerchants(merchantList);
     });
   };
+
+  useEffect(() => {
+    getMerchants();
+  }, []);
+
+  // setMerchants(merchantList);
   
-  getMerchants();
+  
+
+  const MerchantDisplay = (props) => {
+    return (
+      <Grid container spacing={1}>
+          {merchants.map(elem => (
+            <Grid
+              item xs={4}>
+                <MerchantHolder data={elem} action={props.action}/>
+            </Grid>))}
+      </Grid>
+    )
+  }
 
   return (
     <div className={classes.root}>
@@ -64,13 +97,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
           </div>
         ) : activeStep === 0
             ? (
-              <Box className={classes.root}>
-                {merchants.map(elem => {
-                  console.log(elem.name);
-                  return <MerchantHolder data={elem}
-                  />
-                  })}
-              </Box>
+              <MerchantDisplay action={handleNext}/>
               )
             : (
               <div>
@@ -95,6 +122,17 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 }
 
 const useStyles = makeStyles((theme) => ({
+  tile: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+  },
   root: {
     width: '100%',
   },

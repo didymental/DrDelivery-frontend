@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import {userDataBaseAPI} from '../apis/rails-backend';
+import {customerAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
@@ -13,12 +13,13 @@ const SignUpForm = (props) => {
 
     const [state, setState] = useState(
         {
+            name: '',
+            contact_no: parseInt(''),
             email: '',
             password: '', 
             password_confirmation: '',
-            contact_no: parseInt(''),
-            name: '',
-            role: 'customer',
+            
+            
         });
 
     const classes = useStyles();
@@ -48,10 +49,10 @@ const SignUpForm = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(state);
-        let user = {user: {...state}};
+        let user = {...state};
         console.log(user);
         console.log('posting');
-        axios.post(userDataBaseAPI, user, {
+        axios.post(customerAPI, user, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
