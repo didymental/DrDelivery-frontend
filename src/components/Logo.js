@@ -4,7 +4,6 @@ import {makeStyles } from '@material-ui/core/styles';
 const Logo = (props) => {
     const classes = useStyles();
     let url = '';
-    let background = '';
     if (props.color === 'black') {
         url = 'https://res.cloudinary.com/didymusne/image/upload/v1623594167/LogoBlack_hrnbko.png';
     } else if (props.color === 'white') {

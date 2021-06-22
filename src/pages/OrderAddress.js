@@ -1,10 +1,7 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
 import AppHeader from '../components/AppHeader';
 import HorizontalLabelPositionBelowStepper from '../components/HorizontalLabelPositionBelowStepper.js';
-import YourAddressHeader from '../components/YourAddressHeader.js';
-import ArrowBackIosOutlinedIcon from '@material-ui/icons/ArrowBackIosOutlined';
 
 const OrderAddress = (props) => {
     const classes = useStyles();
@@ -12,10 +9,6 @@ const OrderAddress = (props) => {
     return (
         <div>
             <AppHeader handleLogout={props.handleLogout}/>
-            {/* <Link to="/home">
-                <ArrowBackIosOutlinedIcon style={{fill: "#979797"}}/>
-            </Link> */}
-            {/* <YourAddressHeader/> */}
             <HorizontalLabelPositionBelowStepper className={classes.overallPage}/>
         </div>
     )

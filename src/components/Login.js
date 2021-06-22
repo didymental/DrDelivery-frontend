@@ -1,15 +1,13 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 import {loginAPI} from '../apis/rails-backend';
 import Logo from './Logo';
-import Home from '../pages/Home.js';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles } from '@material-ui/core/styles';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import GoogleAuth from '../components/GoogleAuth';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 

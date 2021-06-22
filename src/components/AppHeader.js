@@ -1,12 +1,10 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import {useState} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Fade from '@material-ui/core/Fade';
 import List from '@material-ui/core/List';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ListItem from '@material-ui/core/ListItem';
@@ -66,11 +64,13 @@ const AppHeader = (props) => {
                 <ListSubheader className={classes.title}>
                   DrDelivery
                 </ListSubheader>
+                <Link to='/profile'>
                 <ListItem button key={1} onClick={() => console.log('edit profile')}>
                   <AccountCircleIcon/>
                   <ListItemText
                       primary={'Profile'}/>
                 </ListItem>
+                </Link>
                 <ListItem button key={2} onClick={props.handleLogout}>
                   
                     <ListItemText

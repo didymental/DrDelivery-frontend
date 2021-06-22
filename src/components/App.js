@@ -5,6 +5,7 @@ import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
 import SignUpPage from '../pages/SignUpPage';
+import Profile from '../components/Profile';
 
 const App = () => {
     const [state, setState] = useState({
@@ -74,6 +75,7 @@ const App = () => {
                     <Route path="/signup" exact component={ () => <SignUpPage handleLogin={handleLogin}/>}/>
                     <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut} handleOrder={handleOrder} order={order}/> }/>
                     <Route path="/order/address" exact component={ () => <OrderAddress handleLogout={handleLogOut}/>}/>
+                    <Route path="/profile" exact component={() => <Profile/>}/>
                 </div>
             </BrowserRouter>
         </div>

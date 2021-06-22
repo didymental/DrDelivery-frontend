@@ -56,14 +56,9 @@ export const MerchantCard = (props) => {
             <ArrowForwardIosIcon />
           </IconButton>
         }
-        title={name ? name : 'loading'}
-        subheader={location ? location : 'Not available'}
+        title={name ? name : <CircularProgress size='1rem'/>}
+        subheader={location ? location : <CircularProgress size='1rem'/>}
       />
-      {/* <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-      </CardActions> */}
       
     </Card>
   );
