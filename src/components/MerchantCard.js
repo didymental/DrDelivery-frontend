@@ -13,6 +13,35 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+export const MerchantCard = (props) => {
+  const classes = useStyles();
+  const name = props.data.name;
+  const location = props.data.addresses[0].street_address;
+  const merchantId = props.data.id;
+  const action = props.action;
+  console.log(action);
+
+  return (
+    <Card className={classes.root}>
+      <CardHeader
+        avatar={
+          <Avatar aria-label="merchant" className={classes.avatar}>
+            {name[0]}
+          </Avatar>
+        }
+        action={
+          <IconButton aria-label="product" onClick={() => props.action(merchantId)}>
+            <ArrowForwardIosIcon />
+          </IconButton>
+        }
+        title={name ? name : <CircularProgress size='1rem'/>}
+        subheader={location ? location : <CircularProgress size='1rem'/>}
+      />
+      
+    </Card>
+  );
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
@@ -35,33 +64,5 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: red[500],
   },
 }));
-
-export const MerchantCard = (props) => {
-  const classes = useStyles();
-  const name = props.data.name;
-  const location = props.data.addresses[0].street_address;
-  const action = props.action;
-  console.log(action);
-
-  return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="merchant" className={classes.avatar}>
-            {name[0]}
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="product" onClick={props.action}>
-            <ArrowForwardIosIcon />
-          </IconButton>
-        }
-        title={name ? name : <CircularProgress size='1rem'/>}
-        subheader={location ? location : <CircularProgress size='1rem'/>}
-      />
-      
-    </Card>
-  );
-}
 
 export default MerchantCard;

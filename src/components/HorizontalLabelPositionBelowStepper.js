@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import {merchantAPI, loginAPI} from '../apis/rails-backend';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Stepper from '@material-ui/core/Stepper';
@@ -10,16 +12,20 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import MerchantHolder from './MerchantCard';
+import MerchantCard from './MerchantCard';
+import ProductDisplay from './ProductDisplay';
+import { GridListTileBar } from '@material-ui/core';
 
 const HorizontalLabelPositionBelowStepper = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
   const [merchants, setMerchants] = useState([]);
+  const [merchantId, setMerchantId] = useState(null);
 
-  const handleNext = () => {
+  const handleNext = (id) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setMerchantId(id);
   };
 
   const handleBack = () => {
@@ -68,14 +74,25 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
   const MerchantDisplay = (props) => {
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
           {merchants.map(elem => (
             <Grid
-              item xs={4}>
-                <MerchantHolder data={elem} action={props.action}/>
+            item xs={4}>
+                <MerchantCard data={elem} action={props.action}/>
             </Grid>))}
       </Grid>
-    )
+      // <div className={classes.root}>
+      //   <GridList cellHeight={180} className={classes.gridList}>
+      //     {merchants.map(elem => (
+      //       <GridListTile key={elem.name}>
+      //         <GridListTileBar>
+      //           <MerchantCard data={elem} action={props.action}/>
+      //         </GridListTileBar>
+      //       </GridListTile>
+      //     ))}
+      //   </GridList>
+      // </div>
+    );
   }
 
   return (
@@ -103,6 +120,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               <div>
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
                 <div>
+                  <ProductDisplay id={merchantId}/>
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
