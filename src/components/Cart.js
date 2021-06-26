@@ -25,9 +25,14 @@ const ShoppingCartBadge = (props) => {
 
 const CheckOutButton = (props) => {
     const classes = useStyles();
+    const handleClick = () => {
+        props.handleOrder(props.orderToPost());
+        props.handleNext();
+    }
+
     return (
         <Container className={classes.cartCheckOutWrapper}>
-            <Button onClick={props.handleNext} disabled={props.cart.length === 0}>
+            <Button onClick={handleClick} disabled={props.cart.length === 0}>
                 <Typography 
                     variant="body1"
                     component="div"
@@ -40,7 +45,6 @@ const CheckOutButton = (props) => {
 }
 
 const Cart = (props) => {
-    console.log(props.cart);
     const classes = useStyles();
     const [cartTotal, setCartTotal] = useState(0);
 
@@ -110,20 +114,24 @@ const Cart = (props) => {
             const obj = {
                 product_id: elem.id,
                 units_bought: countPerItem()[elem.name][0],
-                total_unit_price: countPerItem()[elem.name][0] * elem.price,
+                total_unit_price: (countPerItem()[elem.name][0] * elem.price).toFixed(2),
             };
             return obj;
         });
 
-        console.log(arr);
+        let noDuplicateArr = arr.length > 0 ? [arr[0]] : [];
+        for (let i = 1; i < arr.length; i++) {
+            if (noDuplicateArr.filter(x => x.product_id !== arr[i].product_id).length > 0) {
+                noDuplicateArr = [...noDuplicateArr, arr[i]];
+            }
+        }
 
-        return arr;
+        return noDuplicateArr;
     }
 
     useEffect(() => {
         total();
         countPerItem();
-        console.log(orderToPost());
     }, [props.cart])
 
     return (
@@ -135,7 +143,11 @@ const Cart = (props) => {
             
             {cartItems()}
             <div className={classes.buttonWrapper}>
-                <CheckOutButton handleNext={props.handleNext} cart={props.cart}/>
+                <CheckOutButton 
+                    handleNext={props.handleNext} 
+                    cart={props.cart} 
+                    handleOrder={props.handleOrder}
+                    orderToPost={orderToPost}/>
             </div>
             
         </div>

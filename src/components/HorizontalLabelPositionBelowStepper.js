@@ -41,6 +41,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   };
 
   const handleOrder = async (orders) => {
+    console.log(orders);
     setOrder(orders);
     const token = localStorage.getItem('token');
     const response = await axios.post(newOrderAPI, orders,{
@@ -49,6 +50,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
           'Authorization': `Bearer ${token}`,
       }
     });
+    console.log(response);
   }
 
   const getAdminToken = async () => {
@@ -99,19 +101,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
             </Grid>))}
             </Grid>
       </Container>
-    
-
-      // <div className={classes.root}>
-      //   <GridList cellHeight={180} className={classes.gridList}>
-      //     {merchants.map(elem => (
-      //       <GridListTile key={elem.name}>
-      //         <GridListTileBar>
-      //           <MerchantCard data={elem} action={props.action}/>
-      //         </GridListTileBar>
-      //       </GridListTile>
-      //     ))}
-      //   </GridList>
-      // </div>
     );
   }
 
@@ -130,7 +119,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
         {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>Move over to Checkout screen</Typography>
-            <Button onClick={handleReset}>Reset</Button>
+            <Button onClick={handleReset}>Browse other merchants</Button>
           </div>
         ) : activeStep === 0
             ? (

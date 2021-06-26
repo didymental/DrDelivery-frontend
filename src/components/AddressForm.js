@@ -6,20 +6,19 @@ import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {makeStyles } from '@material-ui/core/styles';
-import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
-const SignUpForm = (props) => {
+const AddressForm = (props) => {
 
     const [state, setState] = useState(
         {
+            street_address: '',
+            city: parseInt(''),
+            country: '',
+            postcode: '', 
+            building_no: '',
+            unit_number: '',
             name: '',
-            contact_no: parseInt(''),
-            email: '',
-            password: '', 
-            password_confirmation: '',
-            
-            
         });
 
     const classes = useStyles();
@@ -27,60 +26,53 @@ const SignUpForm = (props) => {
     const handleNameInput = (input) => {
         setState({...state, name: input.target.value});
     };
-
-    const handleEmailInput = (input) => {
-        setState({...state, email: input.target.value});
+    const handleStreetAddInput = (input) => {
+        setState({...state, street_address: input.target.value});
     };
-
-    const handleNumberInput = (input) => {
-        setState({...state, contact_no: input.target.value});
+    const handleCityInput = (input) => {
+        setState({...state, city: input.target.value});
     };
-
-    const handlePasswordInput = (input) => {
-        setState({...state, password: input.target.value});
-    }
-
-    const handlePasswordConfirmation = (input) => {
-        if (input.target.value === state.password) {
-            setState({...state, password_confirmation: input.target.value});
-        } 
-    }
+    const handleCountryInput = (input) => {
+        setState({...state, country: input.target.value});
+    };
+    const handlePostCode = (input) => {
+        setState({...state, postcode: input.target.value}); 
+    };
+    const handleBuildingNumInput = (input) => {
+        setState({...state, building_no: input.target.value});
+    };
+    const handleUnitNumInput = (input) => {
+        setState({...state, unit_number: input.target.value});
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log(state);
-        let user = {...state};
-        console.log(user);
+        let add = {...state};
+        console.log(add);
         console.log('posting');
-        axios.post(customerAPI, user, {
+        const token = localStorage.getItem('token');
+        axios.post(customerAPI + '/' + localStorage.getItem('userID') + '/addresses', add, {
             headers: {
-                'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
         }).then(response => {
             console.log('post');
             console.log(response);
-            props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
-        }).catch(error => {
-            if (error.response) {
-                console.log(error.response);
-            } else if (error.request) {
-                console.log(error.request);
-            } else if (error.message) {
-                console.log(error.message);
-            }
+            
         });
     }
 
     return (
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
-            <Logo color='black'/>
-            <form className={classes.root} onSubmit={handleSubmit}>
+            <Logo color='orange'/>
+            <form  className={classes.root} onSubmit={handleSubmit}> 
                 <div className={classes.actionCard}>
                     <TextField
                         id="name"
-                        label="Name"
+                        label="Address Name"
                         variant="outlined"
                         onChange={handleNameInput}
                     />
@@ -88,57 +80,72 @@ const SignUpForm = (props) => {
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="email"
-                        label="Email"
+                        id="street"
+                        label="Street"
                         variant="outlined"
-                        onChange={handleEmailInput}
+                        onChange={handleStreetAddInput}
                     />
                 </div>
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="contact-number"
-                        label="Contact Number"
+                        id="building-no"
+                        label="Building Number"
                         variant="outlined"
-                        onChange={handleNumberInput}
+                        onChange={handleBuildingNumInput}
                     />
                 </div>
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="password-input"
-                        label="Password"
-                        type="password"
-                        autoComplete="current-password"
+                        id="unit-no"
+                        label="Unit Number"
                         variant="outlined"
-                        onChange={handlePasswordInput}
+                        onChange={handleUnitNumInput}
                         />
                 </div>
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="password-confirmation"
-                        label="Password Confirmation"
-                        type="password"
+                        id="postal-code"
+                        label="Postal Code"
                         variant="outlined"
-                        onChange={handlePasswordConfirmation}
+                        onChange={handlePostCode}
+                        />
+                </div>
+                <br/>
+                <div className={classes.actionCard}>
+                    <TextField
+                        id="city"
+                        label="City"
+                        variant="outlined"
+                        onChange={handleCityInput}
+                        />
+                </div>
+                <br/>
+                <div className={classes.actionCard}>
+                    <TextField
+                        id="country"
+                        label="Country"
+                        variant="outlined"
+                        onChange={handleCountryInput}
                         />
                 </div>
                 <br/>
                 <div className={classes.actionButton}>
                         <Button
-                            className={classes.signup}
+                            className={classes.add}
                             onClick={handleSubmit}
                             variant="contained"
                             color="primary"
                             type="submit">
-                            Sign Up
+                            Add Address
                         </Button>
-                        <Link to="/">
+                        {/* <Link to="/home">
                         <Button variant="contained" style={ {margin: '5px'}}>
                             Cancel
                         </Button>
-                        </Link>
+                        </Link> */}
                 </div>
             </form>
             <br/>
@@ -152,8 +159,8 @@ const useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
       padding: theme.spacing(2),
     },
     actionCard: {
@@ -162,16 +169,17 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
     },
     actionButton: {
-        display: 'inline-block',
-        alignItems: 'baseline'
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    signup: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    add: {
+        background: '#09203f',
         border: 0,
-        boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+        boxShadow: '0 3px 5px 2px rgba(200, 200, 255, .3)',
         color: 'white',
         borderRadius: 10,
     }
   }));
 
-export default SignUpForm;
+export default AddressForm;

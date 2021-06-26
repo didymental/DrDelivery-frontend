@@ -60,7 +60,7 @@ const Login = (props) => {
             },
         }).then(response => {
             props.handleLogin(response.data.token, response.data.user_id);
-        });
+        }).catch(error => console.log(error));
         setState({...state, email: '', password: ''});
     }
 

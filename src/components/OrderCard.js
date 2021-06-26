@@ -9,12 +9,65 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import AddressForm from './AddressForm';
+
+const FormDialog = () => {
+    const [open, setOpen] = useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
+
+    const classes = useStyles();
+
+    return (
+        <div>
+            <Button 
+                    className={classes.updateButton}
+                    variant="contained" 
+                    size="small"
+                    onClick={handleClickOpen}
+                >
+                    <Typography variant="caption">Add / Update Addresses</Typography>
+                </Button>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Add Your Addresss</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        In order to make a delivery, we have to save your address! Rest assured that your information remains safe with us, abiding strictly to PDPA guidelines set out by your government. 
+                    </DialogContentText>
+                    <AddressForm/>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={handleClose} color="#09203f">
+                    Skip
+                </Button>
+                </DialogActions>
+                {/* 
+                
+                <Button onClick={handleClose} color="primary">
+                    Subscribe
+                </Button>
+                </DialogActions> */}
+            </Dialog>
+        </div>
+    )
+
+}
 
 const AddressTextField = (props) => {
     const [options, setOptions] = useState([]);
     const loading = options.length === 0;
     const [state, setState] = useState({
-        address: [],
+        address: null,
         postal: [],
     });
     const [error, setError] = useState({
@@ -30,19 +83,20 @@ const AddressTextField = (props) => {
 
         const savedAddresses = async () => {
             const token = localStorage.getItem('token');
+            const userid = localStorage.getItem('userID');
             console.log(customerAPI + '/' + localStorage.getItem('userID') + '/addresses');
-            // const response = await axios.get(customerAPI + '/' + localStorage.getItem('userID') + '/addresses', {
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Authorization': `Bearer ${token}`,
-            //     }
-            // });
-            const response = await axios.get(custAddressAPI, {
+            const response = await axios.get(customerAPI + '/' + userid + '/addresses', {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 }
-            })
+            });
+            // const response = await axios.get(custAddressAPI, {
+            //     headers: {
+            //         'Accept': 'application/json',
+            //         'Authorization': `Bearer ${token}`,
+            //     }
+            // })
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.street_address);
             let postal = await info.map(infoObj => infoObj.postcode);
@@ -83,7 +137,7 @@ const AddressTextField = (props) => {
             options={options}
             getOptionLabel={(option)=> option}
             getOptionSelected={(option, value) => option === value}
-            loading={loading}
+            loading={state.address === null ? true : state.address.length === 0 ? false : loading}
             autoSelect={true}
             onChange={(event, value) => displayAddressDetails(event, value)}            
             renderInput={ (params) => (
@@ -154,13 +208,16 @@ const Form = (props) => {
                         </form>
                     </div>
                 </Box>
-                <Button 
+                <Container>
+                {/* <Button 
                     className={classes.updateButton}
                     variant="contained" 
                     size="small"
                 >
-                    <Typography variant="caption">Or Update Address</Typography>
-                </Button>
+                    <Typography variant="caption">Add / Update Addresses</Typography>
+                </Button> */}
+                    <FormDialog/>
+                </Container>
             </Box>
         </div>
     )
@@ -201,7 +258,7 @@ const useStyles = makeStyles( (theme) => ({
     },
     box: {
         position: 'relative',
-        padding: theme.spacing(2),
+        padding: theme.spacing(4),
         background: '#FFFFFF',
     },
     outerbox: {
