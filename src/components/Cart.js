@@ -1,42 +1,144 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import Badge from '@material-ui/core/Badge';
 import {makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import Product from './Product';
+import Container from '@material-ui/core/Container';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+
+const ShoppingCartBadge = (props) => {
+    const classes = useStyles();
+    return (
+            <Badge className={classes.badge} badgeContent={props.count} color="secondary">
+                <ShoppingCartIcon/>
+            </Badge>
+      
+    );
+}
+
+const CheckOutButton = (props) => {
+    const classes = useStyles();
+    return (
+        <Container className={classes.cartCheckOutWrapper}>
+            <Button onClick={props.handleNext} disabled={props.cart.length === 0}>
+                <Typography 
+                    variant="body1"
+                    component="div"
+                >
+                    CHECKOUT NOW
+                </Typography>
+            </Button>
+        </Container>
+    )
+}
 
 const Cart = (props) => {
-    const [cart, setCart] = useState([]);
+    console.log(props.cart);
+    const classes = useStyles();
     const [cartTotal, setCartTotal] = useState(0);
 
-    const classes = useStyles();
-
     const total = () => {
-        let totalVal = 0;
-        for (let i = 0; i < cart.length; i++) {
-            totalVal += cart[i].price;
+      let totalVal = 0;
+      for (let i = 0; i < props.cart.length; i++) {
+          totalVal += props.cart[i].price;
+      }
+      setCartTotal(totalVal);
+    }
+
+    const countPerItem = () => {
+        const items = [...props.cart];
+        let unique = {};
+        for (let i = 0; i < items.length; i++) {
+            const name = items[i].name;
+            if (unique[name]) {
+                unique[name][0]++;
+            } else {
+                Object.assign(unique, {[name]: [1, items[i]]});
+            }
         }
-        setCartTotal(totalVal);
+        return unique;
+    }
+    
+    const objMap = (obj, func) => {
+        return Object.fromEntries(Object.entries(obj).map( ([k, v]) => [k, func(v)] ));
+    }
+    
+    const cartItems = () => { 
+        return (
+            <List>
+                {
+                Object.values(objMap(countPerItem(), (arr) => {
+                    let elem = arr[1];
+                    return (
+                        <ListItem>
+                            <ListItemText primary={elem.name}/>
+                            <Button size="small" color="primary" onClick={() => props.addToCart(elem, props.cart.length + 1)} className={classes.addButton}>
+                                <AddIcon className={classes.icon}/>
+                            </Button>
+                            <div> 
+                                {countPerItem()[elem.name][0]}
+                            </div>
+                            <Button size="small" color="primary" onClick={() => props.removeFromCart(elem)} className={classes.removeButton} item={elem}>
+                                <RemoveIcon className={classes.icon}/>
+                            </Button>
+                        </ListItem>
+                    )
+                }
+    ))}
+                <ListItem>
+                    <Typography 
+                        variant="body2" 
+                        component="p"
+                    >
+                        {'Total: S$ ' + cartTotal.toFixed(2)}
+                    </Typography>
+                </ListItem>
+            </List>
+        );
     }
 
-    const addToCart = (item) => {
-        setCart([...cart, item]);
+    const orderToPost = () => {
+
+        const arr = props.cart.map(elem => {
+            const obj = {
+                product_id: elem.id,
+                units_bought: countPerItem()[elem.name][0],
+                total_unit_price: countPerItem()[elem.name][0] * elem.price,
+            };
+            return obj;
+        });
+
+        console.log(arr);
+
+        return arr;
     }
 
-    const removeFromCart = (item) => {
-        let cartCopy = cart.filter((order) => order.uniqueID !== item.uniqueID);
-        setCart(cartCopy);
-    }
-
-    const cartItems = () => { // to do
-        cart.map(item => (
-            <div>Making...</div>
-        ));
-    }
+    useEffect(() => {
+        total();
+        countPerItem();
+        console.log(orderToPost());
+    }, [props.cart])
 
     return (
-        <Box className={classes.cartContainer}>
-            <Product/>
-        </Box>
+        <div className={classes.cartContainer}>
+            <h2>
+                Your Cart
+                <ShoppingCartBadge count={props.cart.length}/>
+            </h2>
+            
+            {cartItems()}
+            <div className={classes.buttonWrapper}>
+                <CheckOutButton handleNext={props.handleNext} cart={props.cart}/>
+            </div>
+            
+        </div>
     )
 
 
@@ -45,26 +147,49 @@ const Cart = (props) => {
 
 const useStyles = makeStyles((theme) => ({
     cartContainer: {
-      display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: theme.spacing(2),
-      width: 352,
+      padding: theme.spacing(0.5),
+      minWidth: '330px',
     },
     cartItemsWrapper: {
-
+        display: 'fixed',
+        padding: theme.spacing(1),
     },
-    cartSummaryFooter: {
-
+    cartCheckOutWrapper: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        padding: theme.spacing(0.75),
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    root: {
-        maxWidth: 345,
+    buttonWrapper: {
+        display: 'flex',
     },
     media: {
         height: 140,
+    },
+    badge: {
+        left: 10,
+        top: -3,
+        padding: '0 1px',
+        color: '#FFFDD0',
+    },
+    footer: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+    },
+    addButton: {
+      alignSelf: 'flex-start',
+    },
+    removeButton: {
+      alignSelf: 'flex-end',
+    },
+    icon: {
+        color: 'white',
     }
-
 }));
 
 export default Cart;

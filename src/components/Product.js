@@ -1,5 +1,5 @@
 import React from 'react';
-import useState from 'react';
+import {useState} from 'react';
 import {makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -12,8 +12,21 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 
 const Product = (props) => {
-    console.log(props);
+    //const [orderId, setOrderId] = useState(0);
     const classes = useStyles();
+
+    const addToCart = () => {
+      const id = props.orderId + 1;
+      // setOrderId(id);
+      props.addToCart(props.details, id);
+    }
+
+    const removeFromCart = () => {
+      props.removeFromCart(props.details);
+      // const id = orderId - 1;
+      //setOrderId(id);
+    }
+    
 
     return (
         <Card className={classes.root}>
@@ -32,17 +45,11 @@ const Product = (props) => {
               </Typography>
             </CardContent>
           </CardActionArea>
-          <CardActions className={classes.container}>
-            <Button size="small" color="primary" onClick={props.addToCart}>
+          <CardActions className={classes.footer}>
+            <Button size="small" color="primary" onClick={addToCart} className={classes.addButton}>
                 <AddIcon color="primary"/>
                 <Typography variant="body3" color="textSecondary" component="p">
-                    Add To Cart
-                </Typography>
-            </Button>
-            <Button size="small" color="primary" onClick={props.removeFromCart}>
-                <RemoveIcon color="primary"/>
-                <Typography variant="body3" color="textSecondary" component="p">
-                    Remove From Cart
+                    Add
                 </Typography>
             </Button>
           </CardActions>
@@ -57,6 +64,15 @@ const useStyles = makeStyles((theme) => ({
     },
     container: {
         maxHeight: 175,
+    },
+    footer: {
+      display: 'flex'
+    },
+    addButton: {
+      alignSelf: 'flex-start',
+    },
+    removeButton: {
+      alignSelf: 'flex-end',
     }
 }));
 

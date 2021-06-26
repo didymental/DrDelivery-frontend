@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import {merchantAPI, loginAPI} from '../apis/rails-backend';
+import {merchantAPI, loginAPI, newOrderAPI} from '../apis/rails-backend';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import MerchantCard from './MerchantCard';
 import ProductDisplay from './ProductDisplay';
+import Container from '@material-ui/core/Container';
 import { GridListTileBar } from '@material-ui/core';
 
 const HorizontalLabelPositionBelowStepper = (props) => {
@@ -22,10 +23,13 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const steps = getSteps();
   const [merchants, setMerchants] = useState([]);
   const [merchantId, setMerchantId] = useState(null);
+  const [order, setOrder] = useState([]);
 
   const handleNext = (id) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setMerchantId(id);
+    if (activeStep === 0) {
+      setMerchantId(id);
+    }
   };
 
   const handleBack = () => {
@@ -35,6 +39,17 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  const handleOrder = async (orders) => {
+    setOrder(orders);
+    const token = localStorage.getItem('token');
+    const response = await axios.post(newOrderAPI, orders,{
+      headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      }
+    });
+  }
 
   const getAdminToken = async () => {
     const adminLogin = {
@@ -74,13 +89,18 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
   const MerchantDisplay = (props) => {
     return (
-      <Grid container spacing={2}>
+      <Container>
+      <Grid container spacing={2} md={12}>
+      
           {merchants.map(elem => (
             <Grid
             item xs={4}>
                 <MerchantCard data={elem} action={props.action}/>
             </Grid>))}
-      </Grid>
+            </Grid>
+      </Container>
+    
+
       // <div className={classes.root}>
       //   <GridList cellHeight={180} className={classes.gridList}>
       //     {merchants.map(elem => (
@@ -116,11 +136,12 @@ const HorizontalLabelPositionBelowStepper = (props) => {
             ? (
               <MerchantDisplay action={handleNext}/>
               )
-            : (
+            : activeStep === 1
+              ? (
               <div>
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
                 <div>
-                  <ProductDisplay id={merchantId}/>
+                  <ProductDisplay id={merchantId} handleNext={handleNext} handleOrder={handleOrder}/>
                   <Button
                     disabled={activeStep === 0}
                     onClick={handleBack}
@@ -128,11 +149,17 @@ const HorizontalLabelPositionBelowStepper = (props) => {
                   >
                     Back
                 </Button>
-                  <Button variant="contained" color="primary" onClick={handleNext}>
+                  
+                </div>
+              </div>
+              )
+              : 
+              ( 
+              <div>
+                <Button variant="contained" color="primary" onClick={handleNext}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </div>
-              </div>
             )}
       </div>
     </div>
@@ -164,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getSteps = () => {
-  return ['Browse Our Merchants', 'Choose an Item', 'Add to Cart', 'Check Out'];
+  return ['Browse Our Merchants', 'Select Items','Check Out'];
 };
 
 const getStepContent = (stepIndex) => {
