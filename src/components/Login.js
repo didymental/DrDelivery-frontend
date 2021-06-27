@@ -10,6 +10,14 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { AlertTitle } from '@material-ui/lab';
+
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const SignUp = () => {
     const classes = useStyles();
     return (
@@ -40,6 +48,11 @@ const Login = (props) => {
         });
     const classes = useStyles();
 
+    const [error, setError] = useState({
+        hasError: false,
+        message: '',
+    });
+
     const handleEmailInput = (input) => {
         setState({...state, email: input.target.value});
     }
@@ -58,7 +71,12 @@ const Login = (props) => {
             },
         }).then(response => {
             props.handleLogin(response.data.token, response.data.user_id);
-        }).catch(error => console.log(error));
+        }).catch(error => {
+            console.log(error.response);
+            if (error.response) {
+                setError({...error, hasError: true, message: error.response.data.message});
+            }
+        });
         setState({...state, email: '', password: ''});
     }
 
@@ -100,8 +118,14 @@ const Login = (props) => {
                             </Button>
                         </div>    
                     </div>
-                    
                 </form>
+                <Snackbar open={error.hasError}>
+                    <Alert severity="error" onClose={() => setError({...state, hasError: false, message: ''})}>
+                        <AlertTitle>Error</AlertTitle>
+                        {error.message}
+                    </Alert>
+                </Snackbar>
+
             <div className={classes.footer}>
                 {SignUp()}
             </div>

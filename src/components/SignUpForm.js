@@ -9,6 +9,14 @@ import {makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { AlertTitle } from '@material-ui/lab';
+
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const SignUpForm = (props) => {
 
     const [state, setState] = useState(
@@ -21,6 +29,12 @@ const SignUpForm = (props) => {
             
             
         });
+    
+    const [signupSuccess,setSignUpSuccess] = useState(false);
+    const [signupFail, setSignUpFail] = useState({
+        message: [],
+        fail: false,
+    });
 
     const classes = useStyles();
 
@@ -55,15 +69,15 @@ const SignUpForm = (props) => {
                 'Accept': 'application/json',
             },
         }).then(response => {
-            props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
+            console.log(response);
+            setSignUpSuccess(true);
+            // props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
         }).catch(error => {
             if (error.response) {
                 console.log(error.response);
-            } else if (error.request) {
-                console.log(error.request);
-            } else if (error.message) {
-                console.log(error.message);
-            }
+                setSignUpFail({...signupFail, message: error.response.data.message, fail: true});
+                console.log(signupFail.message);
+            } 
         });
     }
 
@@ -137,6 +151,18 @@ const SignUpForm = (props) => {
                 </div>
             </form>
             <br/>
+            <Snackbar open={signupSuccess}>
+                <Alert severity="info">
+                    <AlertTitle>Authentication Needed</AlertTitle>
+                    We have sent an authentication email to your email address. Once you have confirmed your email, you may login. 
+                </Alert>
+            </Snackbar>
+            <Snackbar open={signupFail.fail}>
+                <Alert severity="error" onClose={() => setSignUpFail({...state, message: []})}>
+                    <AlertTitle>Error</AlertTitle>
+                    {signupFail.message.map(err => '' + err + '.'+ '\n')}
+                </Alert>
+            </Snackbar>
             </Box>
         </div>
     )

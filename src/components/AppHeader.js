@@ -13,6 +13,8 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Logo from './Logo';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 const AppHeader = (props) => {
     const [state, setState] = useState({
@@ -94,10 +96,15 @@ const AppHeader = (props) => {
             </IconButton>
             <div className={classes.logoPosition}>
               <Link to="/home">
-                <Logo width="120" />
+                <Logo width="200" />
               </Link>
             </div>
           </Toolbar>
+          <Button className={classes.button} onClick={props.handleLogout}>
+            <Box borderRadius={10}>
+              Logout
+            </Box>
+          </Button>
         </AppBar>
         {drawer()}
       </div>
@@ -128,6 +135,11 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
     borderRadius: 5,
     background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+  },
+  button: {
+    display: 'flex',
+    alignSelf: 'flex-end',
+    color:'white',
   }
 }));
 

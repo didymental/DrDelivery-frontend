@@ -111,6 +111,7 @@ const AddressTextField = (props) => {
             let addresses = await info.map(infoObj => infoObj.name);
             let postal = await info.map(infoObj => infoObj.building_no + ' ' + infoObj.street_address);
             let addressID = await info.map(infoObj => infoObj.id);
+            console.log(addresses);
             if (active) {
                 setOptions(addresses);
                 setState({...state, address: addresses, postal: postal, addressID: addressID}); 
