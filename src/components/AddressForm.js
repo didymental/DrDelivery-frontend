@@ -58,13 +58,18 @@ const AddressForm = (props) => {
                 'Authorization': `Bearer ${token}`,
             },
         }).then(response => {
-            console.log('post');
             console.log(response);
-            
+            console.log(response.status);
+
+            if (response.status === 201) {
+                props.handleSuccess(true);
+                props.handleClose();
+            }
         });
     }
 
     return (
+        
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
             <Logo color='orange'/>
@@ -80,19 +85,19 @@ const AddressForm = (props) => {
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="street"
-                        label="Street"
+                        id="building-no"
+                        label="Building Number"
                         variant="outlined"
-                        onChange={handleStreetAddInput}
+                        onChange={handleBuildingNumInput}
                     />
                 </div>
                 <br/>
                 <div className={classes.actionCard}>
                     <TextField
-                        id="building-no"
-                        label="Building Number"
+                        id="street"
+                        label="Street"
                         variant="outlined"
-                        onChange={handleBuildingNumInput}
+                        onChange={handleStreetAddInput}
                     />
                 </div>
                 <br/>
@@ -141,11 +146,6 @@ const AddressForm = (props) => {
                             type="submit">
                             Add Address
                         </Button>
-                        {/* <Link to="/home">
-                        <Button variant="contained" style={ {margin: '5px'}}>
-                            Cancel
-                        </Button>
-                        </Link> */}
                 </div>
             </form>
             <br/>
@@ -159,8 +159,6 @@ const useStyles = makeStyles((theme) => ({
     root: {
       display: 'flex',
       flexDirection: 'column',
-    //   justifyContent: 'center',
-    //   alignItems: 'center',
       padding: theme.spacing(2),
     },
     actionCard: {

@@ -8,7 +8,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -164,6 +163,7 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'center',
       padding: theme.spacing(0.5),
       minWidth: '330px',
+      minHeight: '50vh',
     },
     cartItemsWrapper: {
         display: 'fixed',

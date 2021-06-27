@@ -16,49 +16,68 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AddressForm from './AddressForm';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { AlertTitle } from '@material-ui/lab';
 
-const FormDialog = () => {
-    const [open, setOpen] = useState(false);
+const openDialog = () => {
+    return FormDialog(true);
+}
+
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const FormDialog = (haveAddress) => {
+    const [open, setOpen] = useState(haveAddress || false);
     const handleClickOpen = () => {
         setOpen(true);
     }
     const handleClose = () => {
         setOpen(false);
     }
-
+    const [success, setSuccess] = useState(false);
+    const handleSuccess = (status) => {
+        setSuccess(status);
+    }
     const classes = useStyles();
 
     return (
         <div>
-            <Button 
-                    className={classes.updateButton}
-                    variant="contained" 
-                    size="small"
-                    onClick={handleClickOpen}
-                >
-                    <Typography variant="caption">Add / Update Addresses</Typography>
-                </Button>
-            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Add Your Addresss</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        In order to make a delivery, we have to save your address! Rest assured that your information remains safe with us, abiding strictly to PDPA guidelines set out by your government. 
-                    </DialogContentText>
-                    <AddressForm/>
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={handleClose} color="#09203f">
-                    Skip
-                </Button>
-                </DialogActions>
-                {/* 
-                
-                <Button onClick={handleClose} color="primary">
-                    Subscribe
-                </Button>
-                </DialogActions> */}
-            </Dialog>
-        </div>
+            <div>
+                <Button 
+                        className={classes.updateButton}
+                        variant="contained" 
+                        size="small"
+                        onClick={handleClickOpen}
+                    >
+                        <Typography variant="caption">Add / Update Addresses</Typography>
+                    </Button>
+                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Add Your Addresss</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            In order to make a delivery, we have to save your address! Rest assured that your information remains safe with us, abiding strictly to PDPA guidelines set out by your government. 
+                        </DialogContentText>
+                        <AddressForm handleClose={handleClose} handleSuccess={handleSuccess}/>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} color="default">
+                        Skip
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+            </div>
+            <div>
+                <Snackbar open={success} autoHideDuration={3000} onClose={() => handleSuccess(false)}>
+                    <Alert severity="success">
+                        <AlertTitle>Success</AlertTitle>
+                        We have saved your address! You can fly now!
+                    </Alert>
+                </Snackbar>
+            </div>
+         </div>
     )
 
 }
@@ -91,19 +110,16 @@ const AddressTextField = (props) => {
                     'Authorization': `Bearer ${token}`,
                 }
             });
-            // const response = await axios.get(custAddressAPI, {
-            //     headers: {
-            //         'Accept': 'application/json',
-            //         'Authorization': `Bearer ${token}`,
-            //     }
-            // })
             const info = await response.data;
-            let addresses = await info.map(infoObj => infoObj.street_address);
-            let postal = await info.map(infoObj => infoObj.postcode);
+            let addresses = await info.map(infoObj => infoObj.name);
+            let postal = await info.map(infoObj => infoObj.building_no + ' ' + infoObj.street_address);
             
             if (active) {
                 setOptions(addresses);
                 setState({...state, address: addresses, postal: postal});
+                if (addresses.length === 0) {
+                    openDialog();
+                }
             }
         };
 
@@ -190,8 +206,8 @@ const Form = (props) => {
                                 </div>
                             <TextField 
                                     className={classes.textFields}
-                                    id="postal-input"
-                                    label="Postal Code"
+                                    id="address"
+                                    label="Address"
                                     type="text"
                                     color="primary"
                                     value={state.postal ? state.postal : ''}
@@ -209,14 +225,7 @@ const Form = (props) => {
                     </div>
                 </Box>
                 <Container>
-                {/* <Button 
-                    className={classes.updateButton}
-                    variant="contained" 
-                    size="small"
-                >
-                    <Typography variant="caption">Add / Update Addresses</Typography>
-                </Button> */}
-                    <FormDialog/>
+                    {FormDialog(false)}
                 </Container>
             </Box>
         </div>
