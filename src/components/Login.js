@@ -84,7 +84,6 @@ const Login = (props) => {
         <div>
             <Box bgcolor="#FFFFFF" borderRadius={10}>
                 <Logo color='black'/>
-                <div className={classes.root}>example@railstutorial.org / foobar</div> 
                 <form className={classes.root} onSubmit={handleSubmit}>
                 
                     <div className={classes.actionCard}>
