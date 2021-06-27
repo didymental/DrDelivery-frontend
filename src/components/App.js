@@ -18,9 +18,16 @@ const App = () => {
         hasOrder: false,
     })
 
-    const handleOrder = (address) => {
+    const [dropOffAddress, setDropOffAddress] = useState();
+
+    const updateAddress = (address_id) => {
+        console.log(address_id);
+        setDropOffAddress(address_id);
+    }
+
+    const handleOrder = (address, merchant_addressID) => {
         if (address) {
-            setOrder({...order, hasOrder: true});
+            setOrder({...order, hasOrder: true, merchant_addressID: merchant_addressID});
         }
     }
 
@@ -45,7 +52,6 @@ const App = () => {
     }
 
     const renderPage = () => {
-        console.log(order.hasOrder);
         if (state.isLoggedIn) {
             return (<Redirect to="/home" />);
         } else if (state.isLoggedIn && order.hasOrder) {
@@ -64,7 +70,7 @@ const App = () => {
                 handleLogin(token, id);
             }
         }
-    })
+    }, [state])
     
     return (
         <div>
@@ -73,8 +79,14 @@ const App = () => {
                     {renderPage()}
                     <Route path="/" exact component={ () => <SignIn handleLogin={handleLogin}/> }/>
                     <Route path="/signup" exact component={ () => <SignUpPage handleLogin={handleLogin}/>}/>
-                    <Route path="/home" exact component={ () => <Home handleLogout={handleLogOut} handleOrder={handleOrder} order={order}/> }/>
-                    <Route path="/order/address" exact component={ () => <OrderAddress handleLogout={handleLogOut}/>}/>
+                    <Route path="/home" exact component={ () => <Home 
+                        handleLogout={handleLogOut} 
+                        handleOrder={handleOrder} 
+                        order={order}
+                        updateAddress={updateAddress}/> }/>
+                    <Route path="/order/address" exact component={ () => <OrderAddress 
+                        handleLogout={handleLogOut}
+                        dropOffAdd={dropOffAddress}/> }/>
                     <Route path="/profile" exact component={() => <Profile/>}/>
                 </div>
             </BrowserRouter>

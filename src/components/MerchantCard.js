@@ -18,10 +18,12 @@ export const MerchantCard = (props) => {
   const name = props.data.name;
   const location = props.data.addresses[0].street_address;
   const merchantId = props.data.id;
-  const action = props.action;
-  console.log(action);
+  const merchantAddressID = props.data.addresses[0].id;
+
+  // props.setLoad(false);
 
   return (
+    
     <Card className={classes.root}>
       <CardHeader
         avatar={
@@ -30,14 +32,15 @@ export const MerchantCard = (props) => {
           </Avatar>
         }
         action={
-          <IconButton aria-label="product" onClick={() => props.action(merchantId)}>
+          <IconButton aria-label="product" 
+            onClick={() => props.action(merchantId, merchantAddressID)}
+          >
             <ArrowForwardIosIcon />
           </IconButton>
         }
         title={name ? name : <CircularProgress size='1rem'/>}
         subheader={location ? location : <CircularProgress size='1rem'/>}
       />
-      
     </Card>
   );
 }

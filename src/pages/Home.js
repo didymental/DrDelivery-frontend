@@ -31,7 +31,9 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
-            <OrderCard handleOrder={(address) => props.handleOrder(address)}/> 
+            <OrderCard 
+                handleOrder={(address) => props.handleOrder(address)}
+                updateAddress={(address_id) => props.updateAddress(address_id)}/> 
             {renderPage()}
         </div>
     );

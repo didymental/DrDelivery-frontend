@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Product from './Product';
 import Container from '@material-ui/core/Container';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const ProductDisplay = (props) => {
     const [products, setProducts] = useState([]);
@@ -59,13 +60,16 @@ const ProductDisplay = (props) => {
           setProducts([...productList]);
         });
     };
+
+    const [loading, setLoading] = useState(true);
     
-    useEffect(() => {
-        getProducts();
+    useEffect(async () => {
+        await getProducts();
+        setLoading(false);
     }, []);
 
 
-    return (
+    return loading ? <LinearProgress/> : (
       <div>
         <Container>
           <Box className={classes.productsWrapper}>

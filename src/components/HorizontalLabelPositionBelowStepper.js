@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import {merchantAPI, loginAPI, newOrderAPI} from '../apis/rails-backend';
+import OrderStatus from './OrderStatus';
+
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
@@ -15,6 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import MerchantCard from './MerchantCard';
 import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { GridListTileBar } from '@material-ui/core';
 
 const HorizontalLabelPositionBelowStepper = (props) => {
@@ -23,12 +26,15 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const steps = getSteps();
   const [merchants, setMerchants] = useState([]);
   const [merchantId, setMerchantId] = useState(null);
+  const [pickUpAdd, setPickUpAdd] = useState(null);
   const [order, setOrder] = useState([]);
+  const [orderStatus, setOrderStatus] = useState();
 
-  const handleNext = (id) => {
+  const handleNext = (id, addressID) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     if (activeStep === 0) {
       setMerchantId(id);
+      setPickUpAdd(addressID);
     }
   };
 
@@ -41,16 +47,28 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   };
 
   const handleOrder = async (orders) => {
-    console.log(orders);
     setOrder(orders);
+    setLoading(true);
+    let toPost = {
+      customer_id: localStorage.getItem('userID'),
+      merchant_id: '' + merchantId,
+      total_price: orders[1],
+      pick_up_address_id: pickUpAdd,
+      drop_off_address_id: '' + props.dropOffAdd,
+    }
+
+    toPost = {...toPost, order_entries: orders[0]}
+    console.log(toPost);
+
     const token = localStorage.getItem('token');
-    const response = await axios.post(newOrderAPI, orders,{
+    const response = await axios.post(newOrderAPI, toPost, {
       headers: {
           'Accept': 'application/json',
           'Authorization': `Bearer ${token}`,
       }
     });
-    console.log(response);
+    setOrderStatus(response.status);
+    handleNext();
   }
 
   const getAdminToken = async () => {
@@ -81,35 +99,45 @@ const HorizontalLabelPositionBelowStepper = (props) => {
     });
   };
 
-  useEffect(() => {
-    getMerchants();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
-  // setMerchants(merchantList);
-  
-  
+  useEffect(async () => {
+    await getMerchants();
+    setLoading(false);
+  }, [merchants]);  
 
   const MerchantDisplay = (props) => {
-    return (
-      <Container>
-      <Grid container spacing={2} md={12}>
-      
-          {merchants.map(elem => (
-            <Grid
-            item xs={4}>
-                <MerchantCard data={elem} action={props.action}/>
-            </Grid>))}
-            </Grid>
-      </Container>
+    return loading ? <LinearProgress/>: (
+      <div>
+        <Container>
+        <Grid container spacing={2} md={12}>
+        
+            {merchants.map(elem => (
+              <Grid
+              item xs={4}>
+                  <MerchantCard 
+                    data={elem} 
+                    action={props.action}
+                    />
+              </Grid>))}
+              </Grid>
+        </Container>
+      </div>
     );
   }
+
+  
 
   return (
     <div className={classes.root}>
       <Box borderBottom={0.2}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
-            <Step key={label}>
+            <Step key={label} onClick={ () => {
+              if (label === 'Browse Our Merchants') {
+                handleReset();
+              }
+            } }>
               <StepLabel>{label}</StepLabel>
             </Step>
           ))}
@@ -130,21 +158,14 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               <div>
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
                 <div>
-                  <ProductDisplay id={merchantId} handleNext={handleNext} handleOrder={handleOrder}/>
-                  <Button
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className={classes.backButton}
-                  >
-                    Back
-                </Button>
-                  
+                  <ProductDisplay id={merchantId} handleNext={handleNext} handleOrder={handleOrder}/>  
                 </div>
               </div>
               )
               : 
               ( 
               <div>
+                <OrderStatus orderStatus={orderStatus} />
                 <Button variant="contained" color="primary" onClick={handleNext}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>

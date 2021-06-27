@@ -26,7 +26,6 @@ const CheckOutButton = (props) => {
     const classes = useStyles();
     const handleClick = () => {
         props.handleOrder(props.orderToPost());
-        props.handleNext();
     }
 
     return (
@@ -125,7 +124,7 @@ const Cart = (props) => {
             }
         }
 
-        return noDuplicateArr;
+        return [noDuplicateArr, cartTotal.toFixed(2)];
     }
 
     useEffect(() => {

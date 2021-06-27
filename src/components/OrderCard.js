@@ -28,7 +28,7 @@ const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const FormDialog = (haveAddress) => {
+const FormDialog = (haveAddress, handleSuccess, success) => {
     const [open, setOpen] = useState(haveAddress || false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -36,10 +36,7 @@ const FormDialog = (haveAddress) => {
     const handleClose = () => {
         setOpen(false);
     }
-    const [success, setSuccess] = useState(false);
-    const handleSuccess = (status) => {
-        setSuccess(status);
-    }
+    
     const classes = useStyles();
 
     return (
@@ -51,7 +48,7 @@ const FormDialog = (haveAddress) => {
                         size="small"
                         onClick={handleClickOpen}
                     >
-                        <Typography variant="caption">Add / Update Addresses</Typography>
+                        <Typography variant="caption">Add Address</Typography>
                     </Button>
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Add Your Addresss</DialogTitle>
@@ -83,11 +80,14 @@ const FormDialog = (haveAddress) => {
 }
 
 const AddressTextField = (props) => {
+    console.log(props.success);
+    const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    const loading = options.length === 0;
+    const loading = options.length === 0 && open;
     const [state, setState] = useState({
         address: null,
         postal: [],
+        addressID: '',
     });
     const [error, setError] = useState({
         hasError: false,
@@ -95,7 +95,6 @@ const AddressTextField = (props) => {
 
     useEffect(() => {
         let active = true;
-
         if (!loading) {
             return undefined;
         }
@@ -113,13 +112,12 @@ const AddressTextField = (props) => {
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.name);
             let postal = await info.map(infoObj => infoObj.building_no + ' ' + infoObj.street_address);
+            let addressID = await info.map(infoObj => infoObj.id);
             
-            if (active) {
-                setOptions(addresses);
-                setState({...state, address: addresses, postal: postal});
-                if (addresses.length === 0) {
-                    openDialog();
-                }
+            setOptions(addresses);
+            setState({...state, address: addresses, postal: postal, addressID: addressID}); 
+            if (addresses.length === 0) {
+                openDialog();
             }
         };
 
@@ -130,18 +128,29 @@ const AddressTextField = (props) => {
         };
     }, [loading]);
 
+    useEffect(() => {
+        if (!open) {
+            setOptions([]);
+        }
+    }, [open]);
+
     const displayAddressDetails = (event, value) => {
         let postcode = '';
+        let addressID = '';
         for (let i = 0; i < state.address.length; i++) {
             if (value === state.address[i]) {
                 postcode = state.postal[i];
-                props.change(value, postcode)
+                addressID = state.addressID[i];
+                props.change(value, postcode, addressID)
+                
                 break;
             }
         }
 
         if (postcode === '' && value === null) { // changing address
-            props.change('', '');
+            // props.updateAddress('');
+            props.change('', '', '');
+         
         }
     }
 
@@ -149,11 +158,13 @@ const AddressTextField = (props) => {
     return (
         <Autocomplete 
             id="address"
-            freeSolo
+            open={open}
+            onOpen={ () => setOpen(true)}
+            onClose={ () => setOpen(false)}
             options={options}
             getOptionLabel={(option)=> option}
             getOptionSelected={(option, value) => option === value}
-            loading={state.address === null ? true : state.address.length === 0 ? false : loading}
+            loading={loading}
             autoSelect={true}
             onChange={(event, value) => displayAddressDetails(event, value)}            
             renderInput={ (params) => (
@@ -179,16 +190,23 @@ const Form = (props) => {
     const [state, setState] = useState({
         street: '',
         postal: parseInt(''),
+        addressID: '',
     })
 
-    const handleStreetInput = (streetInput, postalInput) => {
-        setState({...state, street: streetInput, postal: postalInput});
+    const handleStreetInput = (streetInput, postalInput, addIDInput) => {
+        setState({...state, street: streetInput, postal: postalInput, addressID: addIDInput});
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('submit');
         props.handleOrder(state.street);
+        props.updateAddress(state.addressID);
+    }
+
+    const [success, setSuccess] = useState(false);
+    const handleSuccess = (status) => {
+        setSuccess(status);
     }
 
     const classes = useStyles();
@@ -201,7 +219,10 @@ const Form = (props) => {
                         <form onSubmit={handleSubmit}>
                             <div className={classes.textFields}>
                                 <AddressTextField 
-                                    change={(streetInput, postalInput) => handleStreetInput(streetInput, postalInput)}
+                                    change={(streetInput, postalInput, addressID) => 
+                                        handleStreetInput(streetInput, postalInput, addressID)
+                                    }
+                                    success={success}
                                 />
                                 </div>
                             <TextField 
@@ -225,7 +246,7 @@ const Form = (props) => {
                     </div>
                 </Box>
                 <Container>
-                    {FormDialog(false)}
+                    {FormDialog(false, handleSuccess, success)}
                 </Container>
             </Box>
         </div>
@@ -237,7 +258,7 @@ const OrderCard = (props) => {
     
     return (
         <div>
-            <Form handleOrder={props.handleOrder}/>
+            <Form handleOrder={props.handleOrder} updateAddress={props.updateAddress}/>
         </div>
     );
 }
