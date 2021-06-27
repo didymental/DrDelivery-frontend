@@ -21,7 +21,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
 
 const openDialog = () => {
-    return FormDialog(true);
+    return FormDialog(true, '', '');
 }
 
 const Alert = (props) => {
@@ -80,10 +80,9 @@ const FormDialog = (haveAddress, handleSuccess, success) => {
 }
 
 const AddressTextField = (props) => {
-    console.log(props.success);
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    const loading = options.length === 0 && open;
+    const loading = options.length === -1 && open;
     const [state, setState] = useState({
         address: null,
         postal: [],
@@ -116,9 +115,7 @@ const AddressTextField = (props) => {
             
             setOptions(addresses);
             setState({...state, address: addresses, postal: postal, addressID: addressID}); 
-            if (addresses.length === 0) {
-                openDialog();
-            }
+            console.log(addresses);
         };
 
         savedAddresses().catch(() => setError({...error, hasError: true}));
@@ -126,7 +123,7 @@ const AddressTextField = (props) => {
         return () => {
             active = false;
         };
-    }, [loading]);
+    }, [state]);
 
     useEffect(() => {
         if (!open) {
@@ -156,6 +153,7 @@ const AddressTextField = (props) => {
 
 
     return (
+        
         <Autocomplete 
             id="address"
             open={open}

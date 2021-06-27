@@ -62,7 +62,7 @@ const AppHeader = (props) => {
         return (
             <List >
                 <ListSubheader className={classes.title}>
-                  DrDelivery
+                  Menu
                 </ListSubheader>
                 <Link to='/profile'>
                 <ListItem button key={1} onClick={() => console.log('edit profile')}>
@@ -93,7 +93,9 @@ const AppHeader = (props) => {
               <MenuIcon />
             </IconButton>
             <div className={classes.logoPosition}>
-              <Logo width="120" />
+              <Link to="/home">
+                <Logo width="120" />
+              </Link>
             </div>
           </Toolbar>
         </AppBar>

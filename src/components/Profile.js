@@ -13,6 +13,7 @@ import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import AppHeader from './AppHeader';
 import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const EditableTextField = (props) => {
     console.log(props);
@@ -182,6 +183,10 @@ const Profile = () => {
         <IconButton onClick={() => console.log('click')}>
             <SaveIcon />
             <Typography>Save All Changes</Typography>
+        </IconButton>
+        <IconButton onClick={() => console.log('click')}>
+            <DeleteIcon />
+            <Typography>Delete Account</Typography>
         </IconButton>
         </div>);
 }
