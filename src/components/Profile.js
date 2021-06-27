@@ -2,7 +2,7 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {customerAPI} from '../apis/rails-backend';
 import axios from 'axios';
-import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import EditIcon from '@material-ui/icons/Edit';
@@ -16,7 +16,6 @@ import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const EditableTextField = (props) => {
-    console.log(props);
     const [state, setState] = useState({
         editMode: false,
     })
@@ -82,7 +81,6 @@ const Profile = () => {
     const savedDetails = async () => {
         const token = localStorage.getItem('token');
         const userid = localStorage.getItem('userID');
-        console.log(customerAPI + '/' + localStorage.getItem('userID'));
         const response = await axios.get(customerAPI + '/' + userid, {
             headers: {
                 'Accept': 'application/json',
@@ -98,8 +96,6 @@ const Profile = () => {
         });
         const personalInfo = await response.data;
         const savedAddresses = await addressResponse.data;
-        console.log(personalInfo);
-        console.log(savedAddresses);
         setProfile({...profile, 
             name: personalInfo.name, 
             email: personalInfo.email, 
@@ -111,7 +107,6 @@ const Profile = () => {
 
     useEffect(() => {
         savedDetails();
-        console.log(profile.name);
     }, []);
 
     const handleNameChange = (input) => {
@@ -123,7 +118,6 @@ const Profile = () => {
     const handleNumChange = (input) => {
         setProfile({...profile, contactNum: input.target.value});
     }
-    console.log(profile.name);
 
     return (
         <div>

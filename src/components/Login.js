@@ -1,7 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
 import axios from 'axios';
-import {useHistory} from 'react-router-dom';
 import {loginAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import Button from '@material-ui/core/Button';
@@ -20,7 +19,6 @@ const SignUp = () => {
                 <div className={classes.actionCard}>
                     <Button 
                         className={classes.signup}
-                        onClick={() => console.log('sign up')}
                     >
                         <div className={classes.signupText}>
                             Sign Up Now

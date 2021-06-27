@@ -9,7 +9,6 @@ const Alert = (props) => {
 }
 
 const OrderStatus = (props) => {
-    console.log(props);
     const [status, setStatus] = useState(props.orderStatus === 201);
     const [open, setOpen] = useState(status);
     const handleOpen = (val) => {

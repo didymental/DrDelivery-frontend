@@ -47,10 +47,7 @@ const AddressForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(state);
         let add = {...state};
-        console.log(add);
-        console.log('posting');
         const token = localStorage.getItem('token');
         axios.post(customerAPI + '/' + localStorage.getItem('userID') + '/addresses', add, {
             headers: {
@@ -58,9 +55,6 @@ const AddressForm = (props) => {
                 'Authorization': `Bearer ${token}`,
             },
         }).then(response => {
-            console.log(response);
-            console.log(response.status);
-
             if (response.status === 201) {
                 props.handleSuccess(true);
                 props.handleClose();

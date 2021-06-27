@@ -63,9 +63,8 @@ const ProductDisplay = (props) => {
 
     const [loading, setLoading] = useState(true);
     
-    useEffect(async () => {
-        await getProducts();
-        setLoading(false);
+    useEffect(() => {
+        getProducts().then(response => setLoading(false));
     }, []);
 
 

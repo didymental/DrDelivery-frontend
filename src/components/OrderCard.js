@@ -1,7 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
-import {customerAPI, custAddressAPI} from '../apis/rails-backend';
+import {customerAPI} from '../apis/rails-backend';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -20,9 +20,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
 
-const openDialog = () => {
-    return FormDialog(true, '', '');
-}
+// const openDialog = () => {
+//     return FormDialog(true, '', '');
+// }
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -82,7 +82,7 @@ const FormDialog = (haveAddress, handleSuccess, success) => {
 const AddressTextField = (props) => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    const loading = options.length === -1 && open;
+    const loading = options.length === 0 && open;
     const [state, setState] = useState({
         address: null,
         postal: [],
@@ -101,7 +101,6 @@ const AddressTextField = (props) => {
         const savedAddresses = async () => {
             const token = localStorage.getItem('token');
             const userid = localStorage.getItem('userID');
-            console.log(customerAPI + '/' + localStorage.getItem('userID') + '/addresses');
             const response = await axios.get(customerAPI + '/' + userid + '/addresses', {
                 headers: {
                     'Accept': 'application/json',
@@ -112,10 +111,10 @@ const AddressTextField = (props) => {
             let addresses = await info.map(infoObj => infoObj.name);
             let postal = await info.map(infoObj => infoObj.building_no + ' ' + infoObj.street_address);
             let addressID = await info.map(infoObj => infoObj.id);
-            
-            setOptions(addresses);
-            setState({...state, address: addresses, postal: postal, addressID: addressID}); 
-            console.log(addresses);
+            if (active) {
+                setOptions(addresses);
+                setState({...state, address: addresses, postal: postal, addressID: addressID}); 
+            }
         };
 
         savedAddresses().catch(() => setError({...error, hasError: true}));
@@ -123,7 +122,7 @@ const AddressTextField = (props) => {
         return () => {
             active = false;
         };
-    }, [state]);
+    }, [loading, error, state]);
 
     useEffect(() => {
         if (!open) {
@@ -197,7 +196,6 @@ const Form = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('submit');
         props.handleOrder(state.street);
         props.updateAddress(state.addressID);
     }
@@ -251,9 +249,7 @@ const Form = (props) => {
     )
 }
 
-const OrderCard = (props) => {
-    const classes = useStyles();
-    
+const OrderCard = (props) => {    
     return (
         <div>
             <Form handleOrder={props.handleOrder} updateAddress={props.updateAddress}/>

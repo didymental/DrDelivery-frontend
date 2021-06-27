@@ -5,8 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import {merchantAPI, loginAPI, newOrderAPI} from '../apis/rails-backend';
 import OrderStatus from './OrderStatus';
 
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Stepper from '@material-ui/core/Stepper';
@@ -18,7 +16,6 @@ import MerchantCard from './MerchantCard';
 import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { GridListTileBar } from '@material-ui/core';
 
 const HorizontalLabelPositionBelowStepper = (props) => {
   const classes = useStyles();
@@ -38,9 +35,9 @@ const HorizontalLabelPositionBelowStepper = (props) => {
     }
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
+  // const handleBack = () => {
+  //   setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  // };
 
   const handleReset = () => {
     setActiveStep(0);
@@ -58,7 +55,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
     }
 
     toPost = {...toPost, order_entries: orders[0]}
-    console.log(toPost);
 
     const token = localStorage.getItem('token');
     const response = await axios.post(newOrderAPI, toPost, {
@@ -86,6 +82,11 @@ const HorizontalLabelPositionBelowStepper = (props) => {
     return response.data.token;
   }
 
+  const handleEndOrder = () => {
+    props.setOrder({hasOrder: false});
+    handleNext();
+  }
+
   const getMerchants = async () => {
     const token = await getAdminToken();
     axios.get(merchantAPI, {
@@ -101,20 +102,20 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
   const [loading, setLoading] = useState(true);
 
-  useEffect(async () => {
-    await getMerchants();
-    setLoading(false);
-  }, [merchants]);  
+  useEffect(() => {
+    getMerchants().then(response => setLoading(false));
+  });  
 
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
       <div>
         <Container>
-        <Grid container spacing={2} md={12}>
+        <Grid container spacing={2}>
         
             {merchants.map(elem => (
               <Grid
-              item xs={4}>
+              item xs={4}
+              key={elem.name}>
                   <MerchantCard 
                     data={elem} 
                     action={props.action}
@@ -166,7 +167,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               ( 
               <div>
                 <OrderStatus orderStatus={orderStatus} />
-                <Button variant="contained" color="primary" onClick={handleNext}>
+                <Button variant="contained" color="primary" onClick={handleEndOrder}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                   </Button>
                 </div>

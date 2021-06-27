@@ -65,11 +65,11 @@ const AppHeader = (props) => {
                   Menu
                 </ListSubheader>
                 <Link to='/profile'>
-                <ListItem button key={1} onClick={() => console.log('edit profile')}>
-                  <AccountCircleIcon/>
-                  <ListItemText
-                      primary={'Profile'}/>
-                </ListItem>
+                  <ListItem button key={1}>
+                    <AccountCircleIcon/>
+                    <ListItemText
+                        primary={'Profile'}/>
+                  </ListItem>
                 </Link>
                 <ListItem button key={2} onClick={props.handleLogout}>
                   

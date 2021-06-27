@@ -79,7 +79,7 @@ const Cart = (props) => {
                 Object.values(objMap(countPerItem(), (arr) => {
                     let elem = arr[1];
                     return (
-                        <ListItem>
+                        <ListItem key={elem.name}>
                             <ListItemText primary={elem.name}/>
                             <Button size="small" color="primary" onClick={() => props.addToCart(elem, props.cart.length + 1)} className={classes.addButton}>
                                 <AddIcon className={classes.icon}/>
@@ -130,7 +130,7 @@ const Cart = (props) => {
     useEffect(() => {
         total();
         countPerItem();
-    }, [props.cart])
+    })
 
     return (
         <div className={classes.cartContainer}>

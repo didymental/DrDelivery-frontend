@@ -11,7 +11,8 @@ const OrderAddress = (props) => {
             <AppHeader handleLogout={props.handleLogout}/>
             <HorizontalLabelPositionBelowStepper 
                 className={classes.overallPage} 
-                dropOffAdd={props.dropOffAdd}/>
+                dropOffAdd={props.dropOffAdd}
+                setOrder={props.setOrder}/>
         </div>
     )
 }

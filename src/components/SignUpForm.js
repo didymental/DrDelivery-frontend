@@ -48,18 +48,13 @@ const SignUpForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(state);
         let user = {...state};
-        console.log(user);
-        console.log('posting');
         axios.post(customerAPI, user, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
         }).then(response => {
-            console.log('post');
-            console.log(response);
             props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
         }).catch(error => {
             if (error.response) {

@@ -21,7 +21,6 @@ const App = () => {
     const [dropOffAddress, setDropOffAddress] = useState();
 
     const updateAddress = (address_id) => {
-        console.log(address_id);
         setDropOffAddress(address_id);
     }
 
@@ -86,7 +85,8 @@ const App = () => {
                         updateAddress={updateAddress}/> }/>
                     <Route path="/order/address" exact component={ () => <OrderAddress 
                         handleLogout={handleLogOut}
-                        dropOffAdd={dropOffAddress}/> }/>
+                        dropOffAdd={dropOffAddress}
+                        setOrder={setOrder}/> }/>
                     <Route path="/profile" exact component={() => <Profile/>}/>
                 </div>
             </BrowserRouter>
