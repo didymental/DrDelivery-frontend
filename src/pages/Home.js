@@ -1,4 +1,7 @@
 import React from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import {customerAPI} from '../apis/rails-backend';
 import {Redirect} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -19,7 +22,7 @@ const Home = (props) => {
 
     return (
         <div className={classes.overallPage}>
-            <AppHeader handleLogout={props.handleLogout}/>
+            <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 
@@ -33,7 +36,9 @@ const Home = (props) => {
             </Box>
             <OrderCard 
                 handleOrder={(address) => props.handleOrder(address)}
-                updateAddress={(address_id) => props.updateAddress(address_id)}/> 
+                updateAddress={(address_id) => props.updateAddress(address_id)}
+                token={props.token}
+                userID={props.userID}/> 
             {renderPage()}
         </div>
     );

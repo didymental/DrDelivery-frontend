@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { red } from '@material-ui/core/colors';
@@ -14,12 +15,16 @@ export const MerchantCard = (props) => {
   const location = props.data.addresses[0].street_address;
   const merchantId = props.data.id;
   const merchantAddressID = props.data.addresses[0].id;
+  const merchantName = props.data.name;
 
   // props.setLoad(false);
 
   return (
-    
-    <Card className={classes.root}>
+    <div className={classes.wrapper}>
+    <Card className={classes.root} onClick={() => props.action(merchantId, merchantAddressID, merchantName)}>
+      <CardMedia 
+        image='https://source.unsplash.com/random'
+        style={{height: 140}}/>
       <CardHeader
         avatar={
           <Avatar aria-label="merchant" className={classes.avatar}>
@@ -28,7 +33,6 @@ export const MerchantCard = (props) => {
         }
         action={
           <IconButton aria-label="product" 
-            onClick={() => props.action(merchantId, merchantAddressID)}
           >
             <ArrowForwardIosIcon />
           </IconButton>
@@ -37,6 +41,7 @@ export const MerchantCard = (props) => {
         subheader={location ? location : <CircularProgress size='1rem'/>}
       />
     </Card>
+    </div>
   );
 }
 
@@ -61,6 +66,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: red[500],
   },
+  wrapper: {
+    marginTop: theme.spacing(2),
+    // padding: theme.spacing(2),
+  }
 }));
 
 export default MerchantCard;

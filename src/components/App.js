@@ -82,12 +82,19 @@ const App = () => {
                         handleLogout={handleLogOut} 
                         handleOrder={handleOrder} 
                         order={order}
-                        updateAddress={updateAddress}/> }/>
+                        updateAddress={updateAddress}
+                        setOrder={setOrder}/> }
+                        token={state.user}
+                        userID={state.userID}/>
                     <Route path="/order/address" exact component={ () => <OrderAddress 
                         handleLogout={handleLogOut}
                         dropOffAdd={dropOffAddress}
                         setOrder={setOrder}/> }/>
-                    <Route path="/profile" exact component={() => <Profile/>}/>
+                    <Route path="/profile" exact component={() => 
+                        <Profile 
+                            handleLogout={handleLogOut}
+                            setOrder={setOrder}
+                        />}/>
                 </div>
             </BrowserRouter>
         </div>

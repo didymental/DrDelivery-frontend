@@ -4,7 +4,9 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -17,8 +19,11 @@ const Product = (props) => {
     }
 
     return (
-        <Card className={classes.root}>
+        <Card className={classes.root} onClick={addToCart}>
           <CardActionArea className={classes.container}>
+          <CardMedia 
+                image='https://source.unsplash.com/random'
+                style={{height: 140}}/>
             <CardContent >
               <Typography gutterBottom variant="body1" component="h2">
                 {props.details.name}
@@ -29,7 +34,10 @@ const Product = (props) => {
             </CardContent>
           </CardActionArea>
           <CardActions className={classes.footer}>
-            <Button size="small" color="primary" onClick={addToCart} className={classes.addButton}>
+            <Container className={classes.containerBox}>
+                {'S$' + props.details.price.toFixed(2)}
+              </Container>
+            <Button size="small" color="primary" className={classes.addButton}>
                 <AddIcon color="primary"/>
                 <Typography variant="body3" color="textSecondary" component="p">
                     Add
@@ -46,16 +54,21 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: 345,
     },
     container: {
-        maxHeight: 175,
+        //maxHeight: 200,
     },
     footer: {
       display: 'flex'
     },
-    addButton: {
+    containerBox: {
       alignSelf: 'flex-start',
+      //
+      padding: theme.spacing(0.5),
     },
-    removeButton: {
+    addButton: {
       alignSelf: 'flex-end',
+    },
+    box: {
+      margin: 'auto',
     }
 }));
 

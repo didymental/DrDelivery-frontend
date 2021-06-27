@@ -94,7 +94,7 @@ const AppHeader = (props) => {
                 onClick={ () => toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>
-            <div className={classes.logoPosition}>
+            <div className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
               <Link to="/home">
                 <Logo width="200" />
               </Link>

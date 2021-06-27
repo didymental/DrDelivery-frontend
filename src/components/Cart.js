@@ -81,14 +81,14 @@ const Cart = (props) => {
                     return (
                         <ListItem key={elem.name}>
                             <ListItemText primary={elem.name}/>
-                            <Button size="small" color="primary" onClick={() => props.addToCart(elem, props.cart.length + 1)} className={classes.addButton}>
-                                <AddIcon className={classes.icon}/>
+                            <Button size="small" color="primary" onClick={() => props.removeFromCart(elem)} className={classes.removeButton} item={elem}>
+                                <RemoveIcon className={classes.icon}/>
                             </Button>
                             <div> 
                                 {countPerItem()[elem.name][0]}
                             </div>
-                            <Button size="small" color="primary" onClick={() => props.removeFromCart(elem)} className={classes.removeButton} item={elem}>
-                                <RemoveIcon className={classes.icon}/>
+                            <Button size="small" color="primary" onClick={() => props.addToCart(elem, props.cart.length + 1)} className={classes.addButton}>
+                                <AddIcon className={classes.icon}/>
                             </Button>
                         </ListItem>
                     )
@@ -96,7 +96,7 @@ const Cart = (props) => {
     ))}
                 <ListItem>
                     <Typography 
-                        variant="body2" 
+                        variant="h6" 
                         component="p"
                     >
                         {'Total: S$ ' + cartTotal.toFixed(2)}

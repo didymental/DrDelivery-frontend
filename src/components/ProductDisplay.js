@@ -9,8 +9,11 @@ import Grid from '@material-ui/core/Grid';
 import Product from './Product';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { Typography } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
 
 const ProductDisplay = (props) => {
+    console.log(props.merchantName);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [orderId, setOrderId] = useState(0);
@@ -69,7 +72,15 @@ const ProductDisplay = (props) => {
 
 
     return loading ? <LinearProgress/> : (
-      <div>
+      <div className={classes.root}>
+        <Container className={classes.merchantWrapper}>
+          <Typography variant="h4">
+            {props.merchantName}
+          </Typography>
+          <br/>
+          <Divider/>
+        </Container>
+        
         <Container>
           <Box className={classes.productsWrapper}>
             <Grid container spacing={1}>
@@ -82,6 +93,7 @@ const ProductDisplay = (props) => {
             </Grid>
           </Box>
         </Container>
+        
         <Container className={classes.cartOuterWrapper}>
             <Box className={classes.cartWrapper}>
               <Cart 
@@ -93,12 +105,15 @@ const ProductDisplay = (props) => {
               />
             </Box>
         </Container>
-      </div>
+        </div>
       
     )
 }
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+      width: '100%',
+    },
     container: {
       display: 'flex',
       flexDirection: 'column',      
@@ -113,15 +128,23 @@ const useStyles = makeStyles((theme) => ({
     },
     cartWrapper: {
       display: 'flex',
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
       borderRadius: 5,
     },
     cartOuterWrapper: {
+      // position: 'absolute',
+      // left: '0',
+      // right: '0',
       display: 'flex',
+      flexGrow: 1,
       justifyContent: 'flex-end',
       backgroundColor: '#09203f',
       color: 'white',
-      padding: theme.spacing(1),
+      // padding: theme.spacing(1),
+    },
+    merchantWrapper: {
+      padding: theme.spacing(2),
+      margin: 'auto',
     }
 }));
 

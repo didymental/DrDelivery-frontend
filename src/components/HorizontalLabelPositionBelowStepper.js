@@ -4,6 +4,7 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import {merchantAPI, loginAPI, newOrderAPI} from '../apis/rails-backend';
 import OrderStatus from './OrderStatus';
+import MapContainer from './Map';
 
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -17,21 +18,28 @@ import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+
 const HorizontalLabelPositionBelowStepper = (props) => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
   const [merchants, setMerchants] = useState([]);
   const [merchantId, setMerchantId] = useState(null);
+  const [merchantName, setMerchantName] = useState(null);
   const [pickUpAdd, setPickUpAdd] = useState(null);
   const [order, setOrder] = useState([]);
   const [orderStatus, setOrderStatus] = useState();
 
-  const handleNext = (id, addressID) => {
+  const handleNext = (id, addressID, name) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     if (activeStep === 0) {
       setMerchantId(id);
       setPickUpAdd(addressID);
+      setMerchantName(name);
+    }
+    
+    if (activeStep === 2) {
+      handleEndOrder({hasOrder: false});
     }
   };
 
@@ -156,20 +164,26 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               )
             : activeStep === 1
               ? (
-              <div>
+              <div className={classes.root}>
                 <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-                <div>
-                  <ProductDisplay id={merchantId} handleNext={handleNext} handleOrder={handleOrder}/>  
-                </div>
+                <ProductDisplay 
+                  id={merchantId} 
+                  handleNext={handleNext} 
+                  handleOrder={handleOrder}
+                  className={classes.products}
+                  merchantName={merchantName}
+                />  
               </div>
               )
               : 
               ( 
               <div>
+                <MapContainer/>
+                {/* <Map /> */}
                 <OrderStatus orderStatus={orderStatus} />
-                <Button variant="contained" color="primary" onClick={handleEndOrder}>
+                {/* <Button variant="contained" color="primary" onClick={handleEndOrder}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button>
+                  </Button> */}
                 </div>
             )}
       </div>
@@ -199,6 +213,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  products: {
+    width: '100%',
+  }
 }));
 
 const getSteps = () => {

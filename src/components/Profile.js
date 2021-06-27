@@ -67,7 +67,7 @@ const EditableTextField = (props) => {
     )
 }
 
-const Profile = () => {
+const Profile = (props) => {
     const [profile, setProfile] = useState({
         email: '',
         password: '',
@@ -121,7 +121,7 @@ const Profile = () => {
 
     return (
         <div>
-        <AppHeader/>
+        <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
         <Box borderRadius={10} className={classes.profileWrapper}>
             <h2>Personal Details </h2>
             <EditableTextField 
