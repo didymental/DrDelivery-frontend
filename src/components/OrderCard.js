@@ -169,7 +169,7 @@ const AddressTextField = (props) => {
                 <TextField
                     {...params}
                     disabled={error.hasError}
-                    label="Where to fly to?"
+                    label="Choose your saved address"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

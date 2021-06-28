@@ -14,6 +14,7 @@ import Box from '@material-ui/core/Box';
 import AppHeader from './AppHeader';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Grid from '@material-ui/core/Grid';
 
 const EditableTextField = (props) => {
     const [state, setState] = useState({
@@ -119,6 +120,19 @@ const Profile = (props) => {
         setProfile({...profile, contactNum: input.target.value});
     }
 
+    const handleProfileChange = () => {
+        
+
+    }
+    const handleAddressChange = () => {
+
+    }
+
+    const saveChanges = () => {
+        handleProfileChange();
+        handleAddressChange();
+    }
+
     return (
         <div>
         <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
@@ -137,15 +151,30 @@ const Profile = (props) => {
                 value={profile.contactNum}
                 handleChange={handleNumChange}/>
         </Box>
+
+        {/* <Grid container spacing={1}>
+              {products.map(elem => (
+                <Grid
+                item xs={3}
+                className={classes.container}>
+                    <Product details={elem} addToCart={addToCart} removeFromCart={removeFromCart} orderId={orderId}/>
+                </Grid>))}
+            </Grid> */}
         <Divider/>
-        <Box className={classes.profileWrapper}>
+        <Box className={classes.profileWrapper} >
             <h2>My Saved Addresses</h2>
             <Container className={classes.addressWrapper}>
+                <Grid container spacing={1}>
             {profile.addresses.map(elem => {
                 return (
-                    <div className={classes.addressWrapper}>
-                        <Typography variant="h5">{elem.name}</Typography>
-                        <EditableTextField
+                    <Grid 
+                        item xs={3}
+                        className={classes.container}>
+                            <EditableTextField
+                            name={'Name'}
+                            value={elem.name}
+                        />
+                            <EditableTextField
                             name={'Building Number'}
                             value={elem.building_no}
                         />
@@ -168,20 +197,21 @@ const Profile = (props) => {
                         <EditableTextField
                             name={'Country'}
                             value={elem.country}
-                        />  
-                        </div>
+                        />
+                    </Grid>
                 )
             })}
+            </Grid>
             </Container>
         </Box>
         <IconButton onClick={() => console.log('click')}>
             <SaveIcon />
             <Typography>Save All Changes</Typography>
         </IconButton>
-        <IconButton onClick={() => console.log('click')}>
+        {/* <IconButton onClick={() => console.log('click')}>
             <DeleteIcon />
             <Typography>Delete Account</Typography>
-        </IconButton>
+        </IconButton> */}
         </div>);
 }
 
