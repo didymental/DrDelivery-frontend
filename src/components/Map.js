@@ -1,7 +1,27 @@
 import { Map, GoogleApiWrapper } from 'google-maps-react';
+import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
+// import { w3cwebsocket as W3CWebSocket } from "websocket";
+
+
+const token = localStorage.getItem('token');
+const userid = localStorage.getItem('userID');
+
+// const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
+
 
 class MapContainer extends React.Component {
+    ws = new WebSocket(websocketAPI + '?token=' + token)
+    componentWillMount() {
+        this.ws.onopen = () => {
+          console.log('WebSocket Client Connected');
+        };
+        this.ws.onmessage = (message) => {
+          console.log(message);
+        };
+
+    }
+
     render() {
         return (<Map 
             google={this.props.google}
