@@ -12,12 +12,16 @@ const userid = localStorage.getItem('userID');
 
 class MapContainer extends React.Component {
     ws = new WebSocket(websocketAPI + '?token=' + token)
+    droneLat = 0
+    droneLng = 0
     componentWillMount() {
         this.ws.onopen = () => {
           console.log('WebSocket Client Connected');
         };
         this.ws.onmessage = (message) => {
-          console.log(message);
+        //   console.log(message);
+          const update = JSON.parse(message.data);
+          console.log(update);
         };
 
     }
