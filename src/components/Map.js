@@ -1,4 +1,5 @@
 import { Map, GoogleApiWrapper } from 'google-maps-react';
+import axios from 'axios';
 import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
 // import { w3cwebsocket as W3CWebSocket } from "websocket";
@@ -14,14 +15,31 @@ class MapContainer extends React.Component {
     ws = new WebSocket(websocketAPI + '?token=' + token)
     droneLat = 0
     droneLng = 0
+    // outStandingOrder =
+    // axios.post(loginAPI, user, {
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //     },
+    // }).then(response => {
+    //     props.handleLogin(response.data.token, response.data.user_id);
+    // }).catch(error => {
+    //     console.log(error.response);
+    //     if (error.response) {
+    //         setError({...error, hasError: true, message: error.response.data.message});
+    //     }
+    // });
     componentWillMount() {
         this.ws.onopen = () => {
           console.log('WebSocket Client Connected');
         };
         this.ws.onmessage = (message) => {
-        //   console.log(message);
-          const update = JSON.parse(message.data);
-          console.log(update);
+          console.log(message);
+        //   const update = JSON.parse(message.data);
+        //   console.log(update);
+        //   if (update.drone != null) {
+
+        //   }
         };
 
     }
