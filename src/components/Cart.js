@@ -25,12 +25,16 @@ const ShoppingCartBadge = (props) => {
 const CheckOutButton = (props) => {
     const classes = useStyles();
     const handleClick = () => {
-        props.handleOrder(props.orderToPost());
+        if (props.cart.length === 0) {
+
+        } else {
+            props.handleOrder(props.orderToPost());
+        }
     }
 
     return (
-        <Container className={classes.cartCheckOutWrapper}>
-            <Button onClick={handleClick} disabled={props.cart.length === 0}>
+        <Container className={classes.cartCheckOutWrapper} onClick={handleClick}>
+            <Button disabled={props.cart.length === 0}>
                 <Typography 
                     variant="body1"
                     component="div"

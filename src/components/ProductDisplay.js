@@ -13,7 +13,6 @@ import { Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 
 const ProductDisplay = (props) => {
-    console.log(props.merchantName);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [orderId, setOrderId] = useState(0);
@@ -80,22 +79,26 @@ const ProductDisplay = (props) => {
           <br/>
           <Divider/>
         </Container>
-        
         <Container>
-          <Box className={classes.productsWrapper}>
-            <Grid container spacing={1}>
-              {products.map(elem => (
-                <Grid
-                item xs={3}
-                className={classes.container}>
-                    <Product details={elem} addToCart={addToCart} removeFromCart={removeFromCart} orderId={orderId}/>
-                </Grid>))}
-            </Grid>
-          </Box>
-        </Container>
-        
-        <Container className={classes.cartOuterWrapper}>
-            <Box className={classes.cartWrapper}>
+          <Box display={{sm: 'block', md: 'flex'}}>
+            <Box className={classes.productsWrapper} flexGrow={2}>
+              <Grid container spacing={1}>
+                {products.map(elem => (
+                  <Grid
+                  item xs={3}
+                  className={classes.container}
+                  key={elem.id}>
+                      <Product 
+                        details={elem} 
+                        addToCart={addToCart} 
+                        removeFromCart={removeFromCart} 
+                        orderId={orderId}
+                        image={'https://source.unsplash.com/random'}/>
+                  </Grid>))}
+              </Grid>
+            </Box>
+          
+            <Box className={classes.cartWrapper} flexGrow={1}>
               <Cart 
                 cart={cart} 
                 addToCart={addToCart} 
@@ -104,6 +107,7 @@ const ProductDisplay = (props) => {
                 handleOrder={props.handleOrder}
               />
             </Box>
+          </Box>
         </Container>
         </div>
       
@@ -128,19 +132,11 @@ const useStyles = makeStyles((theme) => ({
     },
     cartWrapper: {
       display: 'flex',
-      padding: theme.spacing(2),
+      padding: theme.spacing(2.5),
       borderRadius: 5,
-    },
-    cartOuterWrapper: {
-      // position: 'absolute',
-      // left: '0',
-      // right: '0',
-      display: 'flex',
-      flexGrow: 1,
-      justifyContent: 'flex-end',
       backgroundColor: '#09203f',
       color: 'white',
-      // padding: theme.spacing(1),
+      justifyContent: 'center',
     },
     merchantWrapper: {
       padding: theme.spacing(2),

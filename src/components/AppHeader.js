@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {useState} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { makeStyles } from '@material-ui/core/styles';
@@ -45,6 +45,19 @@ const AppHeader = (props) => {
     // };
 
 
+    const history = useHistory();
+    const handleLogout = () => {
+        props.setState({
+            isLoggedIn: false,
+            user: '',
+        });
+        props.setOrder({...props.order, hasOrder: false});
+
+        localStorage.removeItem('userID');
+        localStorage.removeItem('token');
+        history.push("/");
+    }
+
 
     const drawer = () => {
         return (
@@ -73,7 +86,7 @@ const AppHeader = (props) => {
                         primary={'Profile'}/>
                   </ListItem>
                 </Link>
-                <ListItem button key={2} onClick={props.handleLogout}>
+                <ListItem button key={2} onClick={handleLogout}>
                   
                     <ListItemText
                         primary={'Logout'}/>
@@ -100,7 +113,7 @@ const AppHeader = (props) => {
               </Link>
             </div>
           </Toolbar>
-          <Button className={classes.button} onClick={props.handleLogout}>
+          <Button className={classes.button} onClick={handleLogout}>
             <Box borderRadius={10}>
               Logout
             </Box>

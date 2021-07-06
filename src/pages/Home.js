@@ -22,7 +22,10 @@ const Home = (props) => {
 
     return (
         <div className={classes.overallPage}>
-            <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
+            <AppHeader 
+                setOrder={props.setOrder}
+                setState={props.setState}
+                order={props.order}/>
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 

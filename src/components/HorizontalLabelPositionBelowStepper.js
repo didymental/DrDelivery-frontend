@@ -91,7 +91,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   }
 
   const handleEndOrder = () => {
-    props.setOrder({hasOrder: false});
+    // props.setOrder({hasOrder: false});
     handleNext();
   }
 
@@ -111,8 +111,9 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('here');
     getMerchants().then(response => setLoading(false));
-  });  
+  }, [setLoading]);  
 
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
@@ -179,11 +180,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               ( 
               <div>
                 <MapContainer/>
-                {/* <Map /> */}
                 <OrderStatus orderStatus={orderStatus} />
-                {/* <Button variant="contained" color="primary" onClick={handleEndOrder}>
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button> */}
                 </div>
             )}
       </div>

@@ -24,8 +24,7 @@ const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const FormDialog = (props) => {
-    const [open, setOpen] = useState(props.haveAddress);
+const FormDialog = ({open, setOpen, handleSuccess, success}) => {
     const handleClickOpen = () => {
         setOpen(true);
     }
@@ -52,7 +51,7 @@ const FormDialog = (props) => {
                         <DialogContentText>
                             In order to make a delivery, we have to save your address! Rest assured that your information remains safe with us, abiding strictly to PDPA guidelines set out by your government. 
                         </DialogContentText>
-                        <AddressForm handleClose={handleClose} handleSuccess={props.handleSuccess}/>
+                        <AddressForm handleClose={handleClose} handleSuccess={handleSuccess}/>
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose} color="default">
@@ -63,7 +62,7 @@ const FormDialog = (props) => {
 
             </div>
             <div>
-                <Snackbar open={props.success} autoHideDuration={3000} onClose={() => props.handleSuccess(false)}>
+                <Snackbar open={success} autoHideDuration={3000} onClose={() => handleSuccess(false)}>
                     <Alert severity="success">
                         <AlertTitle>Success</AlertTitle>
                         We have saved your address! You can fly now!
@@ -77,7 +76,6 @@ const FormDialog = (props) => {
 
 const AddressTextField = (props) => {
     const [open, setOpen] = useState(false);
-    
     const loading = props.options.length === 0 && open;
     const [state, setState] = useState({
         address: null,
@@ -91,10 +89,6 @@ const AddressTextField = (props) => {
     useEffect(() => {
         let active = true;
         if (!loading) {
-            return undefined;
-        }
-
-        if (props.haveAddress) {
             return undefined;
         }
 
@@ -122,12 +116,11 @@ const AddressTextField = (props) => {
         return () => {
             active = false;
         };
-    }, [loading, error, state]);
+    }, [loading, setError, setState, error, props, state]);
 
     useEffect(() => {
         if (!open) {
             // props.setOptions([]);
-            // props.setHaveAddress(props.haveAddress);
         }
     }, [open]);
 
@@ -169,7 +162,7 @@ const AddressTextField = (props) => {
                 <TextField
                     {...params}
                     disabled={error.hasError}
-                    label="Choose your saved address"
+                    label="Choose a saved address"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (
@@ -185,14 +178,13 @@ const AddressTextField = (props) => {
 }
 
 const Form = (props) => {
+    //console.log(props.addresses);
     const [state, setState] = useState({
         street: '',
         postal: parseInt(''),
         addressID: '',
     })
-
-    const [options, setOptions] = useState([]);
-    
+    const [options, setOptions] = useState([...props.addresses]);
 
     const handleStreetInput = (streetInput, postalInput, addIDInput) => {
         setState({...state, street: streetInput, postal: postalInput, addressID: addIDInput});
@@ -206,16 +198,16 @@ const Form = (props) => {
 
     const classes = useStyles();
 
-    const [open, setOpen] = useState(true);
+    // const [open, setOpen] = useState(true);
 
     return (
         <div>
-            <Snackbar open={open} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
+            {/* <Snackbar open={open} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
                     <Alert severity="info" onClose={() => setOpen(false)}>
                         <AlertTitle>Take Note</AlertTitle>
                         Add an address if you have not never saved an address!
                     </Alert>
-            </Snackbar>
+            </Snackbar> */}
             <Box className={classes.outerbox}>
                 <Box className={classes.box} boxShadow={1} borderRadius={1}>
                     <div>
@@ -228,8 +220,6 @@ const Form = (props) => {
                                     success={props.success}
                                     options={options}
                                     setOptions={setOptions}
-                                    haveAddress={props.haveAddress}
-                                    setHaveAddress={props.setHaveAddress}
                                 />
                                 </div>
                             <TextField 
@@ -254,7 +244,8 @@ const Form = (props) => {
                 </Box>
                 <Container>
                     <FormDialog 
-                        haveAddress={false} 
+                        open={props.open}
+                        setOpen={props.setOpen} 
                         handleSuccess={props.handleSuccess} 
                         success={props.success}/>
                 </Container>
@@ -270,7 +261,9 @@ const OrderCard = (props) => {
         setSuccess(status);
     }
 
-    const [haveAddress, setHaveAddress] = useState(false);
+    const [addresses, setAddresses] = useState([]);
+    const [open, setOpen] = useState(false);
+
     useEffect(() => {
         const savedDetails = async () => {
             const token = localStorage.getItem('token');
@@ -281,22 +274,24 @@ const OrderCard = (props) => {
                     'Authorization': `Bearer ${token}`,
                 }
             });
-            const savedAddresses = await addressResponse.data;        
-            setHaveAddress(savedAddresses.length === 0);
-    
+            const savedAddresses = await addressResponse.data;
+            setAddresses(savedAddresses);
+            setOpen(savedAddresses.length === 0);
         };
         savedDetails();        
-    }, [haveAddress]);
+    }, [setAddresses, setOpen]);
 
     return (
         <div>
             <Form 
-                haveAddress={haveAddress} 
+                open={open} 
+                setOpen={setOpen}
                 handleOrder={props.handleOrder} 
                 updateAddress={props.updateAddress}
                 handleSuccess={handleSuccess}
                 success={success}
-                setHaveAddress={setHaveAddress}/>
+                addresses={addresses}
+            />
         </div>
     );
 }

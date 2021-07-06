@@ -8,7 +8,10 @@ const OrderAddress = (props) => {
 
     return (
         <div>
-            <AppHeader setOrder={props.setOrder} handleLogout={props.handleLogout}/>
+            <AppHeader 
+                setOrder={props.setOrder}
+                setState={props.setState}
+                order={props.order}/>
             <HorizontalLabelPositionBelowStepper 
                 className={classes.overallPage} 
                 dropOffAdd={props.dropOffAdd}

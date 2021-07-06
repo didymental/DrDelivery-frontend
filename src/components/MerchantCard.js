@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
+import Box from '@material-ui/core/Box';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import { red } from '@material-ui/core/colors';
@@ -25,11 +26,14 @@ export const MerchantCard = (props) => {
       <CardMedia 
         image='https://source.unsplash.com/random'
         style={{height: 140}}/>
+        
       <CardHeader
         avatar={
-          <Avatar aria-label="merchant" className={classes.avatar}>
-            {name[0]}
-          </Avatar>
+          <Box display={{sm: 'block', md: 'flex'}}>
+              <Avatar aria-label="merchant" className={classes.avatar}>
+                {name[0]}
+              </Avatar>
+          </Box>
         }
         action={
           <IconButton aria-label="product" 
@@ -37,7 +41,15 @@ export const MerchantCard = (props) => {
             <ArrowForwardIosIcon />
           </IconButton>
         }
-        title={name ? name : <CircularProgress size='1rem'/>}
+        title={
+            name
+              ? 
+                <Box display={{sm: 'block', md: 'flex'}}>
+                  {name}
+                </Box>
+              : 
+                <CircularProgress size='1rem'/>
+        }
         subheader={location ? location : <CircularProgress size='1rem'/>}
       />
     </Card>

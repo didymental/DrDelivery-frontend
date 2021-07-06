@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import axios from 'axios';
+import {useHistory} from 'react-router-dom';
 import {loginAPI} from '../apis/rails-backend';
 import Logo from './Logo';
 import Button from '@material-ui/core/Button';
@@ -61,6 +62,8 @@ const Login = (props) => {
         setState({...state, password: input.target.value});
     }
 
+    const history = useHistory();
+
     const handleSubmit = (event) => {
         event.preventDefault();
         let user = {...state};
@@ -71,6 +74,8 @@ const Login = (props) => {
             },
         }).then(response => {
             props.handleLogin(response.data.token, response.data.user_id);
+            history.push("/home");
+
         }).catch(error => {
             console.log(error.response);
             if (error.response) {

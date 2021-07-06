@@ -8,6 +8,7 @@ import SignUpPage from '../pages/SignUpPage';
 import Profile from '../components/Profile';
 
 const App = () => {
+    
     const [state, setState] = useState({
             isLoggedIn: false,
             user: '',
@@ -29,35 +30,21 @@ const App = () => {
             setOrder({...order, hasOrder: true, merchant_addressID: merchant_addressID});
         }
     }
-
+    
     const handleLogin = (token, user_id) => {
+        localStorage.setItem('userID', user_id);
+        localStorage.setItem('token', token);
         setState({
             isLoggedIn: true,
             user: token,
             userID: user_id,
         });
-        localStorage.setItem('token', token);
-        localStorage.setItem('userID', user_id);
     }
 
-    const handleLogOut = () => {
-        setState({
-            isLoggedIn: false,
-            user: '',
-        });
-        localStorage.removeItem('token');
-        localStorage.removeItem('userID');
-        setOrder({...order, hasOrder: false});
-    }
 
     const renderPage = () => {
-        if (state.isLoggedIn) {
-            return (<Redirect to="/home" />);
-        } else if (state.isLoggedIn && order.hasOrder) {
-            return (<Redirect to="/order/address"/>);
-        } else {
-            return (<Redirect to="/" /> );
-        }
+        console.log(state.isLoggedIn);
+        console.log(order.hasOrder);
     }
 
 
@@ -79,20 +66,28 @@ const App = () => {
                     <Route path="/" exact component={ () => <SignIn handleLogin={handleLogin}/> }/>
                     <Route path="/signup" exact component={ () => <SignUpPage handleLogin={handleLogin}/>}/>
                     <Route path="/home" exact component={ () => <Home 
-                        handleLogout={handleLogOut} 
+                        // handleLogout={handleLogOut} 
                         handleOrder={handleOrder} 
                         order={order}
                         updateAddress={updateAddress}
-                        setOrder={setOrder}/> }
+                        setOrder={setOrder}
+                        setState={setState}
+                        order={order}
+                        /> }
                         token={state.user}
-                        userID={state.userID}/>
+                        userID={state.userID}
+                    />
                     <Route path="/order/address" exact component={ () => <OrderAddress 
-                        handleLogout={handleLogOut}
+                        //handleLogout={handleLogOut}
                         dropOffAdd={dropOffAddress}
-                        setOrder={setOrder}/> }/>
+                        setOrder={setOrder}
+                        setState={setState}
+                        order={order}
+                        /> }
+                    />
                     <Route path="/profile" exact component={() => 
                         <Profile 
-                            handleLogout={handleLogOut}
+                            //handleLogout={handleLogOut}
                             setOrder={setOrder}
                         />}/>
                 </div>

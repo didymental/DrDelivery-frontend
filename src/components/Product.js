@@ -22,7 +22,7 @@ const Product = (props) => {
         <Card className={classes.root} onClick={addToCart}>
           <CardActionArea className={classes.container}>
           <CardMedia 
-                image='https://source.unsplash.com/random'
+                image={props.image}
                 style={{height: 140}}/>
             <CardContent >
               <Typography gutterBottom variant="body1" component="h2">
@@ -39,7 +39,7 @@ const Product = (props) => {
               </Container>
             <Button size="small" color="primary" className={classes.addButton}>
                 <AddIcon color="primary"/>
-                <Typography variant="body3" color="textSecondary" component="p">
+                <Typography variant="caption" color="textSecondary" component="p">
                     Add
                 </Typography>
             </Button>
