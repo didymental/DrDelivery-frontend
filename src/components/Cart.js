@@ -11,12 +11,16 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import Tooltip from '@material-ui/core/Tooltip';
+import Divider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 
 const ShoppingCartBadge = (props) => {
     const classes = useStyles();
     return (
             <Badge className={classes.badge} badgeContent={props.count} color="secondary">
-                <ShoppingCartIcon/>
+                <ShoppingCartIcon className={classes.cartIcon}/>
             </Badge>
       
     );
@@ -33,6 +37,7 @@ const CheckOutButton = (props) => {
     }
 
     return (
+        <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
         <Container className={classes.cartCheckOutWrapper} onClick={handleClick}>
             <Button disabled={props.cart.length === 0}>
                 <Typography 
@@ -43,6 +48,7 @@ const CheckOutButton = (props) => {
                 </Typography>
             </Button>
         </Container>
+        </Tooltip>
     )
 }
 
@@ -86,26 +92,18 @@ const Cart = (props) => {
                         <ListItem key={elem.name}>
                             <ListItemText primary={elem.name}/>
                             <Button size="small" color="primary" onClick={() => props.removeFromCart(elem)} className={classes.removeButton} item={elem}>
-                                <RemoveIcon className={classes.icon}/>
+                                <RemoveIcon className={classes.removeIcon}/>
                             </Button>
                             <div> 
                                 {countPerItem()[elem.name][0]}
                             </div>
                             <Button size="small" color="primary" onClick={() => props.addToCart(elem, props.cart.length + 1)} className={classes.addButton}>
-                                <AddIcon className={classes.icon}/>
+                                <AddIcon className={classes.addIcon}/>
                             </Button>
                         </ListItem>
                     )
                 }
-    ))}
-                <ListItem>
-                    <Typography 
-                        variant="h6" 
-                        component="p"
-                    >
-                        {'Total: S$ ' + cartTotal.toFixed(2)}
-                    </Typography>
-                </ListItem>
+            ))}
             </List>
         );
     }
@@ -134,7 +132,7 @@ const Cart = (props) => {
     useEffect(() => {
         total();
         countPerItem();
-    })
+    }, [total, countPerItem]);
 
     return (
         <div className={classes.cartContainer}>
@@ -142,15 +140,37 @@ const Cart = (props) => {
                 Your Cart
                 <ShoppingCartBadge count={props.cart.length}/>
             </h2>
+            {
+                props.cart.length === 0 
+                    ? null 
+                    : <Box>
+                        <Paper>
+                            {cartItems()}
+                        </Paper>
+                    </Box>
+            }
             
-            {cartItems()}
-            <div className={classes.buttonWrapper}>
+            <Box className={classes.totalWrapper}>
+                <Typography 
+                            variant="body1" 
+                            component="p"
+                        >
+                            {'Total bill: S$ ' + cartTotal.toFixed(2)}
+                </Typography>
+            </Box>
+
+            <Box className={classes.dividerWrapper}>
+                <Divider  className={classes.divider}/>
+            </Box>
+
+            <Box className={classes.buttonWrapper}>
                 <CheckOutButton 
                     handleNext={props.handleNext} 
                     cart={props.cart} 
                     handleOrder={props.handleOrder}
                     orderToPost={orderToPost}/>
-            </div>
+                
+            </Box>
             
         </div>
     )
@@ -182,6 +202,7 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonWrapper: {
         display: 'flex',
+        padding: theme.spacing(1),
     },
     media: {
         height: 140,
@@ -203,7 +224,26 @@ const useStyles = makeStyles((theme) => ({
       alignSelf: 'flex-end',
     },
     icon: {
-        color: 'white',
+        color: 'black',
+    },
+    addIcon: {
+        color: '#1AA260',
+    },
+    removeIcon: {
+        color: '#DB4437',
+    },
+    divider: {
+        background: 'white',
+    },
+    dividerWrapper: {
+        marginTop: '5px',
+        padding: theme.spacing(0.5),
+    },
+    totalWrapper: {
+        padding: theme.spacing(1),
+    }, 
+    cartIcon: {
+        color: '#FFDC80',
     }
 }));
 

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 
 const Home = (props) => {
 
@@ -33,7 +34,7 @@ const Home = (props) => {
                     </Typography>
                     <br/>
                     <Typography variant="overline"> 
-                        Drones make your delivery. You control their speed.
+                        Drones make your delivery. Observe their flight. Love their speed.
                     </Typography>
                 </div>
             </Box>

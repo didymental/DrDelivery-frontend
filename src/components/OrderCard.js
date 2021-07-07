@@ -162,7 +162,7 @@ const AddressTextField = (props) => {
                 <TextField
                     {...params}
                     disabled={error.hasError}
-                    label="Choose a saved address"
+                    label="Select a saved address"
                     InputProps={{
                         ...params.InputProps,
                         endAdornment: (

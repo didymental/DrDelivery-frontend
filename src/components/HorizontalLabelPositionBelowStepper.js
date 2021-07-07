@@ -17,6 +17,7 @@ import MerchantCard from './MerchantCard';
 import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 const HorizontalLabelPositionBelowStepper = (props) => {
@@ -143,13 +144,15 @@ const HorizontalLabelPositionBelowStepper = (props) => {
       <Box borderBottom={0.2}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
-            <Step key={label} onClick={ () => {
-              if (label === 'Browse Our Merchants') {
-                handleReset();
-              }
-            } }>
-              <StepLabel>{label}</StepLabel>
-            </Step>
+            <Tooltip title={label === 'Browse Our Merchants' ? "Return to Merchant Page" : ""}>
+              <Step key={label} onClick={ () => {
+                if (label === 'Browse Our Merchants') {
+                  handleReset();
+                }
+              } }>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            </Tooltip>
           ))}
         </Stepper>
       </Box>
@@ -212,6 +215,9 @@ const useStyles = makeStyles((theme) => ({
   },
   products: {
     width: '100%',
+  },
+  stepIcon: {
+    color: '#536999',
   }
 }));
 

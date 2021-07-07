@@ -137,7 +137,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'orange',
   },
   paper: {
-    background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+    //background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+    background: '#536999',
   },
   logoPosition: {
     margin: 'auto',

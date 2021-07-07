@@ -133,8 +133,9 @@ const useStyles = makeStyles((theme) => ({
     cartWrapper: {
       display: 'flex',
       padding: theme.spacing(2.5),
-      borderRadius: 5,
-      backgroundColor: '#09203f',
+      //borderRadius: 5,
+      //backgroundColor: '#6699CC',
+      backgroundColor: '#536999',
       color: 'white',
       justifyContent: 'center',
     },
