@@ -24,7 +24,7 @@ class MapContainer extends React.Component {
           this.ws.send(JSON.stringify({"command":"message","identifier":"{\"channel\":\"DroneChannel\"}", "data":"{\"action\": \"request\"}"}));
         };
         this.ws.onmessage = (message) => {
-          // console.log(message);
+          console.log(message);
           const update = JSON.parse(message.data);
           // console.log(update);
           if (update.type != "ping") {
@@ -44,7 +44,7 @@ class MapContainer extends React.Component {
                 // console.log(data.drone_destination_address);
                 // console.log(data.drone_curr_address);
                 // console.log(data.drone_destination_address);
-
+                this.drones[drone.id] = drone
                 console.log(this.drones)
 
             }

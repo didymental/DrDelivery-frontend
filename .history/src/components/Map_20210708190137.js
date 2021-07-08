@@ -44,7 +44,7 @@ class MapContainer extends React.Component {
                 // console.log(data.drone_destination_address);
                 // console.log(data.drone_curr_address);
                 // console.log(data.drone_destination_address);
-
+                this.drones[drone.id] = drone
                 console.log(this.drones)
 
             }
@@ -81,8 +81,8 @@ class MapContainer extends React.Component {
           {lat: 1.4075977748431727,  lng: 103.79230717260913}
         ];
         const arrForm = Object.values(this.drones);
-        // console.log(this.drones);
-        // console.log(arrForm);
+        console.log(this.drones);
+        console.log(arrForm);
         const droneMarkers = arrForm.map(drone => (
           
           <Marker
@@ -133,9 +133,9 @@ class MapContainer extends React.Component {
         //     strokeWeight={2} />  
         // ]
 
-        // console.log(destMarkers);
-        // console.log(droneMarkers);
-        // console.log(dronelines);
+        console.log(destMarkers);
+        console.log(droneMarkers);
+        console.log(dronelines);
         
         return (
           <Map google={this.props.google} zoom={12}

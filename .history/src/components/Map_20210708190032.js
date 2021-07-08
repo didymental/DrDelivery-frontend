@@ -44,7 +44,7 @@ class MapContainer extends React.Component {
                 // console.log(data.drone_destination_address);
                 // console.log(data.drone_curr_address);
                 // console.log(data.drone_destination_address);
-
+                this.drones[drone.id] = drone
                 console.log(this.drones)
 
             }
@@ -81,8 +81,8 @@ class MapContainer extends React.Component {
           {lat: 1.4075977748431727,  lng: 103.79230717260913}
         ];
         const arrForm = Object.values(this.drones);
-        // console.log(this.drones);
-        // console.log(arrForm);
+        console.log(this.drones);
+        console.log(arrForm);
         const droneMarkers = arrForm.map(drone => (
           
           <Marker
@@ -133,9 +133,9 @@ class MapContainer extends React.Component {
         //     strokeWeight={2} />  
         // ]
 
-        // console.log(destMarkers);
-        // console.log(droneMarkers);
-        // console.log(dronelines);
+        console.log(destMarkers);
+        console.log(droneMarkers);
+        console.log(dronelines);
         
         return (
           <Map google={this.props.google} zoom={12}
@@ -144,13 +144,7 @@ class MapContainer extends React.Component {
             lng: 103.81916601690331
           }}>
 
-          <Polyline
-          path={crossIslandCoords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={2} />
-
-          {/* <Marker
+          <Marker
           title={'The marker`s title will appear as a tooltip.'}
           name={'SOMA'}
           position={{lat: drone.curr_latitude, lng: drone.curr_longitude}}
@@ -158,7 +152,7 @@ class MapContainer extends React.Component {
             url: "https://i.pinimg.com/736x/b3/cc/d5/b3ccd57b054a73af1a0d281265b54ec8.jpg",
             anchor: new window.google.maps.Point(16,16),
             scaledSize: new window.google.maps.Size(32,32)
-          }} /> */}
+          }} />
 
 
 

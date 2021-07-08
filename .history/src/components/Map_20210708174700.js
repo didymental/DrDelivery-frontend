@@ -6,7 +6,6 @@ import {websocketAPI} from '../apis/rails-backend';
 
 const token = localStorage.getItem('token');
 const userid = localStorage.getItem('userID');
-// const user_address =
 
 
 // const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
@@ -44,7 +43,7 @@ class MapContainer extends React.Component {
                 // console.log(data.drone_destination_address);
                 // console.log(data.drone_curr_address);
                 // console.log(data.drone_destination_address);
-
+                this.drones[drone.id] = drone
                 console.log(this.drones)
 
             }
@@ -81,8 +80,8 @@ class MapContainer extends React.Component {
           {lat: 1.4075977748431727,  lng: 103.79230717260913}
         ];
         const arrForm = Object.values(this.drones);
-        // console.log(this.drones);
-        // console.log(arrForm);
+        console.log(this.drones);
+        console.log(arrForm);
         const droneMarkers = arrForm.map(drone => (
           
           <Marker
@@ -106,36 +105,22 @@ class MapContainer extends React.Component {
 
         ))
 
-        const drone2line = function (drone) {
-          const coords = [
-            {lat: drone.curr_latitude,  lng: drone.curr_longitude},
-            {lat: drone.dest_latitude,  lng: drone.dest_longitude}
-          ]
-          return <Polyline
-          path={coords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={8} />
-        }
+        const lines = arrForm.map(drone => (
 
-        const dronelines = arrForm.map(drone2line)
-        // const dronelines = [
-        //     <Polyline
-        //     path={crossIslandCoords}
-        //     strokeColor="#0000FF"
-        //     strokeOpacity={0.8}
-        //     strokeWeight={2} />   ,
+        
 
-        //     <Polyline
-        //     path={samePoint}
-        //     strokeColor="#0000FF"
-        //     strokeOpacity={0.8}
-        //     strokeWeight={2} />  
-        // ]
+          <Polyline
+            path={crossIslandCoords}
+            strokeColor="#0000FF"
+            strokeOpacity={0.8}
+            strokeWeight={2} />
+          
 
-        // console.log(destMarkers);
-        // console.log(droneMarkers);
-        // console.log(dronelines);
+        ))
+
+        console.log(destMarkers);
+        console.log(droneMarkers);
+        console.log(lines);
         
         return (
           <Map google={this.props.google} zoom={12}
@@ -144,27 +129,13 @@ class MapContainer extends React.Component {
             lng: 103.81916601690331
           }}>
 
-          <Polyline
-          path={crossIslandCoords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={2} />
-
-          {/* <Marker
-          title={'The marker`s title will appear as a tooltip.'}
-          name={'SOMA'}
-          position={{lat: drone.curr_latitude, lng: drone.curr_longitude}}
-          icon={{
-            url: "https://i.pinimg.com/736x/b3/cc/d5/b3ccd57b054a73af1a0d281265b54ec8.jpg",
-            anchor: new window.google.maps.Point(16,16),
-            scaledSize: new window.google.maps.Size(32,32)
-          }} /> */}
+            <Polyline
+            path={crossIslandCoords}
+            strokeColor="#0000FF"
+            strokeOpacity={0.8}
+            strokeWeight={2} />
 
 
-
-            {     
-              dronelines
-            }
 
             {
               droneMarkers
@@ -174,7 +145,9 @@ class MapContainer extends React.Component {
               destMarkers
             }
 
-            
+            {     
+              lines
+            }
 
 
 
