@@ -60,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
     overallPage: {
         background: '#fffdf6',
         minHeight: '100vh',
+        backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
     }, 
     box: {
         padding: theme.spacing(2),

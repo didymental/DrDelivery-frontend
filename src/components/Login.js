@@ -111,8 +111,8 @@ const Login = (props) => {
                             />
                     </div>
                     <br/>
-                    <div>
-                        <div className={classes.login}>
+                    <Box>
+                        <Box className={classes.login}>
                             <Button
                                 type="submit">
                                     <span className={classes.loginText}>
@@ -120,8 +120,8 @@ const Login = (props) => {
                                     </span>   
                                     <PlayArrowIcon className={classes.icon}/>        
                             </Button>
-                        </div>    
-                    </div>
+                        </Box>    
+                    </Box>
                 </form>
                 <Snackbar open={error.hasError}>
                     <Alert severity="error" onClose={() => setError({...state, hasError: false, message: ''})}>

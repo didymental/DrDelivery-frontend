@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, useHistory} from 'react-router-dom';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,11 +15,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Logo from './Logo';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 
 const AppHeader = (props) => {
     const [state, setState] = useState({
         open: false,
     });
+    const [media, setMedia] = useState(true);
 
     const toggleDrawer = (open) => {
         if (open) {
@@ -30,6 +32,13 @@ const AppHeader = (props) => {
     }
 
     const classes = useStyles();
+
+    const mediaQuery = window.matchMedia('(min-width: 768px');
+    console.log(mediaQuery);
+
+    useEffect(() => {
+      setMedia(mediaQuery.matches);
+    }, [setMedia, mediaQuery]);
 
     // const menuOptions = () => {
     //   return (
@@ -96,10 +105,33 @@ const AppHeader = (props) => {
         );
     }
   
-    return (
+    return media 
+      ? (
       <div className={classes.root}>
         <AppBar position="static" elevation={0} className={classes.paper}>
-          <Toolbar>
+          <Toolbar variant="dense">
+            
+              <Link to="/home" className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
+                <Logo width="200" />
+              </Link>
+            
+            <Button className={classes.button}>Map</Button>
+            <Link to='/profile' className={classes.button}>
+              <Button className={classes.button}>Profile</Button>
+            </Link>
+            <Button className={classes.button} onClick={handleLogout}>
+              Logout
+            </Button>
+          </Toolbar>
+          
+        </AppBar>
+        {drawer()}
+      </div>
+    )
+    : (
+      <div className={classes.root}>
+        <AppBar position="static" elevation={0} className={classes.paper}>
+          <Toolbar variant="regular">
             <IconButton 
                 edge="start" 
                 className={classes.menuButton} 
@@ -107,17 +139,13 @@ const AppHeader = (props) => {
                 onClick={ () => toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>
-            <div className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
+            <Container className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
               <Link to="/home">
                 <Logo width="200" />
               </Link>
-            </div>
+            </Container>
           </Toolbar>
-          <Button className={classes.button} onClick={handleLogout}>
-            <Box borderRadius={10}>
-              Logout
-            </Box>
-          </Button>
+          
         </AppBar>
         {drawer()}
       </div>
@@ -126,7 +154,7 @@ const AppHeader = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -139,9 +167,14 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     //background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
     background: '#536999',
+    display: 'flex',
   },
   logoPosition: {
-    margin: 'auto',
+    // margin: 'auto',
+    // alignSelf: 'flex-start',
+    flexGrow: 1,
+    display: 'flex',
+    alignSelf: 'flex-start',
   },
   drawer: {
     border: 0,
@@ -154,6 +187,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignSelf: 'flex-end',
     color:'white',
+  },
+  empty: {
+    flexGrow: 0,
   }
 }));
 

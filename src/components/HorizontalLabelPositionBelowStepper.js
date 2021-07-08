@@ -112,7 +112,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('here');
     getMerchants().then(response => setLoading(false));
   }, [setLoading]);  
 
@@ -198,6 +197,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
+    
   },
   gridList: {
     width: 500,
@@ -205,6 +205,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     width: '100%',
+    backgroundColor: 'rgba(52, 52, 52, 0.0)',
   },
   backButton: {
     marginRight: theme.spacing(1),
