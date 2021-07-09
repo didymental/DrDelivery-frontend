@@ -1,11 +1,7 @@
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
 // import { Wrapper } from "@googlemaps/react-wrapper";
-
-import { Map, GoogleApiWrapper } from 'google-maps-react';
-import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
-
-// import {websocketAPI} from '../apis/rails-backend';
+import {websocketAPI} from '../apis/rails-backend';
 
 
 const token = localStorage.getItem('token');
@@ -15,11 +11,7 @@ const userid = localStorage.getItem('userID');
 
 // const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
 
-// const token = localStorage.getItem('token');
-// const userID = localStorage.getItem('userID');
-
 class MapContainer extends React.Component {
-
     
     ws = new WebSocket(websocketAPI + '?token=' + token)
     drones = {}
@@ -52,7 +44,7 @@ class MapContainer extends React.Component {
                 // console.log(data.drone_destination_address);
                 // console.log(data.drone_curr_address);
                 // console.log(data.drone_destination_address);
-
+                this.drones[drone.id] = drone
                 console.log(this.drones)
 
             }
@@ -61,6 +53,7 @@ class MapContainer extends React.Component {
         };
 
     }
+
 
     render() {
 
@@ -88,8 +81,8 @@ class MapContainer extends React.Component {
           {lat: 1.4075977748431727,  lng: 103.79230717260913}
         ];
         const arrForm = Object.values(this.drones);
-        // console.log(this.drones);
-        // console.log(arrForm);
+        console.log(this.drones);
+        console.log(arrForm);
         const droneMarkers = arrForm.map(drone => (
           
           <Marker
@@ -140,9 +133,9 @@ class MapContainer extends React.Component {
         //     strokeWeight={2} />  
         // ]
 
-        // console.log(destMarkers);
-        // console.log(droneMarkers);
-        // console.log(dronelines);
+        console.log(destMarkers);
+        console.log(droneMarkers);
+        console.log(dronelines);
         
         return (
           <Map google={this.props.google} zoom={12}
@@ -150,12 +143,6 @@ class MapContainer extends React.Component {
             lat: 1.368635520835842,
             lng: 103.81916601690331
           }}>
-
-          <Polyline
-          path={crossIslandCoords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={2} />
 
           {/* <Marker
           title={'The marker`s title will appear as a tooltip.'}
