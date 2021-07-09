@@ -1,7 +1,5 @@
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
 // import { Wrapper } from "@googlemaps/react-wrapper";
-
-import { Map, GoogleApiWrapper } from 'google-maps-react';
 import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
 
