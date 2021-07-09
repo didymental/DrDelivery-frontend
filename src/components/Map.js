@@ -1,7 +1,11 @@
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
 // import { Wrapper } from "@googlemaps/react-wrapper";
-import React from 'react';
+
+import { Map, GoogleApiWrapper } from 'google-maps-react';
 import {websocketAPI} from '../apis/rails-backend';
+import React from 'react';
+
+// import {websocketAPI} from '../apis/rails-backend';
 
 
 const token = localStorage.getItem('token');
@@ -11,7 +15,11 @@ const userid = localStorage.getItem('userID');
 
 // const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
 
+// const token = localStorage.getItem('token');
+// const userID = localStorage.getItem('userID');
+
 class MapContainer extends React.Component {
+
     
     ws = new WebSocket(websocketAPI + '?token=' + token)
     drones = {}
@@ -53,7 +61,6 @@ class MapContainer extends React.Component {
         };
 
     }
-
 
     render() {
 

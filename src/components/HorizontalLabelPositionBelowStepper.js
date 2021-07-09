@@ -17,6 +17,7 @@ import MerchantCard from './MerchantCard';
 import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 const HorizontalLabelPositionBelowStepper = (props) => {
@@ -91,7 +92,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   }
 
   const handleEndOrder = () => {
-    props.setOrder({hasOrder: false});
+    // props.setOrder({hasOrder: false});
     handleNext();
   }
 
@@ -112,7 +113,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
   useEffect(() => {
     getMerchants().then(response => setLoading(false));
-  });  
+  }, [setLoading]);  
 
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
@@ -142,13 +143,15 @@ const HorizontalLabelPositionBelowStepper = (props) => {
       <Box borderBottom={0.2}>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
-            <Step key={label} onClick={ () => {
-              if (label === 'Browse Our Merchants') {
-                handleReset();
-              }
-            } }>
-              <StepLabel>{label}</StepLabel>
-            </Step>
+            <Tooltip title={label === 'Browse Our Merchants' ? "Return to Merchant Page" : ""}>
+              <Step key={label} onClick={ () => {
+                if (label === 'Browse Our Merchants') {
+                  handleReset();
+                }
+              } }>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            </Tooltip>
           ))}
         </Stepper>
       </Box>
@@ -179,11 +182,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               ( 
               <div>
                 <MapContainer/>
-                {/* <Map /> */}
                 <OrderStatus orderStatus={orderStatus} />
-                {/* <Button variant="contained" color="primary" onClick={handleEndOrder}>
-                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                  </Button> */}
                 </div>
             )}
       </div>
@@ -198,6 +197,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
+    
   },
   gridList: {
     width: 500,
@@ -205,6 +205,7 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     width: '100%',
+    backgroundColor: 'rgba(52, 52, 52, 0.0)',
   },
   backButton: {
     marginRight: theme.spacing(1),
@@ -215,6 +216,9 @@ const useStyles = makeStyles((theme) => ({
   },
   products: {
     width: '100%',
+  },
+  stepIcon: {
+    color: '#536999',
   }
 }));
 

@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const Product = (props) => {
     const classes = useStyles();
@@ -19,10 +20,11 @@ const Product = (props) => {
     }
 
     return (
+      <Tooltip title="Add to Cart">
         <Card className={classes.root} onClick={addToCart}>
           <CardActionArea className={classes.container}>
           <CardMedia 
-                image='https://source.unsplash.com/random'
+                image={props.image}
                 style={{height: 140}}/>
             <CardContent >
               <Typography gutterBottom variant="body1" component="h2">
@@ -38,14 +40,12 @@ const Product = (props) => {
                 {'S$' + props.details.price.toFixed(2)}
               </Container>
             <Button size="small" color="primary" className={classes.addButton}>
-                <AddIcon color="primary"/>
-                <Typography variant="body3" color="textSecondary" component="p">
-                    Add
-                </Typography>
+                <AddIcon className={classes.addIcon}/>
             </Button>
           </CardActions>
         </Card>
-      );
+      </Tooltip>
+    );
 
 };
 
@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme) => ({
     },
     box: {
       margin: 'auto',
+    },
+    addIcon: {
+      color: '#1AA260'
     }
 }));
 

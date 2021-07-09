@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 
 const Home = (props) => {
 
@@ -22,7 +23,10 @@ const Home = (props) => {
 
     return (
         <div className={classes.overallPage}>
-            <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
+            <AppHeader 
+                setOrder={props.setOrder}
+                setState={props.setState}
+                order={props.order}/>
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 
@@ -30,7 +34,7 @@ const Home = (props) => {
                     </Typography>
                     <br/>
                     <Typography variant="overline"> 
-                        Drones make your delivery. You control their speed.
+                        Drones make your delivery. Observe their flight. Love their speed.
                     </Typography>
                 </div>
             </Box>
@@ -56,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
     overallPage: {
         background: '#fffdf6',
         minHeight: '100vh',
+        backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
     }, 
     box: {
         padding: theme.spacing(2),

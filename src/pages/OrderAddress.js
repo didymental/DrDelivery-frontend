@@ -7,8 +7,11 @@ const OrderAddress = (props) => {
     const classes = useStyles();
 
     return (
-        <div>
-            <AppHeader setOrder={props.setOrder} handleLogout={props.handleLogout}/>
+        <div className={classes.overallPage}>
+            <AppHeader 
+                setOrder={props.setOrder}
+                setState={props.setState}
+                order={props.order}/>
             <HorizontalLabelPositionBelowStepper 
                 className={classes.overallPage} 
                 dropOffAdd={props.dropOffAdd}
@@ -29,6 +32,11 @@ const useStyles = makeStyles((theme) => ({
     overallPage: {
         background: '#fffdf6',
         minHeight: '100vh',
+        backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625760180/orderMerchants_1_howza1.png")`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+        
     }, 
     box: {
         padding: theme.spacing(2),
