@@ -112,6 +112,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('counting');
     getMerchants().then(response => setLoading(false));
   }, [setLoading]);  
 
