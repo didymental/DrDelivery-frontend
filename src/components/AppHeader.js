@@ -16,6 +16,71 @@ import Logo from './Logo';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import HistoryIcon from '@material-ui/icons/History';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+
+
+const ProfileMenu = (props) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  
+  const handleClick = (event) => {
+    console.log(event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  }
+
+  const classes = useStyles();
+
+  const handleAccount = () => {
+    return props.history.push("/orderHistory");
+  }
+
+  return (
+    <div className={classes.button}>
+      <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} className={classes.button}>
+        Profile
+      </Button>
+      <Menu 
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        getContentAnchorEl={null}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <MenuList>
+            <MenuItem >
+            <ListItemIcon>
+              <AccountCircleIcon/>
+            </ListItemIcon>
+              Account
+            </MenuItem>
+            <MenuItem onClick={handleAccount}>
+              <ListItemIcon>
+                <HistoryIcon/>
+              </ListItemIcon>
+              My Order History
+            </MenuItem>
+            <MenuItem >
+              <ListItemIcon>
+                <FavoriteIcon/>
+              </ListItemIcon>
+              My Favourites
+            </MenuItem>
+          </MenuList>
+      </Menu>
+    </div>
+  );
+}
 
 const AppHeader = (props) => {
     const [state, setState] = useState({
@@ -95,6 +160,9 @@ const AppHeader = (props) => {
                         primary={'Profile'}/>
                   </ListItem>
                 </Link>
+                <Link to='/orderProgress' className={classes.button}>
+                  <Button className={classes.button}>Map</Button>
+                </Link>
                 <ListItem button key={2} onClick={handleLogout}>
                   
                     <ListItemText
@@ -114,11 +182,10 @@ const AppHeader = (props) => {
               <Link to="/home" className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
                 <Logo width="200" />
               </Link>
-            
-            <Button className={classes.button}>Map</Button>
-            <Link to='/profile' className={classes.button}>
-              <Button className={classes.button}>Profile</Button>
+            <Link to='/orderProgress' className={classes.button}>
+              <Button className={classes.button}>Map</Button>
             </Link>
+            <ProfileMenu history={history}/>
             <Button className={classes.button} onClick={handleLogout}>
               Logout
             </Button>
@@ -143,6 +210,7 @@ const AppHeader = (props) => {
               <Link to="/home">
                 <Logo width="200" />
               </Link>
+              
             </Container>
           </Toolbar>
           
@@ -166,7 +234,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     //background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
-    background: '#536999',
+    // background: '#536999',
+    background: '#2B468B',
     display: 'flex',
   },
   logoPosition: {
@@ -190,9 +259,7 @@ const useStyles = makeStyles((theme) => ({
   },
   empty: {
     flexGrow: 0,
-  }
+  },
 }));
-
-
 
 export default AppHeader;

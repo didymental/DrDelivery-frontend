@@ -68,7 +68,7 @@ const EditableTextField = (props) => {
     )
 }
 
-const Profile = (props) => {
+const Account = (props) => {
     const [profile, setProfile] = useState({
         email: '',
         password: '',
@@ -233,8 +233,8 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-evenly',
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         //width: 300,
         color: 'black',
         fontSize: 24,
@@ -249,4 +249,4 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-export default Profile;
+export default Account;

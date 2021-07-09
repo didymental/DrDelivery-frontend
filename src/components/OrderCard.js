@@ -92,6 +92,8 @@ const AddressTextField = (props) => {
             return undefined;
         }
 
+        const source = axios.CancelToken.source();
+
         const savedAddresses = async () => {
             const token = localStorage.getItem('token');
             const userid = localStorage.getItem('userID');
@@ -114,15 +116,16 @@ const AddressTextField = (props) => {
         savedAddresses().catch(() => setError({...error, hasError: true}));
 
         return () => {
+            source.cancel('axios request cancelled');
             active = false;
         };
     }, [loading, setError, setState, error, props, state]);
 
-    useEffect(() => {
-        if (!open) {
-            // props.setOptions([]);
-        }
-    }, [open]);
+    // useEffect(() => {
+    //     if (!open) {
+    //         // props.setOptions([]);
+    //     }
+    // }, [open]);
 
     const displayAddressDetails = (event, value) => {
         let postcode = '';
@@ -265,6 +268,9 @@ const OrderCard = (props) => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
+        let active = true;
+
         const savedDetails = async () => {
             const token = localStorage.getItem('token');
             const userID = localStorage.getItem('userID');
@@ -275,10 +281,19 @@ const OrderCard = (props) => {
                 }
             });
             const savedAddresses = await addressResponse.data;
-            setAddresses(savedAddresses);
-            setOpen(savedAddresses.length === 0);
+            if (active) {
+                setAddresses(savedAddresses);
+                setOpen(savedAddresses.length === 0);
+            }
         };
-        savedDetails();        
+        
+        savedDetails();
+
+        return () => {
+            source.cancel('axios request cancelled');
+            active = false;
+        };
+    
     }, [setAddresses, setOpen]);
 
     return (

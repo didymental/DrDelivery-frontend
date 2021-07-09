@@ -218,10 +218,10 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'flex-end',
     },
     addButton: {
-      alignSelf: 'flex-start',
+      alignSelf: 'center',
     },
     removeButton: {
-      alignSelf: 'flex-end',
+      alignSelf: 'center',
     },
     icon: {
         color: 'black',

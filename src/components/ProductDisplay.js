@@ -72,17 +72,22 @@ const ProductDisplay = (props) => {
 
     return loading ? <LinearProgress/> : (
       <div className={classes.root}>
-        <Container className={classes.merchantWrapper}>
-          <Typography variant="h4">
-            {props.merchantName}
-          </Typography>
-          <br/>
-          <Divider/>
-        </Container>
-        <Container>
-          <Box display={{sm: 'block', md: 'flex'}}>
+        <Box display={{sm: 'block', md: 'flex'}}>
+          <Container>
+            <Container className={classes.merchantWrapper}>
+              <Typography variant="h4">
+                {props.merchantName}
+              </Typography>
+              <br/>
+              <Divider/>
+            </Container>
             <Box className={classes.productsWrapper} flexGrow={2}>
-              <Grid container spacing={1}>
+              <Grid 
+                container 
+                spacing={1}
+                direction="row"
+                alignItems="flex-start"
+              >
                 {products.map(elem => (
                   <Grid
                   item xs={3}
@@ -94,21 +99,22 @@ const ProductDisplay = (props) => {
                         removeFromCart={removeFromCart} 
                         orderId={orderId}
                         image={'https://source.unsplash.com/random'}/>
-                  </Grid>))}
-              </Grid>
-            </Box>
-          
-            <Box className={classes.cartWrapper} flexGrow={1}>
-              <Cart 
-                cart={cart} 
-                addToCart={addToCart} 
-                removeFromCart={removeFromCart} 
-                handleNext={props.handleNext}
-                handleOrder={props.handleOrder}
-              />
-            </Box>
+                    </Grid>))
+                  }
+                </Grid>
+              </Box>
+          </Container>
+          <Box className={classes.cartWrapper} flexGrow={1}>
+            <Cart 
+              cart={cart} 
+              addToCart={addToCart} 
+              removeFromCart={removeFromCart} 
+              handleNext={props.handleNext}
+              handleOrder={props.handleOrder}
+            />
           </Box>
-        </Container>
+        </Box>
+        
         </div>
       
     )
@@ -135,7 +141,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2.5),
       //borderRadius: 5,
       //backgroundColor: '#6699CC',
-      backgroundColor: '#536999',
+      backgroundColor: '#2B468B',
       color: 'white',
       justifyContent: 'center',
     },

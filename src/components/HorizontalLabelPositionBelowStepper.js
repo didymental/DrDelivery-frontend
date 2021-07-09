@@ -112,7 +112,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('counting');
     getMerchants().then(response => setLoading(false));
   }, [setLoading]);  
 
@@ -121,16 +120,18 @@ const HorizontalLabelPositionBelowStepper = (props) => {
       <div>
         <Container>
         <Grid container spacing={2}>
-        
-            {merchants.map(elem => (
+            { merchants.map(elem => (
               <Grid
+              key={elem.id}
               item xs={4}
-              key={elem.name}>
+              >
                   <MerchantCard 
                     data={elem} 
                     action={props.action}
                     />
-              </Grid>))}
+              </Grid>
+              ))
+            } 
               </Grid>
         </Container>
       </div>

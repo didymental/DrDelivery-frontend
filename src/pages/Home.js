@@ -1,14 +1,10 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import axios from 'axios';
-import {customerAPI} from '../apis/rails-backend';
 import {Redirect} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
 
 const Home = (props) => {
 

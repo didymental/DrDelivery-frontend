@@ -1,11 +1,13 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { BrowserRouter, Route, Redirect} from 'react-router-dom';
+import { BrowserRouter, Route, Redirect, useHistory} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
 import SignUpPage from '../pages/SignUpPage';
-import Profile from '../components/Profile';
+import Account from './Account';
+import Simulator  from '../pages/Simulator.js';
+import OrderHistory  from '../pages/OrderHistory';
 
 const App = () => {
     
@@ -41,10 +43,12 @@ const App = () => {
         });
     }
 
-
     const renderPage = () => {
-        console.log(state.isLoggedIn);
-        console.log(order.hasOrder);
+        console.log('isLoggedIn: ' + state.isLoggedIn);
+        console.log('started order: ' + order.hasOrder);
+        if (state.isLoggedIn && !order.hasOrder) {            
+            return <Redirect to="/home" />;
+        }
     }
 
 
@@ -86,9 +90,23 @@ const App = () => {
                         /> }
                     />
                     <Route path="/profile" exact component={() => 
-                        <Profile 
+                        <Account 
                             //handleLogout={handleLogOut}
                             setOrder={setOrder}
+                        />}/>
+                    <Route path="/orderProgress" exact component={() => 
+                        <Simulator 
+                            //handleLogout={handleLogOut}
+                            setOrder={setOrder}
+                            setState={setState}
+                            order={order}
+                        />}/>
+                    <Route path="/orderHistory" exact component={() => 
+                        <OrderHistory 
+                            //handleLogout={handleLogOut}
+                            setOrder={setOrder}
+                            setState={setState}
+                            order={order}
                         />}/>
 
                 </div>
