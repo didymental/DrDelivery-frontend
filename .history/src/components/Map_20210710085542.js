@@ -1,10 +1,20 @@
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
+// import { Wrapper } from "@googlemaps/react-wrapper";
 import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
+
+// import {websocketAPI} from '../apis/rails-backend';
 
 
 const token = localStorage.getItem('token');
 const userid = localStorage.getItem('userID');
+// const user_address =
+
+
+// const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
+
+// const token = localStorage.getItem('token');
+// const userID = localStorage.getItem('userID');
 
 class MapContainer extends React.Component {
 
@@ -13,8 +23,7 @@ class MapContainer extends React.Component {
     drones = {}
 
 
-    componentDidMount() {
-      // console.log("mounted");
+    componentWillMount() {
         this.ws.onopen = () => {
           console.log('WebSocket Client Connected');
           this.ws.send(JSON.stringify({"command":"subscribe","identifier":"{\"channel\":\"DroneChannel\"}"}));
@@ -23,15 +32,10 @@ class MapContainer extends React.Component {
         this.ws.onmessage = (message) => {
           // console.log(message);
           const update = JSON.parse(message.data);
-          // console.log(update);
+          console.log(update);
           if (update.type != "ping") {
-            console.log(update);
-            var data = {};
-            if (update.message != null) {
-              data = JSON.parse(update.message);
-              console.log(data);
-            }
-            
+            const data = JSON.parse(update.message);
+            console.log(data);
             
             
             if (data.drone != null && data.drone_curr_address != null && data.drone_destination_address != null) {
@@ -57,7 +61,6 @@ class MapContainer extends React.Component {
     }
 
     render() {
-      console.log("snaity");
 
         // console.log(this.drones);
   
@@ -135,9 +138,9 @@ class MapContainer extends React.Component {
         //     strokeWeight={2} />  
         // ]
 
-        console.log(destMarkers);
-        console.log(droneMarkers);
-        console.log(dronelines);
+        // console.log(destMarkers);
+        // console.log(droneMarkers);
+        // console.log(dronelines);
         
         return (
           <Map google={this.props.google} zoom={12}

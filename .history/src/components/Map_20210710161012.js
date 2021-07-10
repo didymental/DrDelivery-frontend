@@ -21,17 +21,12 @@ class MapContainer extends React.Component {
           this.ws.send(JSON.stringify({"command":"message","identifier":"{\"channel\":\"DroneChannel\"}", "data":"{\"action\": \"request\"}"}));
         };
         this.ws.onmessage = (message) => {
-          // console.log(message);
+          console.log(message);
           const update = JSON.parse(message.data);
           // console.log(update);
           if (update.type != "ping") {
-            console.log(update);
-            var data = {};
-            if (update.message != null) {
-              data = JSON.parse(update.message);
-              console.log(data);
-            }
-            
+            const data = JSON.parse(update.message);
+            console.log(data);
             
             
             if (data.drone != null && data.drone_curr_address != null && data.drone_destination_address != null) {

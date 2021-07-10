@@ -23,15 +23,10 @@ class MapContainer extends React.Component {
         this.ws.onmessage = (message) => {
           // console.log(message);
           const update = JSON.parse(message.data);
-          // console.log(update);
+          console.log(update);
           if (update.type != "ping") {
-            console.log(update);
-            var data = {};
-            if (update.message != null) {
-              data = JSON.parse(update.message);
-              console.log(data);
-            }
-            
+            const data = JSON.parse(update.message);
+            console.log(data);
             
             
             if (data.drone != null && data.drone_curr_address != null && data.drone_destination_address != null) {

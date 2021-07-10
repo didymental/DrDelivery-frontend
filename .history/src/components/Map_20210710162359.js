@@ -26,7 +26,7 @@ class MapContainer extends React.Component {
           // console.log(update);
           if (update.type != "ping") {
             console.log(update);
-            var data = {};
+            const data = {};
             if (update.message != null) {
               data = JSON.parse(update.message);
               console.log(data);
