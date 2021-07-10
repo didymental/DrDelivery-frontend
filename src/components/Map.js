@@ -13,7 +13,7 @@ class MapContainer extends React.Component {
     drones = {}
 
 
-    componentDidlMount() {
+    componentDidMount() {
         this.ws.onopen = () => {
           console.log('WebSocket Client Connected');
           this.ws.send(JSON.stringify({"command":"subscribe","identifier":"{\"channel\":\"DroneChannel\"}"}));
@@ -24,6 +24,7 @@ class MapContainer extends React.Component {
           const update = JSON.parse(message.data);
           // console.log(update);
           if (update.type != "ping") {
+            // console.log(update.message);
             const data = JSON.parse(update.message);
             // console.log(data);
             
