@@ -151,7 +151,7 @@ const PastOrders = () => {
                                     {/* {order.order_entries.map(elem => searchProducts(order.merchant_id, elem.product_id))} */}
                                 </Box>
                                 <Box>
-                                    {'Total Purchase: S$' + order.total_price}
+                                    {'Total Purchase: S$' + order.total_price.toFixed(2)}
                                 </Box>
                                 </Grid>
                         ) 

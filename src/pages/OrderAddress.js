@@ -15,7 +15,8 @@ const OrderAddress = (props) => {
             <HorizontalLabelPositionBelowStepper 
                 className={classes.overallPage} 
                 dropOffAdd={props.dropOffAdd}
-                setOrder={props.setOrder}/>
+                setOrder={props.setOrder}
+                ws={props.ws}/>
         </div>
     )
 }

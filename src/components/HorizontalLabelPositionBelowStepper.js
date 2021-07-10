@@ -183,7 +183,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               : 
               ( 
               <div>
-                <MapContainer/>
+                <MapContainer ws={props.ws}/>
                 <OrderStatus orderStatus={orderStatus} />
                 </div>
             )}

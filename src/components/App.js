@@ -8,6 +8,7 @@ import SignUpPage from '../pages/SignUpPage';
 import Account from './Account';
 import Simulator  from '../pages/Simulator.js';
 import OrderHistory  from '../pages/OrderHistory';
+import {websocketAPI} from '../apis/rails-backend';
 
 const App = () => {
     
@@ -22,6 +23,8 @@ const App = () => {
     })
 
     const [dropOffAddress, setDropOffAddress] = useState();
+
+    const [ws, setWS] = useState(null);
 
     const updateAddress = (address_id) => {
         setDropOffAddress(address_id);
@@ -59,8 +62,11 @@ const App = () => {
             if (token) {
                 handleLogin(token, id);
             }
+        } else {
+            const token = localStorage.getItem('token');
+            setWS(new WebSocket(websocketAPI + '?token=' + token));
         }
-    }, [state])
+    }, [state, setWS])
     
     return (
         <div>
@@ -87,6 +93,7 @@ const App = () => {
                         setOrder={setOrder}
                         setState={setState}
                         order={order}
+                        ws={ws}
                         /> }
                     />
                     <Route path="/profile" exact component={() => 
@@ -100,6 +107,7 @@ const App = () => {
                             setOrder={setOrder}
                             setState={setState}
                             order={order}
+                            ws={ws}
                         />}/>
                     <Route path="/orderHistory" exact component={() => 
                         <OrderHistory 
