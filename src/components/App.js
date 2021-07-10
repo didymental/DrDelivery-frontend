@@ -24,8 +24,6 @@ const App = () => {
 
     const [dropOffAddress, setDropOffAddress] = useState();
 
-    const [ws, setWS] = useState(null);
-
     const updateAddress = (address_id) => {
         setDropOffAddress(address_id);
     }
@@ -62,11 +60,8 @@ const App = () => {
             if (token) {
                 handleLogin(token, id);
             }
-        } else {
-            const token = localStorage.getItem('token');
-            setWS(new WebSocket(websocketAPI + '?token=' + token));
         }
-    }, [state, setWS])
+    }, [state])
     
     return (
         <div>
@@ -93,7 +88,6 @@ const App = () => {
                         setOrder={setOrder}
                         setState={setState}
                         order={order}
-                        ws={ws}
                         /> }
                     />
                     <Route path="/profile" exact component={() => 
@@ -107,7 +101,6 @@ const App = () => {
                             setOrder={setOrder}
                             setState={setState}
                             order={order}
-                            ws={ws}
                         />}/>
                     <Route path="/orderHistory" exact component={() => 
                         <OrderHistory 

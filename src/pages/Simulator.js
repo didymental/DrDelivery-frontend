@@ -14,7 +14,7 @@ const Simulator = (props) => {
             setOrder={props.setOrder}
             setState={props.setState}
             order={props.order}/>
-        <MapContainer ws={props.ws}/>
+        <MapContainer/>
         </div>);
 }
 

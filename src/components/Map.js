@@ -2,6 +2,8 @@ import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-map
 import {websocketAPI} from '../apis/rails-backend';
 import React from 'react';
 
+const token = localStorage.getItem('token');
+const ws = new WebSocket(websocketAPI + '?token=' + token)
 
 class MapContainer extends React.Component {
   constructor(props) {
@@ -17,13 +19,14 @@ class MapContainer extends React.Component {
   }
 
   componentDidMount() {
-      this.props.ws.onopen = () => {
+      ws.onopen = () => {
         console.log('WebSocket Client Connected');
-        this.props.ws.send(JSON.stringify({"command":"subscribe","identifier":"{\"channel\":\"DroneChannel\"}"}));
-        this.props.ws.send(JSON.stringify({"command":"message","identifier":"{\"channel\":\"DroneChannel\"}", "data":"{\"action\": \"request\"}"}));
+        ws.send(JSON.stringify({"command":"subscribe","identifier":"{\"channel\":\"DroneChannel\"}"}));
+        ws.send(JSON.stringify({"command":"message","identifier":"{\"channel\":\"DroneChannel\"}", "data":"{\"action\": \"request\"}"}));
       };
-      this.props.ws.onmessage = (message) => {
+      ws.onmessage = (message) => {
         const update = JSON.parse(message.data);
+        console.log(update);
         if (update.type != "ping") {
           console.log('not ping');
           var data = {};

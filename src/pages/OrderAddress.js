@@ -16,7 +16,7 @@ const OrderAddress = (props) => {
                 className={classes.overallPage} 
                 dropOffAdd={props.dropOffAdd}
                 setOrder={props.setOrder}
-                ws={props.ws}/>
+            />
         </div>
     )
 }
@@ -34,10 +34,9 @@ const useStyles = makeStyles((theme) => ({
         background: '#fffdf6',
         minHeight: '100vh',
         backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625760180/orderMerchants_1_howza1.png")`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-        
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
     }, 
     box: {
         padding: theme.spacing(2),
