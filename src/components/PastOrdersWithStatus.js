@@ -79,7 +79,6 @@ const PastOrdersWithStatus = (props) => {
                 {
                     
                     pastOrders.filter(obj => obj.status === props.status).reverse().map(order => {
-                        console.log(order);
                     return (
                         <Grid
                         item 

@@ -36,18 +36,20 @@ const CheckOutButton = (props) => {
     }
 
     return (
-        <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
+        
         
             <Button disabled={props.cart.length === 0} onClick={handleClick} className={classes.cartCheckOutWrapper}>
-                <Typography 
-                    variant="body1"
-                    component="div"
-                >
-                    CHECKOUT NOW
-                </Typography>
+                <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
+                    <Typography 
+                        variant="body1"
+                        component="div"
+                    >
+                        CHECKOUT NOW
+                    </Typography>
+                </Tooltip>
             </Button>
         
-        </Tooltip>
+        
     )
 }
 
@@ -64,16 +66,20 @@ const Cart = (props) => {
     }
 
     const countPerItem = () => {
-        const items = [...props.cart];
+        const items = props.cart.map(x => x);
         let unique = {};
         for (let i = 0; i < items.length; i++) {
             const name = items[i].name;
             if (unique[name]) {
                 unique[name][0]++;
+                // unique = {...unique, name: [unique[name][0]++, unique[name][1]]}
+
             } else {
                 Object.assign(unique, {[name]: [1, items[i]]});
             }
         }
+
+        //console.log(unique);
         return unique;
     }
     
@@ -108,8 +114,10 @@ const Cart = (props) => {
     }
 
     const orderToPost = () => {
+        console.log('testing for orderToPost');
 
         const arr = props.cart.map(elem => {
+            console.log(elem);
             const obj = {
                 product_id: elem.id,
                 units_bought: countPerItem()[elem.name][0],
@@ -118,11 +126,16 @@ const Cart = (props) => {
             return obj;
         });
 
-        let noDuplicateArr = arr.length > 0 ? [arr[0]] : [];
-        for (let i = 1; i < arr.length; i++) {
-            if (noDuplicateArr.filter(x => x.product_id !== arr[i].product_id).length > 0) {
-                noDuplicateArr = [...noDuplicateArr, arr[i]];
-            }
+        // Remove duplicates from arr
+        arr.sort((a, b) => a.product_id - b.product_id);
+        let arrCopy = [...arr];
+        let noDuplicateArr = [];
+        let i = 0; 
+        while (i < arr.length) {
+            const nonUniqArr = arrCopy.filter(x => x.product_id === arr[i].product_id);
+            const uniqItem = nonUniqArr[0];
+            i += nonUniqArr.length;
+            noDuplicateArr = [...noDuplicateArr, uniqItem];
         }
 
         return [noDuplicateArr, cartTotal.toFixed(2)];
