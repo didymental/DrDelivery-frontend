@@ -8,7 +8,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -38,8 +37,8 @@ const CheckOutButton = (props) => {
 
     return (
         <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
-        <Container className={classes.cartCheckOutWrapper} onClick={handleClick}>
-            <Button disabled={props.cart.length === 0}>
+        
+            <Button disabled={props.cart.length === 0} onClick={handleClick} className={classes.cartCheckOutWrapper}>
                 <Typography 
                     variant="body1"
                     component="div"
@@ -47,7 +46,7 @@ const CheckOutButton = (props) => {
                     CHECKOUT NOW
                 </Typography>
             </Button>
-        </Container>
+        
         </Tooltip>
     )
 }
@@ -194,7 +193,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cartCheckOutWrapper: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        padding: theme.spacing(0.75),
+        padding: theme.spacing(1.5),
         width: '100%',
         display: 'flex',
         alignItems: 'center',

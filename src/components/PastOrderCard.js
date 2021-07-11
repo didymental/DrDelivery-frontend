@@ -2,63 +2,122 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
 import axios from 'axios';
+import clsx from 'clsx';
+
+import PastOrdersProducts from './PastOrdersProducts';
+
 
 import {makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 
+
 const PastOrderCard = (props) => {
-    const [merchantOrdered, setMerchantOrdered] = useState([]);
-    const [products, setProducts] = useState([]);
+    const [expanded, setExpanded] = useState(false);
+    const classes = useStyles();
 
-    function searchMerchantName(id, arr) {
-        let len = arr.length;
-        let start = 0;
-        let end = len - 1;
-        
-        while (start < end) {
-            let mid = start + Math.floor((end - start)/2);
-            if (id <= arr[mid].id) {
-                end = mid;
-            } else {
-                start = mid + 1;
-            }
-        }
+    const merchantName = props.merchantName;
+    const totalPrice = props.totalPrice;
+    const date = props.date;
 
-        if (arr[start] === id) {
-            console.log('chosen: ' + arr[start].name);
-            setMerchantOrdered([...merchantOrdered, arr[start]]);
-        } 
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
     }
 
-    const getAdminToken = async () => {
-        const adminLogin = {
-          email: 'example@railstutorial.org',
-          password: 'foobar'
-        };
-    
-        const response = await axios.post(loginAPI, adminLogin, {
-          headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-          },
-        });
-        return response.data.token;
-    };
-
-
-    useEffect(() => {
-        
-
-    }, [])
 
     return (
-        <div>
-            hello
-        </div>
+        
+            <Box className={classes.cardDetails}>
+                <Box className={classes.content}>
+                    <Typography component="h5" variant="h5">
+                        {merchantName}
+                    </Typography>
+                </Box>
+                <Box >
+                    <Grid 
+                        container 
+                        direction="row"
+                        alignItems="flex-end"
+                        spacing={1}
+                    > 
+                        <Grid 
+                            item
+                            xs
+                            className={classes.gridItem}
+                            >
+                            <Typography variant="subtitle1" color="textSecondary">
+                                {date.slice(0, 10)}
+                            </Typography>
+                        </Grid>
+                        <Grid 
+                            item 
+                            xs
+                            className={classes.gridItem}
+                            >
+                            <Typography variant="subtitle1" color="textSecondary">
+                                {'Total: S$ ' + totalPrice}
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            item
+                            className={classes.gridItem}>
+                            <IconButton 
+                                className={clsx(classes.expand, {
+                                    [classes.expandOpen]: expanded,
+                                })}
+                                onClick={handleExpandClick}
+                                aria-expanded={expanded}
+                                aria-label="show more"
+                            >
+                                <ExpandMoreIcon/>
+                            </IconButton>
+                        </Grid>
+                    </Grid>
+                    
+                </Box>
+                <Collapse in={expanded} unmountOnExit>
+                        <PastOrdersProducts merchantID={props.merchantID} orderEntries={props.orderEntries} />
+                </Collapse>
+            </Box>    
     )
 }
+
+const useStyles = makeStyles((theme) => ({
+    cardDetails: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '300px'
+    },
+    dateWrapper: {
+        marginRight: 'auto',
+    },
+    gridWrapper: {
+        marginLeft: 'auto'
+    },
+    gridItem: {
+        //display: 'flex',
+        alignSelf: 'center',
+    },
+    content: {
+        flex: '1 0 auto',
+    },
+    expand: {
+        transform: 'rotate(0deg)',
+        //marginLeft: 'auto',
+        alignSelf: 'flex-end',
+        transition: theme.transitions.create('transform', {
+            duration: theme.transitions.duration.shortest,
+        }),
+    },
+    expandOpen: {
+        transform: 'rotate(180deg)',
+    },
+}));
 
 export default PastOrderCard;
