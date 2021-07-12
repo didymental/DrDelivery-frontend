@@ -56,6 +56,8 @@ const PastOrdersWithStatus = (props) => {
             case 'completed':
                 return 'Past Orders';
         }
+
+        return '';
     }
 
     return (

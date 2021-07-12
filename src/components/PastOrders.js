@@ -70,9 +70,16 @@ const PastOrders = () => {
     }, [])
 
     const classes = useStyles();
+    
 
     return (
-        <PastOrdersWithStatus status="merchant_preparing" pastOrders={pastOrders} merchants={merchants}/>
+        
+        <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "merchant_preparing").length > 0 
+            ? "merchant_preparing"
+            : "" } 
+            pastOrders={pastOrders.filter(obj => obj.status === "merchant_preparing")} 
+            merchants={merchants}/>
+
     );
 
 }

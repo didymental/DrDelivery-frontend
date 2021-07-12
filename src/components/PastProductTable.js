@@ -63,9 +63,7 @@ const ProductTable = (props) => {
             }
 
             if (arr[start].id === id) {
-                console.log('here');
                 setProductName(arr[start].name);
-                // return arr[start].name;
             }
 
             

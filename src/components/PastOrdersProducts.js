@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import PastProductTable from './PastProductTable';
 
 const PastOrdersProducts = (props) => {
-    console.log(props.orderEntries);
     const merchantID = props.merchantID;
     
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import {merchantAPI, loginAPI, newOrderAPI} from '../apis/rails-backend';
+import {merchantAPI, loginAPI, newOrderAPI, websocketAPI} from '../apis/rails-backend';
 import OrderStatus from './OrderStatus';
 import MapContainer from './Map';
 
@@ -186,7 +186,10 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               : 
               ( 
               <div>
-                <MapContainer/>
+                <MapContainer 
+                  ws={new WebSocket(websocketAPI + '?token=' + localStorage.getItem('token'))}
+                  drones={new Map()}
+                />
                 <OrderStatus orderStatus={orderStatus} />
                 </div>
             )}

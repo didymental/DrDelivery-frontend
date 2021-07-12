@@ -78,8 +78,6 @@ const Cart = (props) => {
                 Object.assign(unique, {[name]: [1, items[i]]});
             }
         }
-
-        //console.log(unique);
         return unique;
     }
     
@@ -114,10 +112,8 @@ const Cart = (props) => {
     }
 
     const orderToPost = () => {
-        console.log('testing for orderToPost');
 
         const arr = props.cart.map(elem => {
-            console.log(elem);
             const obj = {
                 product_id: elem.id,
                 units_bought: countPerItem()[elem.name][0],
