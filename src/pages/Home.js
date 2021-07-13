@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '10px'
     },
     overallPage: {
-        background: '#fffdf6',
+        background: '#ffffff',
         minHeight: '100vh',
         backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
         backgroundPosition: 'center',

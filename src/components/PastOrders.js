@@ -9,12 +9,6 @@ import {makeStyles } from '@material-ui/core/styles';;
 const PastOrders = () => {
     const [pastOrders, setPastOrders] = useState([]);
     const [merchants, setMerchants] = useState([]);
-    const [toDisplay, setToDisplay] = useState({
-        merchantName: '',
-        totalPrice: parseInt(''),
-        itemsOrdered: [],
-        date: '',
-    })
 
     const getAdminToken = async () => {
         const adminLogin = {
@@ -68,8 +62,6 @@ const PastOrders = () => {
             active = false;
         }
     }, [])
-
-    const classes = useStyles();
     
 
     return (
@@ -83,11 +75,5 @@ const PastOrders = () => {
     );
 
 }
-
-const useStyles = makeStyles((theme) => ({
-    pastOrderContainer: {
-        padding: theme.spacing(1),
-    },
-}));
 
 export default PastOrders;

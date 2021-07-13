@@ -8,6 +8,7 @@ import SignUpPage from '../pages/SignUpPage';
 import Account from './Account';
 import Simulator  from '../pages/Simulator.js';
 import OrderHistory  from '../pages/OrderHistory';
+import AccountActivated from '../pages/AccountActivated';
 import {websocketAPI} from '../apis/rails-backend';
 
 const App = () => {
@@ -109,6 +110,10 @@ const App = () => {
                             setState={setState}
                             order={order}
                         />}/>
+                    
+                    <Route path="/success" exact component={() => 
+                        <AccountActivated 
+                            isLoggedIn={state.isLoggedIn}/>}/>
 
                 </div>
             </BrowserRouter>
