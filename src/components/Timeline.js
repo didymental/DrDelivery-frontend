@@ -2,11 +2,35 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
 import axios from 'axios';
-import PastOrdersWithStatus from './PastOrdersWithStatus';
 
-const PastOrders = () => {
+import OrderTimeline from './OrderTimeline';
+import { Container } from '@material-ui/core';
+
+const Timeline = (props) => {
     const [pastOrders, setPastOrders] = useState([]);
     const [merchants, setMerchants] = useState([]);
+
+    function convertStatusToString(status) {
+        switch(status) {
+            case 'merchant_preparing': 
+                return 'Merchant Preparing';
+
+            case 'awaiting_drone_pickup':
+                return 'Drone is Picking Up Your Order';
+
+            case 'enroute_to_customer':
+                return 'Drone is on the way';
+                
+            case 'awaiting_customer_pickup':
+                return 'Your Delivery is here';
+
+            case 'completed':
+                return 'Completed';
+
+            default: 
+                return '';
+        }
+    }
 
     const getAdminToken = async () => {
         const adminLogin = {
@@ -60,18 +84,19 @@ const PastOrders = () => {
             active = false;
         }
     }, [])
-    
+
+    function mapper(obj) {
+        return {...obj, status: convertStatusToString(obj.status)};
+    }
 
     return (
-        
-        <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "merchant_preparing").length > 0 
-            ? "merchant_preparing"
-            : "" } 
-            pastOrders={pastOrders.filter(obj => obj.status === "merchant_preparing")} 
-            merchants={merchants}/>
-
-    );
-
+        pastOrders.filter(obj => obj.status !== 'completed').length === 0 
+        ? null
+        : <OrderTimeline  
+            pastOrders={pastOrders.map(obj => mapper(obj))} 
+            merchants={merchants}
+            />
+    )
 }
 
-export default PastOrders;
+export default Timeline;

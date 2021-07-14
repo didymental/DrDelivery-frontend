@@ -1,11 +1,8 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
+import {merchantAPI, loginAPI} from '../apis/rails-backend';
 import axios from 'axios';
 
-import {makeStyles } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 import PastProductTable from './PastProductTable';
 
 const PastOrdersProducts = (props) => {

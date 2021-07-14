@@ -160,7 +160,7 @@ const SignUpForm = (props) => {
             <Snackbar open={signupFail.fail}>
                 <Alert severity="error" onClose={() => setSignUpFail({...state, message: []})}>
                     <AlertTitle>Error</AlertTitle>
-                    {signupFail.message.map(err => '' + err + '.'+ '\n')}
+                    {signupFail.message.map(err =>  err + '. \n')}
                 </Alert>
             </Snackbar>
             </Box>

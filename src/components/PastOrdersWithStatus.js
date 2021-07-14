@@ -1,13 +1,9 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
-import axios from 'axios';
 import PastOrderCard from './PastOrderCard';
 
 import {makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 
@@ -55,9 +51,10 @@ const PastOrdersWithStatus = (props) => {
 
             case 'completed':
                 return 'Past Orders';
-        }
 
-        return '';
+            default: 
+                return '';
+        }
     }
 
     return (

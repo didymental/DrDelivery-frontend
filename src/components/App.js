@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import { BrowserRouter, Route, Redirect, useHistory} from 'react-router-dom';
+import { BrowserRouter, Route, Redirect} from 'react-router-dom';
 import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
@@ -9,7 +9,8 @@ import Account from './Account';
 import Simulator  from '../pages/Simulator.js';
 import OrderHistory  from '../pages/OrderHistory';
 import AccountActivated from '../pages/AccountActivated';
-import {websocketAPI} from '../apis/rails-backend';
+
+
 
 const App = () => {
     

@@ -28,7 +28,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const [merchantId, setMerchantId] = useState(null);
   const [merchantName, setMerchantName] = useState(null);
   const [pickUpAdd, setPickUpAdd] = useState(null);
-  const [order, setOrder] = useState([]);
   const [orderStatus, setOrderStatus] = useState();
 
   const handleNext = (id, addressID, name) => {
@@ -53,7 +52,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   };
 
   const handleOrder = async (orders) => {
-    setOrder(orders);
     setLoading(true);
     let toPost = {
       customer_id: localStorage.getItem('userID'),
@@ -95,7 +93,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   }
 
   const handleEndOrder = () => {
-    // props.setOrder({hasOrder: false});
     handleNext();
   }
 

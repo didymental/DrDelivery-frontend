@@ -1,7 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
-import axios from 'axios';
+import {useState} from 'react';
 import clsx from 'clsx';
 
 import PastOrdersProducts from './PastOrdersProducts';
@@ -9,12 +7,10 @@ import PastOrdersProducts from './PastOrdersProducts';
 
 import {makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 
 

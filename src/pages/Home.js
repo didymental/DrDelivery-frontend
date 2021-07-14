@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
+import Timeline from '../components/Timeline';
 
 const Home = (props) => {
 
@@ -23,6 +24,7 @@ const Home = (props) => {
                 setOrder={props.setOrder}
                 setState={props.setState}
                 order={props.order}/>
+            
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 
@@ -34,6 +36,7 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
+            <Timeline />
             <OrderCard 
                 handleOrder={(address) => props.handleOrder(address)}
                 updateAddress={(address_id) => props.updateAddress(address_id)}
