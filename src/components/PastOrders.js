@@ -6,10 +6,12 @@ import axios from 'axios';
 import PastOrdersWithStatus from './PastOrdersWithStatus';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const PastOrders = () => {
     const [pastOrders, setPastOrders] = useState([]);
     const [merchants, setMerchants] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const getAdminToken = async () => {
         const adminLogin = {
@@ -52,6 +54,7 @@ const PastOrders = () => {
               }
             }).then(response => {
               let merchantList = [...response.data];
+              setLoading(false);
               setMerchants(merchantList);
             });
         };
@@ -67,7 +70,11 @@ const PastOrders = () => {
     const classes = useStyles();
     
 
-    return pastOrders.length === 0 
+    return loading 
+    ? (<Box className={classes.loading}>
+        <CircularProgress size ={40} className={classes.loadingItem}/>
+        </Box>)
+    : pastOrders.length === 0 
         ? <Box className={classes.overallWrapper}>
             <Box className={classes.pastOrderContainer}>
                     <Typography variant="h4">
@@ -124,6 +131,16 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems:'center',
     },
+    loading: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 'auto',
+        padding: theme.spacing(3),
+    },
+    loadingItem: {
+        color: '#FF9E55',
+    }
     
 }));
 

@@ -37,8 +37,12 @@ const ProfileMenu = (props) => {
 
   const classes = useStyles();
 
-  const handleAccount = () => {
+  const handleMyOrder = () => {
     return props.history.push("/orderHistory");
+  }
+
+  const handleAccount = () => {
+    return props.history.push("/profile");
   }
 
   return (
@@ -57,24 +61,24 @@ const ProfileMenu = (props) => {
         transformOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <MenuList>
-            <MenuItem >
+            <MenuItem onClick={handleAccount}>
             <ListItemIcon>
               <AccountCircleIcon/>
             </ListItemIcon>
               Account
             </MenuItem>
-            <MenuItem onClick={handleAccount}>
+            <MenuItem onClick={handleMyOrder}>
               <ListItemIcon>
                 <HistoryIcon/>
               </ListItemIcon>
               My Orders
             </MenuItem>
-            <MenuItem >
+            {/* <MenuItem >
               <ListItemIcon>
                 <FavoriteIcon/>
               </ListItemIcon>
               My Favourites
-            </MenuItem>
+            </MenuItem> */}
           </MenuList>
       </Menu>
     </div>

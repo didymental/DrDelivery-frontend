@@ -5,9 +5,9 @@ import {websocketAPI} from '../apis/rails-backend';
 
 const Simulator = (props) => {
     const token = localStorage.getItem('token');
-    const userid = localStorage.getItem('userID');
     const ws = new WebSocket(websocketAPI + '?token=' + token);
     const drones = new Map();
+    const route = new Map();
 
     return (<div>
         <AppHeader
@@ -18,6 +18,7 @@ const Simulator = (props) => {
         <MapContainer 
             ws={ws}
             drones={drones}
+            route={route}
         />
         </div>);
 }
