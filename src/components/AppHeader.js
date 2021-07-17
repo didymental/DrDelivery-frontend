@@ -67,7 +67,7 @@ const ProfileMenu = (props) => {
               <ListItemIcon>
                 <HistoryIcon/>
               </ListItemIcon>
-              My Order History
+              My Orders
             </MenuItem>
             <MenuItem >
               <ListItemIcon>

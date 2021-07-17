@@ -1,17 +1,10 @@
 import React from 'react';
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
+import OrderCollectedButton from './OrderCollectedButton';
 
 const OrderTimeline = (props) => {
   const pastOrders = props.pastOrders;
@@ -66,16 +59,28 @@ const OrderTimeline = (props) => {
     </Typography>
       {
         pastOrders.map(order => {
-        console.log('here');
-        return (
-        <Paper className={classes.outerbox}>
-          <Typography variant="body1">{searchMerchantName(order.merchant_id, merchants)}</Typography>
-          <Box>
+        console.log(order);
+        return order.status === "Your Delivery is here" 
+        ? (
+          <Paper className={classes.outerbox}>
+            <Typography variant="body1">{searchMerchantName(order.merchant_id, merchants)}</Typography>
             <LinearProgress variant="determinate" value={getValue(order.status)}/>
-          </Box>
-        </Paper>
+            <Box className={classes.buttonWrapper}>
+              <OrderCollectedButton orderID={order.id}/>
+            </Box>
+          </Paper>
         )
-      }) 
+        : order.status === "Completed" 
+          ? null
+          : (
+            <Paper className={classes.outerbox}>
+              <Typography variant="body1">{searchMerchantName(order.merchant_id, merchants)}</Typography>
+              <Box>
+                <LinearProgress variant="determinate" value={getValue(order.status)}/>
+              </Box>
+            </Paper>
+            )
+          }) 
     }
   </Box>
   );
@@ -83,13 +88,25 @@ const OrderTimeline = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   outerbox: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
     maxWidth: '650px',
     marginBottom: theme.spacing(2),
   },
   box: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
+  },
+  buttonWrapper: {
+    marginTop: theme.spacing(1.25),
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing(1.25),
+    background: 'linear-gradient(45deg, #FF9068 30%, #FF4b1F 90%)',
+    color: 'white',
   }
 }));
 

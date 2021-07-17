@@ -12,7 +12,7 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
-
+import OrderCollectedButton from './OrderCollectedButton';
 
 const PastOrderCard = (props) => {
     const [expanded, setExpanded] = useState(false);
@@ -60,6 +60,7 @@ const PastOrderCard = (props) => {
                                 {'Total: S$ ' + totalPrice}
                             </Typography>
                         </Grid>
+                        
                         <Grid
                             item
                             className={classes.gridItem}>
@@ -75,6 +76,8 @@ const PastOrderCard = (props) => {
                             </IconButton>
                         </Grid>
                     </Grid>
+                    {props.status === 'awaiting_customer_pickup' ? <OrderCollectedButton orderID={props.orderID}/> : null}
+                    
                     
                 </Box>
                 <Collapse in={expanded} unmountOnExit>
