@@ -12,6 +12,7 @@ import AccountActivated from '../pages/AccountActivated';
 
 
 
+
 const App = () => {
     
     const [state, setState] = useState({
