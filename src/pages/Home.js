@@ -6,8 +6,10 @@ import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
 import Timeline from '../components/Timeline';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Home = (props) => {
+    const matches = useMediaQuery('(min-width: 768px)');
 
     const classes = useStyles();
 
@@ -19,7 +21,7 @@ const Home = (props) => {
 
 
     return (
-        <div className={classes.overallPage}>
+        <div className={matches ? classes.overallPage : classes.overallPageMobile}>
             <AppHeader 
                 setOrder={props.setOrder}
                 setState={props.setState}
@@ -63,12 +65,23 @@ const useStyles = makeStyles((theme) => ({
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-    }, 
+       
+    },
+    overallPageMobile: {
+        background: '#ffffff',
+        minHeight: '100vh',
+        // backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+    },
     box: {
         padding: theme.spacing(2),
         alignItems: 'center',
         justifyContent: 'center',
     },
-  }));
+  }))
+  
+  ;
 
 export default Home;

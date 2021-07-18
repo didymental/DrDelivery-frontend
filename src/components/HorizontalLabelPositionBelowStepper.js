@@ -6,7 +6,6 @@ import {customerAPI, merchantAPI, loginAPI, newOrderAPI, websocketAPI} from '../
 import OrderStatus from './OrderStatus';
 import MapContainer from './Map';
 
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -117,24 +116,24 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
-      <div>
-        <Container>
-        <Grid container spacing={2}>
-            { merchants.map(elem => (
-              <Grid
-              key={elem.id}
-              item xs={4}
-              >
-                  <MerchantCard 
-                    data={elem} 
-                    action={props.action}
-                    />
-              </Grid>
-              ))
-            } 
-              </Grid>
-        </Container>
-      </div>
+      <Container>
+        <Box display={{sm: 'block', md: 'flex'}} >
+                { merchants.map(elem => (
+                  
+                    <Box
+                      flex={1}
+                      className={classes.boxWrapper}
+                    >
+                        <MerchantCard 
+                          data={elem} 
+                          action={props.action}
+                          />
+                    </Box>
+                  
+                  ))
+                } 
+          </Box>
+      </Container>
     );
   }
 
@@ -169,8 +168,9 @@ const HorizontalLabelPositionBelowStepper = (props) => {
               )
             : activeStep === 1
               ? (
-              <div className={classes.root}>
-                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+              //<div className={classes.root}>
+              <div>
+                {/* <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography> */}
                 <ProductDisplay 
                   id={merchantId} 
                   handleNext={handleNext} 
@@ -225,6 +225,11 @@ const useStyles = makeStyles((theme) => ({
   },
   stepIcon: {
     color: '#536999',
+  },
+  boxWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 }));
 

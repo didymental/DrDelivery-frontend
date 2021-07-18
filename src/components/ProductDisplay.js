@@ -88,20 +88,26 @@ const ProductDisplay = (props) => {
                 direction="row"
                 alignItems="flex-start"
               >
-                {products.map(elem => (
-                  <Grid
-                  item xs={3}
-                  className={classes.container}
-                  key={elem.id}>
-                      <Product 
-                        details={elem} 
-                        addToCart={addToCart} 
-                        removeFromCart={removeFromCart} 
-                        orderId={orderId}
-                        image={'https://source.unsplash.com/random'}/>
-                    </Grid>))
-                  }
+                
+                  {products.map(elem => (
+                    
+                    <Grid
+                    item xs
+                    className={classes.container}
+                    key={elem.id}>
+                        <Product 
+                          details={elem} 
+                          addToCart={addToCart} 
+                          removeFromCart={removeFromCart} 
+                          orderId={orderId}
+                          image={'https://source.unsplash.com/random'}/>
+                      </Grid>
+                      
+                      ))
+                    }
+                
                 </Grid>
+                
               </Box>
           </Container>
           <Box className={classes.cartWrapper} flexGrow={1}>

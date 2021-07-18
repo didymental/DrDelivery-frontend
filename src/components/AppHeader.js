@@ -101,7 +101,7 @@ const AppHeader = (props) => {
 
     const classes = useStyles();
 
-    const mediaQuery = window.matchMedia('(min-width: 768px');
+    const mediaQuery = window.matchMedia('(min-width: 768px)');
     console.log(mediaQuery);
 
     useEffect(() => {
