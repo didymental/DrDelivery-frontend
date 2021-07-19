@@ -94,11 +94,13 @@ const MapContainer = (props) => {
   const incomingMessageListener = (message) => {
     let messageData = JSON.parse(message.data);
     if (messageData.type !== "ping") {
-      let data = {};
-      if (messageData.message != null) {
+      let data = {};      
+      if (messageData.message !== undefined) {
         console.log(messageData.message);
+        const text = messageData.message;
+        console.log(text);
+        data = JSON.parse(text);
         console.log(data);
-        data = JSON.parse(messageData.message);
         
       }
 
