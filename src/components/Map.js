@@ -57,6 +57,7 @@ const MapContainer = (props) => {
   const [chargingRoutes, setChargingRoutes] = useState([]);
   const [merchantAddress, setMerchantAddress] = useState(null);
   const [customerAddress, setCustomerAddress] = useState(null);
+  //const [data, setData] = useState({});
 
   function immutableUpdate(arr, newDrone, i) {
     return arr.map((item, index) => i === index ? newDrone: item );
@@ -93,9 +94,12 @@ const MapContainer = (props) => {
   const incomingMessageListener = (message) => {
     let messageData = JSON.parse(message.data);
     if (messageData.type !== "ping") {
-      var data = {};
+      let data = {};
       if (messageData.message != null) {
+        console.log(messageData.message);
+        console.log(data);
         data = JSON.parse(messageData.message);
+        
       }
 
       if (data.drone_curr_address !== undefined && data.drone_curr_address != null) { // if update from Drone Channel
