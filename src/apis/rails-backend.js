@@ -8,4 +8,4 @@ export const custAddressAPI = webProtocol + baseURL + '/api/v1/customers/2/addre
 export const merchantAPI = webProtocol + baseURL + '/api/v1/merchants';
 export const newOrderAPI = webProtocol + baseURL + '/api/v1/newOrder';
 
-export const websocketAPI = 'ws://' + baseURL + '/api/v1/cable';
+export const websocketAPI = 'wss://' + baseURL + '/api/v1/cable';
