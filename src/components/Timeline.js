@@ -2,12 +2,15 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
 import axios from 'axios';
+import {websocketAPI} from '../apis/rails-backend';
 
 import OrderTimeline from './OrderTimeline';
 
 const Timeline = (props) => {
     const [pastOrders, setPastOrders] = useState([]);
     const [merchants, setMerchants] = useState([]);
+    
+    const ws = new WebSocket(websocketAPI + '?token=' + localStorage.getItem('token'));
 
     function convertStatusToString(status) {
         switch(status) {
@@ -60,7 +63,6 @@ const Timeline = (props) => {
                 }
             });
             if (active) {
-                
                 setPastOrders([...orderResponse.data])
             }
         }
@@ -103,6 +105,8 @@ const Timeline = (props) => {
             pastOrders={pastOrders.map(obj => mapper(obj))} 
             merchants={merchants}
             setPastOrders={setPastOrders}
+            ws={ws}
+            convertStatusToString={convertStatusToString}
             />)
     )
 }

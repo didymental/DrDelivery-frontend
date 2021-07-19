@@ -1,25 +1,25 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+
+import OrderCollectedButton from './OrderCollectedButton';
+import ThankYouOrder from './ThankYouOrder';
+
+
 
 import Typography from '@material-ui/core/Typography';
 import {makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Box from '@material-ui/core/Box';
-import OrderCollectedButton from './OrderCollectedButton';
-import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Button from '@material-ui/core/Button';
-import ThankYouOrder from './ThankYouOrder';
+
 
 const OrderTimeline = (props) => {
-
+  
   const merchants = props.merchants;
   const [pastOrders, setPastOrders] = useState(props.pastOrders.map(order => {
     return {...order, show: false};
   }));
-  
-  //const [isComplete, setIsComplete] = useState(false);
   
   const matches = useMediaQuery('(min-width: 768px)');
 
@@ -29,6 +29,61 @@ const OrderTimeline = (props) => {
     }));
     props.setPastOrders([]);
   }
+
+  const [state, setState] = useState({
+    ws: null,
+    disconnected: true,
+  });
+
+  const incomingMessageListener = (message) => {
+    let messageData = JSON.parse(message.data);
+    if (messageData.type !== "ping") {
+      let data = {};      
+      if (messageData.message !== undefined) {
+        const text = messageData.message;
+        data = JSON.parse(text);
+      }
+      
+      if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
+        console.log('update and refresh please');
+        setPastOrders(pastOrders.map(order => {
+          if (order.id === data.order.id) {
+            return {...order, status: props.convertStatusToString(data.order.status)}
+          } else {
+            return order;
+          }
+        }));
+      }
+    }
+  }
+
+  const closeSocket = (event) => {
+    console.log("Disconnected from WS");
+    setState({...state, disconnected: true});
+  }
+
+  useEffect(() => {
+    props.ws.addEventListener('message', incomingMessageListener);
+    props.ws.addEventListener('close', closeSocket);
+
+    props.ws.onopen = () => {
+        props.ws.send(JSON.stringify({
+          "command":"subscribe",
+          "identifier":"{\"channel\":\"OrderChannel\"}"
+        }));
+    
+        props.ws.send(JSON.stringify({
+          "command":"message",
+          "identifier":"{\"channel\":\"OrderChannel\"}", 
+          "data":"{\"action\": \"request\"}"
+        }));
+      setState({...state, ws: props.ws, disconnected: false});
+    }
+
+    return () => {
+      props.ws.close();
+    }
+  }, []);
 
   const classes = useStyles();
 
@@ -105,6 +160,7 @@ const OrderTimeline = (props) => {
                     orderID={order.id} 
                     setPastOrders={setPastOrders}
                     pastOrders={pastOrders}
+                    ws={props.ws}
                   />
                 </Box>
               </Paper>

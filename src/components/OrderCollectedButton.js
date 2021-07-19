@@ -42,6 +42,7 @@ const OrderCollectedButton = (props) => {
                         return order;
                     }
                 }));
+                props.ws.close();
             } else {
                 setOpen(true);
             }
