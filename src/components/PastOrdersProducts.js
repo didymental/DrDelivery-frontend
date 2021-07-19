@@ -8,6 +8,7 @@ import PastProductTable from './PastProductTable';
 const PastOrdersProducts = (props) => {
     const merchantID = props.merchantID;
     
+    
 
     const [merchantProducts, setMerchantProducts] = useState([]);
 
@@ -51,8 +52,11 @@ const PastOrdersProducts = (props) => {
     return (
         <PastProductTable 
             orderEntries={props.orderEntries}
-            merchantProducts={merchantProducts} />
+            merchantProducts={merchantProducts} 
+
+        />
     );
 }
+
 
 export default PastOrdersProducts;

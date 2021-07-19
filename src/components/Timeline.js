@@ -4,7 +4,6 @@ import {customerAPI, merchantAPI, loginAPI} from '../apis/rails-backend';
 import axios from 'axios';
 
 import OrderTimeline from './OrderTimeline';
-import { Container } from '@material-ui/core';
 
 const Timeline = (props) => {
     const [pastOrders, setPastOrders] = useState([]);
@@ -48,6 +47,7 @@ const Timeline = (props) => {
     };
 
     useEffect(() => {
+        
         let active = true;
 
         const getPastOrders = async () => {
@@ -60,6 +60,7 @@ const Timeline = (props) => {
                 }
             });
             if (active) {
+                
                 setPastOrders([...orderResponse.data])
             }
         }
@@ -77,8 +78,13 @@ const Timeline = (props) => {
             });
         };
 
-        getPastOrders();
-        getMerchants();
+        if (pastOrders.length !== 0 && pastOrders.filter(obj => obj.status !== 'completed').length === 0) { // if there are no orders in progress
+
+        } else {
+            
+            getPastOrders();
+            getMerchants();
+        }
 
         return () => {
             active = false;
@@ -92,10 +98,12 @@ const Timeline = (props) => {
     return (
         pastOrders.filter(obj => obj.status !== 'completed').length === 0 
         ? null
-        : <OrderTimeline  
+        : 
+        (<OrderTimeline  
             pastOrders={pastOrders.map(obj => mapper(obj))} 
             merchants={merchants}
-            />
+            setPastOrders={setPastOrders}
+            />)
     )
 }
 

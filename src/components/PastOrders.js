@@ -41,7 +41,7 @@ const PastOrders = () => {
                 }
             });
             if (active) {
-                setPastOrders([...orderResponse.data])
+                setPastOrders([...orderResponse.data].sort((i,j) => i.id - j.id));
             }
         }
 
@@ -90,28 +90,38 @@ const PastOrders = () => {
                 ? "awaiting_customer_pickup"
                 : "" } 
                 pastOrders={pastOrders.filter(obj => obj.status === "awaiting_customer_pickup")} 
-                merchants={merchants}/>
+                merchants={merchants}
+                setPastOrders={setPastOrders}
+            />
             <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "merchant_preparing").length > 0 
                 ? "merchant_preparing"
                 : "" } 
                 pastOrders={pastOrders.filter(obj => obj.status === "awaiting_drone_pickup")} 
-                merchants={merchants}/>
+                merchants={merchants}
+                setPastOrders={setPastOrders}
+            />
             <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "awaiting_drone_pickup").length > 0 
                 ? "awaiting_drone_pickup"
                 : "" } 
                 pastOrders={pastOrders.filter(obj => obj.status === "awaiting_drone_pickup")} 
-                merchants={merchants}/>
+                merchants={merchants}
+                setPastOrders={setPastOrders}
+            />
             <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "enroute_to_customer").length > 0 
                 ? "enroute_to_customer"
                 : "" } 
                 pastOrders={pastOrders.filter(obj => obj.status === "enroute_to_customer")} 
-                merchants={merchants}/>      
+                merchants={merchants}
+                setPastOrders={setPastOrders}
+            />      
             
             <PastOrdersWithStatus status={pastOrders.filter(obj => obj.status === "completed").length > 0 
                 ? "completed"
                 : "" } 
                 pastOrders={pastOrders.filter(obj => obj.status === "completed")} 
-                merchants={merchants}/>       
+                merchants={merchants}
+                setPastOrders={setPastOrders}
+            />       
 
         </div>
             

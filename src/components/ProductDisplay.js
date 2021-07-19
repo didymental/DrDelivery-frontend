@@ -11,8 +11,11 @@ import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 const ProductDisplay = (props) => {
+    const matches = useMediaQuery('(min-width: 768px)');
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [orderId, setOrderId] = useState(0);
@@ -92,7 +95,7 @@ const ProductDisplay = (props) => {
                   {products.map(elem => (
                     
                     <Grid
-                    item xs
+                    item xs={matches ? 4 : 6}
                     className={classes.container}
                     key={elem.id}>
                         <Product 

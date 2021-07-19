@@ -10,9 +10,14 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
+
+    
 
 const Product = (props) => {
     const classes = useStyles();
+    const matches = useMediaQuery('(min-width: 769px)');
 
     const addToCart = () => {
       const id = props.orderId + 1;
@@ -21,7 +26,7 @@ const Product = (props) => {
 
     return (
       <Tooltip title="Add to Cart">
-        <Card className={classes.root} onClick={addToCart}>
+        <Card className={matches ? classes.rootDesktop : classes.root} onClick={addToCart}>
           <CardActionArea className={classes.container}>
           <CardMedia 
                 image={props.image}
@@ -52,6 +57,11 @@ const Product = (props) => {
 const useStyles = makeStyles((theme) => ({
     root: {
         maxWidth: 345,
+        //minHeight: 320,
+    },
+    rootDesktop: {
+        width: 340,
+        //height: 300,
     },
     container: {
         //maxHeight: 200,

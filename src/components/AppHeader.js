@@ -1,14 +1,11 @@
 import React from 'react';
 import {Link, useHistory} from 'react-router-dom';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -20,10 +17,13 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import HistoryIcon from '@material-ui/icons/History';
-import FavoriteIcon from '@material-ui/icons/Favorite';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import DonutLargeIcon from '@material-ui/icons/DonutLarge';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 
 const ProfileMenu = (props) => {
+  
   const [anchorEl, setAnchorEl] = useState(null);
   
   const handleClick = (event) => {
@@ -43,6 +43,10 @@ const ProfileMenu = (props) => {
 
   const handleAccount = () => {
     return props.history.push("/profile");
+  }
+
+  const handleOrderProgress = () => {
+    return props.history.push("/orderProgress");
   }
 
   return (
@@ -73,12 +77,12 @@ const ProfileMenu = (props) => {
               </ListItemIcon>
               My Orders
             </MenuItem>
-            {/* <MenuItem >
+            <MenuItem onClick={handleOrderProgress}>
               <ListItemIcon>
-                <FavoriteIcon/>
+                <DonutLargeIcon/>
               </ListItemIcon>
-              My Favourites
-            </MenuItem> */}
+              Order Progress
+            </MenuItem>
           </MenuList>
       </Menu>
     </div>
@@ -89,7 +93,7 @@ const AppHeader = (props) => {
     const [state, setState] = useState({
         open: false,
     });
-    const [media, setMedia] = useState(true);
+    const matches = useMediaQuery('(min-width: 769px)');
 
     const toggleDrawer = (open) => {
         if (open) {
@@ -101,28 +105,9 @@ const AppHeader = (props) => {
 
     const classes = useStyles();
 
-    const mediaQuery = window.matchMedia('(min-width: 768px)');
-    console.log(mediaQuery);
-
-    useEffect(() => {
-      setMedia(mediaQuery.matches);
-    }, [setMedia, mediaQuery]);
-
-    // const menuOptions = () => {
-    //   return (
-    //     <Menu 
-    //       id="fade-menu"
-    //       open={state.open}
-    //       onClose={toggleDrawer()}
-    //       TransitionComponent={Fade}
-    //     >
-    //       <MenuItem onClick={props.handleLogout}>Logout</MenuItem>
-    //     </Menu>
-    //   );
-    // };
-
 
     const history = useHistory();
+
     const handleLogout = () => {
         props.setState({
             isLoggedIn: false,
@@ -133,6 +118,18 @@ const AppHeader = (props) => {
         localStorage.removeItem('userID');
         localStorage.removeItem('token');
         history.push("/");
+    }
+
+    const handleMyOrder = () => {
+      return history.push("/orderHistory");
+    }
+  
+    const handleAccount = () => {
+      return history.push("/profile");
+    }
+
+    const handleOrderProgress = () => {
+      return history.push("/orderProgress");
     }
 
 
@@ -152,31 +149,44 @@ const AppHeader = (props) => {
     
     const drawerList = () => {
         return (
-            <List >
+          <MenuList>
                 <ListSubheader className={classes.title}>
-                  Menu
+                  DrDelivery Menu
                 </ListSubheader>
-                <Link to='/profile'>
-                  <ListItem button key={1}>
-                    <AccountCircleIcon/>
-                    <ListItemText
-                        primary={'Profile'}/>
-                  </ListItem>
-                </Link>
-                <Link to='/orderProgress' className={classes.button}>
-                  <Button className={classes.button}>Map</Button>
-                </Link>
-                <ListItem button key={2} onClick={handleLogout}>
-                  
-                    <ListItemText
-                        primary={'Logout'}/>
-                </ListItem>
+
+                <MenuItem onClick={handleAccount}>
+                  <ListItemIcon>
+                    <AccountCircleIcon className={classes.drawerIcons} />
+                  </ListItemIcon>
+                  Account
+                </MenuItem>
+
+                <MenuItem onClick={handleMyOrder}>
+                  <ListItemIcon>
+                    <HistoryIcon className={classes.drawerIcons} />
+                  </ListItemIcon>
+                  My Order
+                </MenuItem>
+
+                <MenuItem onClick={handleOrderProgress}>
+                  <ListItemIcon>
+                    <DonutLargeIcon className={classes.drawerIcons} />
+                  </ListItemIcon>
+                  Order Progress
+                </MenuItem>
+
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <ExitToAppIcon className={classes.drawerIcons} />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
                 
-            </List>
+            </MenuList>
         );
     }
   
-    return media 
+    return matches 
       ? (
       <div className={classes.root}>
         <AppBar position="static" elevation={0} className={classes.paper}>
@@ -185,9 +195,9 @@ const AppHeader = (props) => {
               <Link to="/home" className={classes.logoPosition} onClick={() => props.setOrder({hasOrder: false})}>
                 <Logo width="200" />
               </Link>
-            <Link to='/orderProgress' className={classes.button}>
-              <Button className={classes.button}>Map</Button>
-            </Link>
+            {/* <Link to='/orderProgress' className={classes.button}>
+              <Button className={classes.button}>Order Progress </Button>
+            </Link> */}
             <ProfileMenu history={history}/>
             <Button className={classes.button} onClick={handleLogout}>
               Logout
@@ -195,7 +205,7 @@ const AppHeader = (props) => {
           </Toolbar>
           
         </AppBar>
-        {drawer()}
+        
       </div>
     )
     : (
@@ -253,7 +263,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0 3px 5px 2px rgba(205, 205, 235, 0.5)',
     color: 'white',
     borderRadius: 5,
-    background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+    // background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
+    background: '#2B468B',
   },
   button: {
     display: 'flex',
@@ -263,6 +274,9 @@ const useStyles = makeStyles((theme) => ({
   empty: {
     flexGrow: 0,
   },
+  drawerIcons: {
+    color: 'white',
+  }
 }));
 
 export default AppHeader;

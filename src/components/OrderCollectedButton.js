@@ -3,7 +3,6 @@ import {useState} from 'react';
 import axios from 'axios';
 import {makeStyles } from '@material-ui/core/styles';
 import {customerAPI} from '../apis/rails-backend';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Dialog from '@material-ui/core/Dialog';
@@ -20,7 +19,7 @@ const Transition = React.forwardRef( (props, ref) => {
 const OrderCollectedButton = (props) => {
     const orderID = props.orderID;
     const [open, setOpen] = useState(false);
-    const [success, setSuccess] = useState(false);
+    // const [success, setSuccess] = useState(false);
 
     const classes = useStyles();
 
@@ -34,15 +33,20 @@ const OrderCollectedButton = (props) => {
               'Authorization': `Bearer ${token}`,
           },
         }).then(response => {
-            console.log(response);
-            setOpen(true);
+            //props.setIsComplete(true);
             if (response.statusText === "OK") {
-                console.log('success');
-                setSuccess(true);
+                props.setPastOrders(props.pastOrders.map(order => {
+                    if (order.id === orderID) {
+                        return {...order, show: true}; 
+                    } else {
+                        return order;
+                    }
+                }));
             } else {
-                console.log('fail');
-                setSuccess(false);
+                setOpen(true);
             }
+        }).catch(error => {
+            setOpen(true);
         });
       
     }
@@ -55,7 +59,7 @@ const OrderCollectedButton = (props) => {
     return (
         <div>
         <Button className={classes.button} onClick={handleClick}>
-            Order Collected
+            Collect Order
             <ChevronRightIcon/>
         </Button>
         <Dialog
@@ -64,7 +68,7 @@ const OrderCollectedButton = (props) => {
             keepMounted
             onClose={handleClose}
         >
-            {success 
+            {/* {success 
                 ? 
                     (
                         <div>
@@ -82,8 +86,9 @@ const OrderCollectedButton = (props) => {
                                 </Button>
                             </DialogActions>
                         </div>
-                    )
-                :   (
+                    ) */}
+                {/* :    */}
+                (
                     <div>
                         <DialogTitle id="title">
                             Oh no... we encountered an error...
@@ -100,7 +105,7 @@ const OrderCollectedButton = (props) => {
                         </DialogActions>
                     </div>
                     )
-            }
+           {/* } */}
         </Dialog>
         </div>
     );

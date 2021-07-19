@@ -9,7 +9,7 @@ import Timeline from '../components/Timeline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Home = (props) => {
-    const matches = useMediaQuery('(min-width: 768px)');
+    const matches = useMediaQuery('(min-width: 769px)');
 
     const classes = useStyles();
 

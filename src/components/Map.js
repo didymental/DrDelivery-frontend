@@ -3,6 +3,7 @@ import axios from 'axios';
 import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
 import React from 'react';
 import {useState, useEffect} from 'react';
+import OrderCollectedButton from './OrderCollectedButton';
 
 const getAdminToken = async () => {
   const adminLogin = {
@@ -57,6 +58,7 @@ const MapContainer = (props) => {
   const [chargingRoutes, setChargingRoutes] = useState([]);
   const [merchantAddress, setMerchantAddress] = useState(null);
   const [customerAddress, setCustomerAddress] = useState(null);
+  const [click, setClick] = useState(false);
   //const [data, setData] = useState({});
 
   function immutableUpdate(arr, newDrone, i) {
@@ -96,11 +98,11 @@ const MapContainer = (props) => {
     if (messageData.type !== "ping") {
       let data = {};      
       if (messageData.message !== undefined) {
-        console.log(messageData.message);
+        
         const text = messageData.message;
-        console.log(text);
+        
         data = JSON.parse(text);
-        console.log(data);
+        
         
       }
 
@@ -158,17 +160,21 @@ const MapContainer = (props) => {
         "identifier":"{\"channel\":\"DroneChannel\"}", 
         "data":"{\"action\": \"request\"}"
       }));
+
+      setInterval(() => {
+        props.ws.send(JSON.stringify({
+          "command":"subscribe",
+          "identifier":"{\"channel\":\"OrderChannel\"}"
+        }));
+    
+        props.ws.send(JSON.stringify({
+          "command":"message",
+          "identifier":"{\"channel\":\"OrderChannel\"}", 
+          "data":"{\"action\": \"request\"}"
+        }));
+      }, 3000);
   
-      props.ws.send(JSON.stringify({
-        "command":"subscribe",
-        "identifier":"{\"channel\":\"OrderChannel\"}"
-      }));
-  
-      props.ws.send(JSON.stringify({
-        "command":"message",
-        "identifier":"{\"channel\":\"OrderChannel\"}", 
-        "data":"{\"action\": \"request\"}"
-      }));
+      
   
       setState({...state, ws: props.ws, disconnected: false});
     }
@@ -292,6 +298,35 @@ const MapContainer = (props) => {
       {merchantShops}
 
       {destination}
+
+      <Marker 
+      position={{
+        lat: 1.368635520835842,
+        lng: 103.81916601690331
+      }}
+
+      onClick={() => { 
+        console.log('click');
+        setClick(true); }
+      }
+      />
+
+      <InfoWindow
+        visible={click}
+
+        position={{
+          lat: 1.368635520835842,
+          lng: 103.81916601690331
+        }}
+
+        onCloseClick={() => setClick(false)}
+      
+      >
+
+        <OrderCollectedButton/>
+        
+      </InfoWindow>
+
 
     </Map>
   )
