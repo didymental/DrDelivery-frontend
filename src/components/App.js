@@ -86,7 +86,7 @@ const App = () => {
                         userID={state.userID}
                     />
                     <Route path="/order/address" exact component={ () => <OrderAddress 
-                        //handleLogout={handleLogOut}
+                        
                         dropOffAdd={dropOffAddress}
                         setOrder={setOrder}
                         setState={setState}
@@ -95,19 +95,20 @@ const App = () => {
                     />
                     <Route path="/profile" exact component={() => 
                         <Account 
-                            //handleLogout={handleLogOut}
+                            setState={setState}
                             setOrder={setOrder}
+                            order={order}
                         />}/>
                     <Route path="/orderProgress" exact component={() => 
                         <Simulator 
-                            //handleLogout={handleLogOut}
+                            
                             setOrder={setOrder}
                             setState={setState}
                             order={order}
                         />}/>
                     <Route path="/orderHistory" exact component={() => 
                         <OrderHistory 
-                            //handleLogout={handleLogOut}
+                            
                             setOrder={setOrder}
                             setState={setState}
                             order={order}
