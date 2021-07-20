@@ -13,7 +13,7 @@ const MapContainer = (props) => {
   });
 
   const [route, setRoute] = useState(props.route);
-  const [chargingRoutes, setChargingRoutes] = useState([]);
+  const [chargingRoutes, setChargingRoutes] = useState(props.chargingRoutes);
   const [merchantAddress, setMerchantAddress] = useState(props.merchantAddresses);
   const [customerAddress, setCustomerAddress] = useState(props.customerAddresses);
   const [click, setClick] = useState(false);
@@ -82,18 +82,23 @@ const MapContainer = (props) => {
 
         setRoute(route.set(data.drone.id, [droneLocation, ...stationsVisibleToUser]));
 
-        setChargingRoutes(stationsVisibleToUser.filter(obj => obj.addressable_type === "Station"));
+        setChargingRoutes(
+          chargingRoutes.set(data.drone.id, stationsVisibleToUser.filter(obj => obj.addressable_type === "Station"))
+        );
       } 
       
       if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
         console.log('taking from Order Channel');
         getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
-        getMerchantAddress(setMerchantAddress, 
+        getMerchantAddress(
+          setMerchantAddress, 
           data.order.merchant_id, 
           data.order.pick_up_address_id, 
           data.order.drone_id,
           merchantAddress
         );
+
+        console.log(merchantAddress);
 
       }
 
@@ -136,9 +141,8 @@ const MapContainer = (props) => {
           "data":"{\"action\": \"request\"}"
         }));
       }, 3000);
-  
-      
-  
+
+      console.log('connected');
       setState({...state, ws: props.ws, disconnected: false});
     }
 
@@ -167,39 +171,40 @@ const MapContainer = (props) => {
 
   ))
 
-  // const chargingStations = Array.from(chargingRoutes, ([drone_id, routeCoord]) => ({drone_id, routeCoord}))
-  //                               .map(obj => {
-  //                                 return (
-  //                                   <Marker
-  //                                     title={'Drone Charging Stations'}
-  //                                     name={'Drone'}
-  //                                     icon={{
-  //                                       url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
-  //                                       anchor: new window.google.maps.Point(16,16),
-  //                                       scaledSize: new window.google.maps.Size(32, 32),
-  //                                     }}
-  //                                     position={{lat: obj.latitude, lng: obj.longitude}} 
-  //                                   />
-  //                                   )
-  //                               });
+  const chargingStations = Array.from(chargingRoutes, ([drone_id, routeCoord]) => ({drone_id, routeCoord}))
+                                .map(obj => {
+                                  return (
+                                    <Marker
+                                      title={'Drone Charging Stations'}
+                                      name={'Drone'}
+                                      icon={{
+                                        url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
+                                        anchor: new window.google.maps.Point(16,16),
+                                        scaledSize: new window.google.maps.Size(32, 32),
+                                      }}
+                                      position={{lat: obj.latitude, lng: obj.longitude}} 
+                                    />
+                                    )
+                                });
 
-  const chargingStations = chargingRoutes.map(obj => {
+  // const chargingStations = chargingRoutes.map(obj => {
     
-    return (
-    <Marker
-      title={'Drone Charging Stations'}
-      name={'Drone'}
-      icon={{
-        url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
-        anchor: new window.google.maps.Point(16,16),
-        scaledSize: new window.google.maps.Size(32, 32),
-      }}
-      position={{lat: obj.latitude, lng: obj.longitude}} 
-    />
-    )
-  } )
+  //   return (
+  //   <Marker
+  //     title={'Drone Charging Stations'}
+  //     name={'Drone'}
+  //     icon={{
+  //       url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
+  //       anchor: new window.google.maps.Point(16,16),
+  //       scaledSize: new window.google.maps.Size(32, 32),
+  //     }}
+  //     position={{lat: obj.latitude, lng: obj.longitude}} 
+  //   />
+  //   )
+  // } )
 
   const shops = Array.from(merchantAddress, ([key, value]) => ({key, value}));
+  // console.log(shops);
 
   // const merchantShops = merchantAddress === null 
   //   ? null 
@@ -221,6 +226,8 @@ const MapContainer = (props) => {
   
 
   const routes = Array.from(route, ([drone_id, routeCoord]) => ({drone_id, routeCoord}));
+
+  const [shopInfo, setShopInfo] = useState(false);
 
   return (
     <Map google={props.google} zoom={12}
@@ -244,18 +251,33 @@ const MapContainer = (props) => {
 
       {
         shops.map( obj => (
+          <div>
           <Marker 
             title={obj.value.name + ' (' + obj.value.street_address + ')'}
             name={obj.value.name}
             icon={{
-              url: "https://res.cloudinary.com/didymusne/image/upload/v1626514207/shop_aq8bdk.png",
+              url: "https://res.cloudinary.com/didymusne/image/upload/v1626777887/shops_epfb9q.png",
               anchor: new window.google.maps.Point(16,16),
               scaledSize: new window.google.maps.Size(32, 32),
             }}
             position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+            onMouseover={() => setShopInfo(true)}
+            onMouseOut={() => setShopInfo(false)}
         />
+          <InfoWindow
+          visible={shopInfo}
+          position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+
+          onCloseClick={() => setShopInfo(false)}
+          >
+          <img src="https://res.cloudinary.com/didymusne/image/upload/v1626776826/SHOP_WINDOW_wwf2ha.png" />
+          </InfoWindow> 
+        </div>
         ))
       }
+      
+
+         
 
       {
         destinations.map( obj => (
@@ -352,7 +374,7 @@ const getMerchantAddress = async (f, merchantID, addressID, droneID, merchantAdd
         'Authorization': `Bearer ${token}`,
     }
   }).then(response => {
-    
+    console.log(merchantAddress);
     f(merchantAddress.set(droneID, response.data));
   })
 }

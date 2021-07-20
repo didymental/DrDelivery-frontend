@@ -10,6 +10,7 @@ const Simulator = (props) => {
     const route = new Map();
     const merchantAddresses = new Map();
     const customerAddresses = new Map();
+    const chargingRoutes = new Map();
 
     return (<div>
         <AppHeader
@@ -23,7 +24,7 @@ const Simulator = (props) => {
             route={route}
             merchantAddresses={merchantAddresses}
             customerAddresses={customerAddresses}
-            
+            chargingRoutes={chargingRoutes}
         />
         </div>);
 }

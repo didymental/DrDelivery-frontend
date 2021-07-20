@@ -100,7 +100,6 @@ const App = () => {
                         />}/>
                     <Route path="/orderProgress" exact component={() => 
                         <Simulator 
-                            
                             setOrder={setOrder}
                             setState={setState}
                             order={order}
