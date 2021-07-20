@@ -94,7 +94,7 @@ const SignUpForm = (props) => {
                         onChange={handleNameInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="email"
@@ -103,7 +103,7 @@ const SignUpForm = (props) => {
                         onChange={handleEmailInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="contact-number"
@@ -112,7 +112,7 @@ const SignUpForm = (props) => {
                         onChange={handleNumberInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="password-input"
@@ -123,7 +123,7 @@ const SignUpForm = (props) => {
                         onChange={handlePasswordInput}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="password-confirmation"
@@ -133,7 +133,7 @@ const SignUpForm = (props) => {
                         onChange={handlePasswordConfirmation}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionButton}>
                         <Button
                             className={classes.signup}
@@ -160,7 +160,7 @@ const SignUpForm = (props) => {
             <Snackbar open={signupFail.fail}>
                 <Alert severity="error" onClose={() => setSignUpFail({...state, message: []})}>
                     <AlertTitle>Error</AlertTitle>
-                    {signupFail.message.map(err => '' + err + '.'+ '\n')}
+                    {signupFail.message.map(err =>  err + '. \n')}
                 </Alert>
             </Snackbar>
             </Box>
@@ -181,6 +181,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: theme.spacing(1.5),
     },
     actionButton: {
         display: 'inline-block',

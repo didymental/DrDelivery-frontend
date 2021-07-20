@@ -76,7 +76,7 @@ const AddressForm = (props) => {
                         onChange={handleNameInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="building-no"
@@ -85,7 +85,7 @@ const AddressForm = (props) => {
                         onChange={handleBuildingNumInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="street"
@@ -94,7 +94,7 @@ const AddressForm = (props) => {
                         onChange={handleStreetAddInput}
                     />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="unit-no"
@@ -103,7 +103,7 @@ const AddressForm = (props) => {
                         onChange={handleUnitNumInput}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="postal-code"
@@ -112,7 +112,7 @@ const AddressForm = (props) => {
                         onChange={handlePostCode}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="city"
@@ -121,7 +121,7 @@ const AddressForm = (props) => {
                         onChange={handleCityInput}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionCard}>
                     <TextField
                         id="country"
@@ -130,7 +130,7 @@ const AddressForm = (props) => {
                         onChange={handleCountryInput}
                         />
                 </div>
-                <br/>
+                
                 <div className={classes.actionButton}>
                         <Button
                             className={classes.add}
@@ -159,6 +159,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: theme.spacing(1.5),
     },
     actionButton: {
         display: 'flex',

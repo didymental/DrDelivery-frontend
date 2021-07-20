@@ -8,7 +8,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -37,18 +36,20 @@ const CheckOutButton = (props) => {
     }
 
     return (
-        <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
-        <Container className={classes.cartCheckOutWrapper} onClick={handleClick}>
-            <Button disabled={props.cart.length === 0}>
-                <Typography 
-                    variant="body1"
-                    component="div"
-                >
-                    CHECKOUT NOW
-                </Typography>
+        
+        
+            <Button disabled={props.cart.length === 0} onClick={handleClick} className={classes.cartCheckOutWrapper}>
+                <Tooltip title={props.cart.length === 0 ? "Add items to your cart" : ""}>
+                    <Typography 
+                        variant="body1"
+                        component="div"
+                    >
+                        CHECKOUT NOW
+                    </Typography>
+                </Tooltip>
             </Button>
-        </Container>
-        </Tooltip>
+        
+        
     )
 }
 
@@ -65,12 +66,14 @@ const Cart = (props) => {
     }
 
     const countPerItem = () => {
-        const items = [...props.cart];
+        const items = props.cart.map(x => x);
         let unique = {};
         for (let i = 0; i < items.length; i++) {
             const name = items[i].name;
             if (unique[name]) {
                 unique[name][0]++;
+                // unique = {...unique, name: [unique[name][0]++, unique[name][1]]}
+
             } else {
                 Object.assign(unique, {[name]: [1, items[i]]});
             }
@@ -119,11 +122,16 @@ const Cart = (props) => {
             return obj;
         });
 
-        let noDuplicateArr = arr.length > 0 ? [arr[0]] : [];
-        for (let i = 1; i < arr.length; i++) {
-            if (noDuplicateArr.filter(x => x.product_id !== arr[i].product_id).length > 0) {
-                noDuplicateArr = [...noDuplicateArr, arr[i]];
-            }
+        // Remove duplicates from arr
+        arr.sort((a, b) => a.product_id - b.product_id);
+        let arrCopy = [...arr];
+        let noDuplicateArr = [];
+        let i = 0; 
+        while (i < arr.length) {
+            const nonUniqArr = arrCopy.filter(x => x.product_id === arr[i].product_id);
+            const uniqItem = nonUniqArr[0];
+            i += nonUniqArr.length;
+            noDuplicateArr = [...noDuplicateArr, uniqItem];
         }
 
         return [noDuplicateArr, cartTotal.toFixed(2)];
@@ -194,7 +202,7 @@ const useStyles = makeStyles((theme) => ({
     },
     cartCheckOutWrapper: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        padding: theme.spacing(0.75),
+        padding: theme.spacing(1.5),
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -218,10 +226,10 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: 'flex-end',
     },
     addButton: {
-      alignSelf: 'flex-start',
+      alignSelf: 'center',
     },
     removeButton: {
-      alignSelf: 'flex-end',
+      alignSelf: 'center',
     },
     icon: {
         color: 'black',

@@ -1,16 +1,15 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import axios from 'axios';
-import {customerAPI} from '../apis/rails-backend';
 import {Redirect} from 'react-router-dom';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Tracker from '../components/Tracker';
 
 const Home = (props) => {
+    const matches = useMediaQuery('(min-width: 769px)');
 
     const classes = useStyles();
 
@@ -22,11 +21,14 @@ const Home = (props) => {
 
 
     return (
-        <div className={classes.overallPage}>
+        <div className={matches ? classes.overallPage : classes.overallPageMobile}>
             <AppHeader 
                 setOrder={props.setOrder}
                 setState={props.setState}
-                order={props.order}/>
+                order={props.order}
+                
+            />
+            
             <Box className={classes.box}>
                 <div className={classes.root}>
                     <Typography variant="h3"> 
@@ -38,6 +40,7 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
+            <Tracker/>
             <OrderCard 
                 handleOrder={(address) => props.handleOrder(address)}
                 updateAddress={(address_id) => props.updateAddress(address_id)}
@@ -58,18 +61,29 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: '10px'
     },
     overallPage: {
-        background: '#fffdf6',
+        background: '#ffffff',
         minHeight: '100vh',
         backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
-    }, 
+       
+    },
+    overallPageMobile: {
+        background: '#ffffff',
+        minHeight: '100vh',
+        // backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625758213/droneVector_etmeia.png")`,
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+    },
     box: {
         padding: theme.spacing(2),
         alignItems: 'center',
         justifyContent: 'center',
     },
-  }));
+  }))
+  
+  ;
 
 export default Home;

@@ -29,11 +29,9 @@ export const MerchantCard = (props) => {
         
       <CardHeader
         avatar={
-          <Box display={{sm: 'block', md: 'flex'}}>
-              <Avatar aria-label="merchant" className={classes.avatar}>
+          <Avatar aria-label="merchant" className={classes.avatar}>
                 {name[0]}
-              </Avatar>
-          </Box>
+            </Avatar>
         }
         action={
           <IconButton aria-label="product" 
@@ -59,7 +57,7 @@ export const MerchantCard = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
+    width: 345,
   },
   media: {
     height: 0,

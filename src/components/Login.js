@@ -10,6 +10,7 @@ import {makeStyles } from '@material-ui/core/styles';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -77,7 +78,6 @@ const Login = (props) => {
             history.push("/home");
 
         }).catch(error => {
-            console.log(error.response);
             if (error.response) {
                 setError({...error, hasError: true, message: error.response.data.message});
             }
@@ -91,16 +91,16 @@ const Login = (props) => {
                 <Logo color='black'/>
                 <form className={classes.root} onSubmit={handleSubmit}>
                 
-                    <div className={classes.actionCard}>
+                    <Container className={classes.actionCard}>
                         <TextField
                             id="standard-required"
                             label="Email"
                             variant="outlined"
                             onChange={handleEmailInput}
                         />
-                    </div>
-                    <br/>
-                    <div className={classes.actionCard}>
+                    </Container>
+                    
+                    <Container className={classes.actionCard}>
                         <TextField
                             id="outlined-password-input"
                             label="Password"
@@ -109,9 +109,9 @@ const Login = (props) => {
                             variant="outlined"
                             onChange={handlePasswordInput}
                             />
-                    </div>
-                    <br/>
-                    <Box>
+                    </Container>
+                    
+                    <Box className={classes.loginWrapper}>
                         <Box className={classes.login}>
                             <Button
                                 type="submit">
@@ -150,6 +150,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        padding: theme.spacing(1),
     },
     actionButton: {
         display: 'inline-block',
@@ -173,6 +174,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    loginWrapper: {
+        padding: theme.spacing(0.5)
+    },
     login: {
         // 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
         background: 'linear-gradient(315deg, #537895 0%, #09203f 74%)',
@@ -183,6 +187,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        
     },
     signupText: {
         color: 'white',

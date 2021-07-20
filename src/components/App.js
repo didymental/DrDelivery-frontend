@@ -5,7 +5,11 @@ import Home from '../pages/Home.js';
 import OrderAddress from '../pages/OrderAddress.js';
 import SignIn from '../pages/SignIn';
 import SignUpPage from '../pages/SignUpPage';
-import Profile from '../components/Profile';
+import Account from './Account';
+import Simulator  from '../pages/Simulator.js';
+import OrderHistory  from '../pages/OrderHistory';
+import AccountActivated from '../pages/AccountActivated';
+
 
 const App = () => {
     
@@ -41,10 +45,12 @@ const App = () => {
         });
     }
 
-
     const renderPage = () => {
-        console.log(state.isLoggedIn);
-        console.log(order.hasOrder);
+        if (state.isLoggedIn && !order.hasOrder) {            
+            return <Redirect to="/home" />;
+        } else {
+            return <Redirect to="/" />;
+        }
     }
 
 
@@ -76,20 +82,41 @@ const App = () => {
                         /> }
                         token={state.user}
                         userID={state.userID}
+                        
                     />
                     <Route path="/order/address" exact component={ () => <OrderAddress 
-                        //handleLogout={handleLogOut}
+                        
                         dropOffAdd={dropOffAddress}
                         setOrder={setOrder}
                         setState={setState}
                         order={order}
+                        
                         /> }
                     />
                     <Route path="/profile" exact component={() => 
-                        <Profile 
-                            //handleLogout={handleLogOut}
+                        <Account 
+                            setState={setState}
                             setOrder={setOrder}
+                            order={order}
+                            
                         />}/>
+                    <Route path="/orderProgress" exact component={() => 
+                        <Simulator 
+                            setOrder={setOrder}
+                            setState={setState}
+                            order={order}
+                        />}/>
+                    <Route path="/orderHistory" exact component={() => 
+                        <OrderHistory 
+                            
+                            setOrder={setOrder}
+                            setState={setState}
+                            order={order}
+                        />}/>
+                    
+                    <Route path="/success" exact component={() => 
+                        <AccountActivated 
+                            isLoggedIn={state.isLoggedIn}/>}/>
 
                 </div>
             </BrowserRouter>

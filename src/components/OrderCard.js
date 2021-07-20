@@ -19,6 +19,7 @@ import AddressForm from './AddressForm';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -92,6 +93,8 @@ const AddressTextField = (props) => {
             return undefined;
         }
 
+        const source = axios.CancelToken.source();
+
         const savedAddresses = async () => {
             const token = localStorage.getItem('token');
             const userid = localStorage.getItem('userID');
@@ -114,15 +117,16 @@ const AddressTextField = (props) => {
         savedAddresses().catch(() => setError({...error, hasError: true}));
 
         return () => {
+            source.cancel('axios request cancelled');
             active = false;
         };
     }, [loading, setError, setState, error, props, state]);
 
-    useEffect(() => {
-        if (!open) {
-            // props.setOptions([]);
-        }
-    }, [open]);
+    // useEffect(() => {
+    //     if (!open) {
+    //         // props.setOptions([]);
+    //     }
+    // }, [open]);
 
     const displayAddressDetails = (event, value) => {
         let postcode = '';
@@ -178,7 +182,7 @@ const AddressTextField = (props) => {
 }
 
 const Form = (props) => {
-    //console.log(props.addresses);
+    const matches = useMediaQuery('(min-width: 768px)');
     const [state, setState] = useState({
         street: '',
         postal: parseInt(''),
@@ -212,7 +216,7 @@ const Form = (props) => {
                 <Box className={classes.box} boxShadow={1} borderRadius={1}>
                     <div>
                         <form onSubmit={handleSubmit}>
-                            <div className={classes.textFields}>
+                            <div className={matches ? classes.textFieldsDesktop : classes.textFields}>
                                 <AddressTextField 
                                     change={(streetInput, postalInput, addressID) => 
                                         handleStreetInput(streetInput, postalInput, addressID)
@@ -223,7 +227,7 @@ const Form = (props) => {
                                 />
                                 </div>
                             <TextField 
-                                    className={classes.textFields}
+                                    className={matches ? classes.textFieldsDesktop : classes.textFields}
                                     id="address"
                                     label="Address"
                                     type="text"
@@ -265,6 +269,9 @@ const OrderCard = (props) => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
+        let active = true;
+
         const savedDetails = async () => {
             const token = localStorage.getItem('token');
             const userID = localStorage.getItem('userID');
@@ -275,10 +282,19 @@ const OrderCard = (props) => {
                 }
             });
             const savedAddresses = await addressResponse.data;
-            setAddresses(savedAddresses);
-            setOpen(savedAddresses.length === 0);
+            if (active) {
+                setAddresses(savedAddresses);
+                setOpen(savedAddresses.length === 0);
+            }
         };
-        savedDetails();        
+        
+        savedDetails();
+
+        return () => {
+            source.cancel('axios request cancelled');
+            active = false;
+        };
+    
     }, [setAddresses, setOpen]);
 
     return (
@@ -300,7 +316,12 @@ const useStyles = makeStyles( (theme) => ({
     textFields: {
         marginLeft: '10px',
         color: '#09203f',
-        width: '200px',
+        width: '175px',
+    },
+    textFieldsDesktop: {
+        marginLeft: '10px',
+        color: '#09203f',
+        width: '240px',
     },
     orderButton: {
         position: 'absolute',

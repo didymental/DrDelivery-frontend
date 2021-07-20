@@ -1,261 +1,680 @@
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
-// import { Wrapper } from "@googlemaps/react-wrapper";
-import {websocketAPI} from '../apis/rails-backend';
+import axios from 'axios';
+import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
 import React from 'react';
-
-// import {websocketAPI} from '../apis/rails-backend';
-
-
-const token = localStorage.getItem('token');
-const userid = localStorage.getItem('userID');
-// const user_address =
+import {useState, useEffect} from 'react';
+import OrderCollectedButton from './OrderCollectedButton';
+import Box from '@material-ui/core/Box';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
 
 
-// const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
+const getAdminToken = async () => {
+  const adminLogin = {
+    email: 'example@railstutorial.org',
+    password: 'foobar'
+  };
 
-// const token = localStorage.getItem('token');
-// const userID = localStorage.getItem('userID');
+  const response = await axios.post(loginAPI, adminLogin, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
+  });
+  return response.data.token;
+}
 
-class MapContainer extends React.Component {
+const getCustAddress = async (f, addressID, droneID, customerAddress) => {
+  const token = localStorage.getItem('token');
+  axios.get(customerAPI + '/' + localStorage.getItem('userID') + '/addresses' + '/' + addressID, {
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+    }
+  }).then(response => {
+    f(customerAddress.set(droneID, response.data));
+  });
+}
+
+const getMerchantAddress = async (f, merchantID, addressID, droneID, merchantAddress) => {
+  const token = await getAdminToken();
+
+  axios.get(merchantAPI + '/' + merchantID + '/addresses' + '/' + addressID, {
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+    }
+  }).then(response => {
+    
+    f(merchantAddress.set(droneID, response.data));
+  })
+}
+
+const MapContainer = (props) => {
+  const [state, setState] = useState({
+    drones: props.drones,
+    ws: null,
+    disconnected: true,
+  });
+
+  const [route, setRoute] = useState(props.route);
+  const [chargingRoutes, setChargingRoutes] = useState(props.chargingRoutes);
+  const [merchantAddress, setMerchantAddress] = useState(props.merchantAddresses);
+  const [customerAddress, setCustomerAddress] = useState(props.customerAddresses);
+  const [click, setClick] = useState(false);
+  //const [data, setData] = useState({});
+
+  function immutableUpdate(arr, newDrone, i) {
+    return arr.map((item, index) => i === index ? newDrone: item );
+  }
+
+
+  const openEventListener = (event) => {
+    props.ws.send(JSON.stringify({
+      "command":"subscribe",
+      "identifier":"{\"channel\":\"DroneChannel\"}"
+    }));
 
     
-    ws = new WebSocket(websocketAPI + '?token=' + token)
-    drones = {}
+    props.ws.send(JSON.stringify({
+      "command":"message",
+      "identifier":"{\"channel\":\"DroneChannel\"}", 
+      "data":"{\"action\": \"request\"}"
+    }));
 
+    props.ws.send(JSON.stringify({
+      "command":"subscribe",
+      "identifier":"{\"channel\":\"OrderChannel\"}"
+    }));
 
-    componentWillMount() {
-        this.ws.onopen = () => {
-          console.log('WebSocket Client Connected');
-          this.ws.send(JSON.stringify({"command":"subscribe","identifier":"{\"channel\":\"DroneChannel\"}"}));
-          this.ws.send(JSON.stringify({"command":"message","identifier":"{\"channel\":\"DroneChannel\"}", "data":"{\"action\": \"request\"}"}));
-        };
-        this.ws.onmessage = (message) => {
-          // console.log(message);
-          const update = JSON.parse(message.data);
-          // console.log(update);
-          if (update.type != "ping") {
-            const data = JSON.parse(update.message);
-            // console.log(data);
-            
-            
-            if (data.drone != null && data.drone_curr_address != null && data.drone_destination_address != null) {
-                var drone = {};
-                drone.id =  data.drone.id;
-                drone.curr_latitude = data.drone_curr_address.latitude;
-                drone.curr_longitude = data.drone_curr_address.longitude;
-                // console.log(data.drone_curr_address);
-                drone.dest_latitude = data.drone_destination_address.latitude;
-                drone.dest_longitude = data.drone_destination_address.longitude;
-                this.drones[drone.id]=drone;
-                // console.log(data.drone_destination_address);
-                // console.log(data.drone_curr_address);
-                // console.log(data.drone_destination_address);
+    props.ws.send(JSON.stringify({
+      "command":"message",
+      "identifier":"{\"channel\":\"OrderChannel\"}", 
+      "data":"{\"action\": \"request\"}"
+    }));
 
-                console.log(this.drones)
+    setState({...state, ws: props.ws, disconnected: false});
+  }
 
-            }
-          }
-          
-        };
-
-    }
-
-    render() {
-
-        // console.log(this.drones);
-  
+  const incomingMessageListener = (message) => {
+    let messageData = JSON.parse(message.data);
+    if (messageData.type !== "ping") {
+      let data = {};      
+      if (messageData.message !== undefined) {
         
-        // console.log(dronesArray);
-        // console.log(destArray);
-
-        const triangleCoords = [
-          {lat: 25.774, lng: -80.190},
-          {lat: 18.466, lng: -66.118},
-          {lat: 32.321, lng: -64.757},
-          {lat: 25.774, lng: -80.190}
-        ];
-
-        const crossIslandCoords = [
-          {lat: 1.3620840130644598,  lng: 103.98977274957653},
-          {lat: 1.3155814794529335,  lng: 103.6265150404711}
-        ];
-
-
-        const samePoint = [
-          {lat: 1.4075977748431727,  lng: 103.79230717260913},
-          {lat: 1.4075977748431727,  lng: 103.79230717260913}
-        ];
-        const arrForm = Object.values(this.drones);
-        // console.log(this.drones);
-        // console.log(arrForm);
-        const droneMarkers = arrForm.map(drone => (
-          
-          <Marker
-          title={'The marker`s title will appear as a tooltip.'}
-          name={'SOMA'}
-          position={{lat: drone.curr_latitude, lng: drone.curr_longitude}}
-          icon={{
-            url: "data:image/png;base64,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",
-            anchor: new window.google.maps.Point(16,16),
-            scaledSize: new window.google.maps.Size(32,32)
-          }} />
-
-        ))
-
-        const destMarkers = arrForm.map(drone => (
+        const text = messageData.message;
         
-          <Marker
-          title={'The marker`s title will appear as a tooltip.'}
-          name={'SOMA'}
-          position={{lat: drone.dest_latitude, lng: drone.dest_longitude}} />
+        data = JSON.parse(text);
+        
+        
+      }
 
-        ))
+      if (data.drone_curr_address !== undefined && data.drone_curr_address != null) { // if update from Drone Channel
+        
+        let drone = {
+          id: data.drone.id,
+          currLatitude: data.drone_curr_address.latitude,
+          currLongitude: data.drone_curr_address.longitude,
+        }
+        setState({...state, drones: state.drones.set(drone.id, drone)});
 
-        const drone2line = function (drone) {
-          const coords = [
-            {lat: drone.curr_latitude,  lng: drone.curr_longitude},
-            {lat: drone.dest_latitude,  lng: drone.dest_longitude}
-          ]
-          return <Polyline
-          path={coords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={8} />
+        const droneLocation = { 
+          latitude: data.drone_curr_address.latitude,
+          longitude: data.drone_curr_address.longitude,
         }
 
-        const dronelines = arrForm.map(drone2line)
-        // const dronelines = [
-        //     <Polyline
-        //     path={crossIslandCoords}
-        //     strokeColor="#0000FF"
-        //     strokeOpacity={0.8}
-        //     strokeWeight={2} />   ,
+        const stationsVisibleToUser = data.drone_address_route.slice(0, data.drone_address_route.length - 1);
 
-        //     <Polyline
-        //     path={samePoint}
-        //     strokeColor="#0000FF"
-        //     strokeOpacity={0.8}
-        //     strokeWeight={2} />  
-        // ]
+        setRoute(route.set(data.drone.id, [droneLocation, ...stationsVisibleToUser]));
 
-        // console.log(destMarkers);
-        // console.log(droneMarkers);
-        // console.log(dronelines);
+        setChargingRoutes(
+          chargingRoutes.set(data.drone.id, stationsVisibleToUser.filter(obj => obj.addressable_type === "Station"))
+        );
+      } 
+      
+      if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
         
-        return (
-          <Map google={this.props.google} zoom={12}
-          initialCenter={{
-            lat: 1.368635520835842,
-            lng: 103.81916601690331
-          }}>
+        getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
+        getMerchantAddress(
+          setMerchantAddress, 
+          data.order.merchant_id, 
+          data.order.pick_up_address_id, 
+          data.order.drone_id,
+          merchantAddress
+        );
 
-          <Polyline
-          path={crossIslandCoords}
-          strokeColor="#0000FF"
-          strokeOpacity={0.8}
-          strokeWeight={2} />
-
-          {/* <Marker
-          title={'The marker`s title will appear as a tooltip.'}
-          name={'SOMA'}
-          position={{lat: drone.curr_latitude, lng: drone.curr_longitude}}
-          icon={{
-            url: "https://i.pinimg.com/736x/b3/cc/d5/b3ccd57b054a73af1a0d281265b54ec8.jpg",
-            anchor: new window.google.maps.Point(16,16),
-            scaledSize: new window.google.maps.Size(32,32)
-          }} /> */}
-
-
-
-            {     
-              dronelines
-            }
-
-            {
-              droneMarkers
-            }
-
-            {
-              destMarkers
-            }
-
-            
-
-
+      }
 
       
-
-            
-              
-              
-            
-
-          </Map>
-        
-
-            );
     }
+  }
+
+  const closeSocket = (event) => {
+    
+    setState({...state, disconnected: true});
+  }
+
+  useEffect(() => {
+    props.ws.addEventListener('message', incomingMessageListener);
+    props.ws.addEventListener('close', closeSocket);
+    //props.ws.addEventListener('open', openEventListener);
+
+    props.ws.onopen = () => {
+      props.ws.send(JSON.stringify({
+        "command":"subscribe",
+        "identifier":"{\"channel\":\"DroneChannel\"}"
+      }));
+  
+      
+      props.ws.send(JSON.stringify({
+        "command":"message",
+        "identifier":"{\"channel\":\"DroneChannel\"}", 
+        "data":"{\"action\": \"request\"}"
+      }));
+
+      setInterval(() => {
+        props.ws.send(JSON.stringify({
+          "command":"subscribe",
+          "identifier":"{\"channel\":\"OrderChannel\"}"
+        }));
+    
+        props.ws.send(JSON.stringify({
+          "command":"message",
+          "identifier":"{\"channel\":\"OrderChannel\"}", 
+          "data":"{\"action\": \"request\"}"
+        }));
+      }, 5000);
+
+      
+      setState({...state, ws: props.ws, disconnected: false});
+    }
+
+    return () => {
+      props.ws.close();
+    }
+  }, []);
+
+  // const crossIslandCoords = [
+  //   {lat: 1.3620840130644598,  lng: 103.98977274957653},
+  //   {lat: 1.3155814794529335,  lng: 103.6265150404711}
+  // ];
+
+  const arrForm = Array.from(state.drones, (([drone_id, drone]) => ({drone_id, drone})));
+
+  const droneMarkers = arrForm.map(obj => (
+    <Marker
+    title={'Your order is being delivered by Drone ' + obj.drone.id}
+    name={'Drone'}
+    position={{lat: obj.drone.currLatitude, lng: obj.drone.currLongitude}}
+    icon={{
+      url: "https://res.cloudinary.com/didymusne/image/upload/v1626512005/droneMarker_bclqa7.png",
+      anchor: new window.google.maps.Point(16,16),
+      scaledSize: new window.google.maps.Size(32,32)
+    }} />
+
+  ))
+
+
+  const chargingStations = Array.from(chargingRoutes, ([key, value]) => ({key, value}))
+                                .map(obj => obj.value.map( arr => {
+                                  return (
+                                    <Marker
+                                      title={'Drone Charging Stations'}
+                                      name={'Drone'}
+                                      icon={{
+                                        url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
+                                        anchor: new window.google.maps.Point(16,16),
+                                        scaledSize: new window.google.maps.Size(32, 32),
+                                      }}
+                                      position={{lat: arr.latitude, lng: arr.longitude}} 
+                                    />
+                                    )
+                                }));
+  
+
+
+  const shops = Array.from(merchantAddress, ([key, value]) => ({key, value}));
+  const destinations = Array.from(customerAddress, ([key, value]) => ({key, value}));
+  const routes = Array.from(route, ([drone_id, routeCoord]) => ({drone_id, routeCoord}));
+  
+
+  const [shopInfo, setShopInfo] = useState(false);
+  const [shopInfoWin, setShopInfoWin] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  const displayShopWindow = (coord) => {
+    if (shopInfo) {
+
+    } else {
+      setShopInfo(true);
+      setShopInfoWin(coord);
+    }
+    
+  }
+  const hideShopWindow = () => {
+    setShopInfo(false);
+    setShopInfoWin({...shopInfoWin, latitude: null, longitude: null});
+  }
+
+  const [houseInfo, setHouseInfo] = useState(false);
+  const [houseInfoWin, setHouseInfoWin] = useState({
+    latitude: null,
+    longitude: null,
+  })
+  const displayHouseWindow = (coord) => {
+    if (houseInfo) {
+
+    } else {
+      setHouseInfo(true);
+      setHouseInfoWin(coord);
+    }
+    
+  }
+  const hideHouseWindow = () => {
+    setHouseInfo(false);
+    setHouseInfoWin({...shopInfoWin, latitude: null, longitude: null});
+  }
+
+  return (
+    <Map google={props.google} zoom={12}
+    initialCenter={{
+      lat: 1.368635520835842,
+      lng: 103.81916601690331
+    }}>
+
+      {droneMarkers}
+
+      {chargingStations}
+
+      {routes.map( (obj, index) => (
+        <Polyline 
+        path={obj.routeCoord.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
+        strokeColor={colors[index % 300]}
+        strokeOpacity={0.8}
+        strokeWeight={8}
+      />
+      ))}
+
+      {
+        shops.map( obj => {
+          
+          return (
+          
+          <Marker 
+            title={obj.value.name + ' (' + obj.value.street_address + ')'}
+            name={obj.value.name}
+            icon={{
+              url: "https://res.cloudinary.com/didymusne/image/upload/v1626785322/shopsss_d7met1.png",
+              anchor: new window.google.maps.Point(16,16),
+              scaledSize: new window.google.maps.Size(32, 32),
+            }}
+            position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+            onMouseover={() => displayShopWindow({
+              latitude: obj.value.latitude, 
+              longitude: obj.value.longitude
+            })}
+            onMouseout={hideShopWindow}
+        />
+        )})
+      }
+
+          <InfoWindow 
+            visible={shopInfo}
+            position={{lat: shopInfoWin.latitude, lng: shopInfoWin.longitude}}
+            onCloseClick={hideShopWindow}
+          >
+           
+            <CardMedia 
+              image='https://res.cloudinary.com/didymusne/image/upload/v1626787222/SHOP_2_dxqwxj.png'
+              style={{height: 47, width: 165}}
+            />
+"
+          </InfoWindow>
+
+      {
+        destinations.map( obj => (
+          <Marker 
+            title={obj.value.name + ' (' + obj.value.street_address + ')'}
+            name={obj.value.name}
+            icon={{
+              url: "https://res.cloudinary.com/didymusne/image/upload/v1626788922/image_4_kputdg.png",
+              anchor: new window.google.maps.Point(16,16),
+              scaledSize: new window.google.maps.Size(32, 32),
+            }}
+            position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+            onMouseover={() => displayHouseWindow({
+              latitude: obj.value.latitude, 
+              longitude: obj.value.longitude
+            })}
+            onMouseout={hideHouseWindow}
+        />
+        ))
+      }
+
+      <InfoWindow 
+            visible={houseInfo}
+            position={{lat: houseInfoWin.latitude, lng: houseInfoWin.longitude}}
+            onCloseClick={hideHouseWindow}
+            
+          >
+           
+            <CardMedia 
+              image='https://res.cloudinary.com/didymusne/image/upload/v1626789214/DEST_xnldjd.png'
+              style={{height: 47, width: 165}}
+            />
+"
+          </InfoWindow>
+
+
+    </Map>
+  )
+
+
 }
+
+const colors = [
+  '#D45F01',
+  '#32A8D6',
+  '#1A7C38',
+  '#48223D',
+  '#EA515E',
+  '#923F13',
+  '#6F1D3E',
+  '#47600A',
+  '#383F0B',
+  '#163183',
+  '#F0D29E',
+  '#00E1D1',
+  '#02963A',
+  '#172463',
+  '#79381',
+  '#7824BB',
+  '#3BC2DA',
+  '#4DCD30',
+  '#747A9E',
+  '#E957DD',
+  '#946B91',
+  '#7CC3E9',
+  '#D37A0B',
+  '#B80239',
+  '#13680',
+  '#425ADF',
+  '#C5C88B',
+  '#26EA1E',
+  '#5D75FA',
+  '#E0B274',
+  '#2B6864',
+  '#8294B2',
+  '#FD9D7B',
+  '#CC8328',
+  '#D08930',
+  '#D5B3E2',
+  '#8641AF',
+  '#4ADD74',
+  '#841074',
+  '#8.55E+11',
+  '#1BDDFC',
+  '#F7339E',
+  '#3D80A0',
+  '#53463C',
+  '#AC1FDF',
+  '#8FB6CA',
+  '#2C260B',
+  '#438D33',
+  '#D962FA',
+  '#EA6FA3',
+  '#F23A90',
+  '#4BC71C',
+  '#260B33',
+  '#F0C53C',
+  '#F17502',
+  '#9F5DAE',
+  '#DEA96C',
+  '#692646',
+  '#A3779A',
+  '#49BCFC',
+  '#E9C466',
+  '#334EDB',
+  '#A34D99',
+  '#34DAB6',
+  '#4FFFBF',
+  '#BA87FE',
+  '#D2120F',
+  '#EB228C',
+  '#BB085C',
+  '#F9BF97',
+  '#E526D1',
+  '#5B36D4',
+  '#5CF8E7',
+  '#4A3538',
+  '#122D2B',
+  '#50077E',
+  '#8C9C37',
+  '#93021',
+  '#86BCCF',
+  '#4E17B4',
+  '#20537C',
+  '#109BCD',
+  '#2D75E9',
+  '#67023C',
+  '#18A3F6',
+  '#727C6F',
+  '#98F33C',
+  '#05A7A8',
+  '#01F143',
+  '#D5B89A',
+  '#E1C6E3',
+  '#58B5BE',
+  '#2C3C4E',
+  '#55F563',
+  '#8493C2',
+  '#EB4B12',
+  '#E7A9D6',
+  '#7F2BC7',
+  '#91C863',
+  '#BE7523',
+  '#70EBB0',
+  '#E98825',
+  '#EA5151',
+  '#8E2568',
+  '#827F79',
+  '#3F91B4',
+  '#29EA20',
+  '#01A52F',
+  '#7BE904',
+  '#29798F',
+  '#3BFCDA',
+  '#104FB7',
+  '#0B8B1B',
+  '#B87928',
+  '#E415EA',
+  '#5.15E+06',
+  '#FF43FF',
+  '#B0B4BD',
+  '#66708',
+  '#FED14B',
+  '#B9C1DA',
+  '#5CA90A',
+  '#9CA405',
+  '#20C87C',
+  '#17AE8E',
+  '#938645',
+  '#192B33',
+  '#5CF010',
+  '#5302B8',
+  '#ECF9A8',
+  '#84B0B0',
+  '#6CA98E',
+  '#DEADEB',
+  '#D4EE6A',
+  '#6576F2',
+  '#E76A82',
+  '#BFF697',
+  '#4.66E+37',
+  '#A1A9F1',
+  '#356BC6',
+  '#DAE346',
+  '#60656F',
+  '#DA5499',
+  '#94B4DA',
+  '#510CCC',
+  '#2960DB',
+  '#73CD92',
+  '#D6D3A6',
+  '#C4A888',
+  '#2E93B6',
+  '#FD06ED',
+  '#261E4A',
+  '#011D4C',
+  '#411F9A',
+  '#8C81F3',
+  '#8F1860',
+  '#68777B',
+  '#28C461',
+  '#0A21AC',
+  '#B29448',
+  '#8C8A5E',
+  '#BB723E',
+  '#D56AAC',
+  '#BA7EC1',
+  '#B844D8',
+  '#D5560A',
+  '#4B5BD9',
+  '#ABF159',
+  '#D14500',
+  '#6C9A06',
+  '#3EC84C',
+  '#297855',
+  '#1F0006',
+  '#AE7E38',
+  '#EA4855',
+  '#E94B19',
+  '#742FC8',
+  '#5E85F9',
+  '#C9747B',
+  '#C561DC',
+  '#6C5B76',
+  '#4FA6F7',
+  '#F457A4',
+  '#06D8A5',
+  '#37AA88',
+  '#7F5CAD',
+  '#3ECE5B',
+  '#540BBA',
+  '#0B0E4B',
+  '#382E2B',
+  '#79AC64',
+  '#992687',
+  '#2DC297',
+  '#CA3D87',
+  '#9CFBA2',
+  '#61C0E2',
+  '#58C7E4',
+  '#F02C2C',
+  '#4F67DF',
+  '#F6BF25',
+  '#0FED7D',
+  '#16E331',
+  '#F706FD',
+  '#5E40E6',
+  '#60FEF9',
+  '#4083DF',
+  '#0F6E39',
+  '#F3009F',
+  '#EEE2FD',
+  '#95E83D',
+  '#18E9BB',
+  '#8CAFBD',
+  '#8B19CA',
+  '#9A98D8',
+  '#56E4E2',
+  '#10A096',
+  '#B2361E',
+  '#4AA536',
+  '#0C095E',
+  '#1A4FE3',
+  '#103C0D',
+  '#2CF631',
+  '#47BFDF',
+  '#5DC661',
+  '#48C97A',
+  '#D9B05C',
+  '#D88DEB',
+  '#E33A20',
+  '#98E5E4',
+  '#73C3C4',
+  '#D9E9A3',
+  '#58CE5B',
+  '#A4FDE1',
+  '#E7ACD8',
+  '#04CD78',
+  '#2520ED',
+  '#34503A',
+  '#BDEBBD',
+  '#C94752',
+  '#F66B4E',
+  '#464763',
+  '#4A7ABA',
+  '#468323',
+  '#1EC662',
+  '#859F1D',
+  '#D632EA',
+  '#534CDF',
+  '#726068',
+  '#3770DD',
+  '#353C55',
+  '#92CD4A',
+  '#7ADC6A',
+  '#CED3E3',
+  '#C2A337',
+  '#16D522',
+  '#BC579A',
+  '#214FEB',
+  '#AA98E8',
+  '#BAA5EE',
+  '#DF4B56',
+  '#D0327C',
+  '#DAE1AC',
+  '#C576D5',
+  '#E8F9ED',
+  '#7CDB72',
+  '#25357B',
+  '#25516F',
+  '#E24592',
+  '#B8BB19',
+  '#99675D',
+  '#A82DDA',
+  '#80FE16',
+  '#DF9252',
+  '#41AFCC',
+  '#966FDB',
+  '#D74042',
+  '#BD2BB4',
+  '#194BC9',
+  '#D0A807',
+  '#4AEBAB',
+  '#683B98',
+  '#056AD3',
+  '#1FE8C1',
+  '#10933C',
+  '#11673B',
+  '#6DD9CF',
+  '#DC5373',
+  '#79251E',
+  '#62FF63',
+  '#C852F8',
+  '#E55CF2',
+  '#CDF117',
+  '#4807D2',
+  '#63563C',
+  '#9F4E23',
+  '#709DD8',
+  '#095FB7',
+  '#60F78C',
+  '#9E0E53'
+];
 
 export default GoogleApiWrapper({
     apiKey: 'AIzaSyCEkczgoE41K_X4sk4maD-ju_64GB-zSj4'
 })(MapContainer);
-
-// import { Map, GoogleApiWrapper } from 'google-maps-react';
-// import axios from 'axios';
-// import {websocketAPI} from '../apis/rails-backend';
-// import React from 'react';
-// // import { w3cwebsocket as W3CWebSocket } from "websocket";
-
-
-// const token = localStorage.getItem('token');
-// const userid = localStorage.getItem('userID');
-
-// const client = new W3CWebSocket('ws://localhost:3000/api/v1/cable?token=' + token);
-
-
-// class MapContainer extends React.Component {
-//     ws = new WebSocket(websocketAPI + '?token=' + token)
-//     droneLat = 0
-//     droneLng = 0
-//     // outStandingOrder =
-//     // axios.post(loginAPI, user, {
-//     //     headers: {
-//     //         'Content-Type': 'application/json',
-//     //         'Accept': 'application/json',
-//     //     },
-//     // }).then(response => {
-//     //     props.handleLogin(response.data.token, response.data.user_id);
-//     // }).catch(error => {
-//     //     console.log(error.response);
-//     //     if (error.response) {
-//     //         setError({...error, hasError: true, message: error.response.data.message});
-//     //     }
-//     // });
-//     componentWillMount() {
-//         this.ws.onopen = () => {
-//           console.log('WebSocket Client Connected');
-//         };
-//         this.ws.onmessage = (message) => {
-//           console.log(message);
-//         //   const update = JSON.parse(message.data);
-//         //   console.log(update);
-//         //   if (update.drone != null) {
-
-//         //   }
-//         };
-
-//     }
-
-//     render() {
-//         return (<Map 
-//             google={this.props.google}
-//             zoom={12}
-//             initialCenter={ {lat: 1.290270, lng: 103.851959}}
-//             />);
-//     }
-// }
-
-// export default GoogleApiWrapper({
-//     apiKey: 'AIzaSyCEkczgoE41K_X4sk4maD-ju_64GB-zSj4'
-// })(MapContainer);

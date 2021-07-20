@@ -11,8 +11,11 @@ import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 const ProductDisplay = (props) => {
+    const matches = useMediaQuery('(min-width: 768px)');
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [orderId, setOrderId] = useState(0);
@@ -72,43 +75,55 @@ const ProductDisplay = (props) => {
 
     return loading ? <LinearProgress/> : (
       <div className={classes.root}>
-        <Container className={classes.merchantWrapper}>
-          <Typography variant="h4">
-            {props.merchantName}
-          </Typography>
-          <br/>
-          <Divider/>
-        </Container>
-        <Container>
-          <Box display={{sm: 'block', md: 'flex'}}>
+        <Box display={{sm: 'block', md: 'flex'}}>
+          <Container>
+            <Container className={classes.merchantWrapper}>
+              <Typography variant="h4">
+                {props.merchantName}
+              </Typography>
+              <br/>
+              <Divider/>
+            </Container>
             <Box className={classes.productsWrapper} flexGrow={2}>
-              <Grid container spacing={1}>
-                {products.map(elem => (
-                  <Grid
-                  item xs={3}
-                  className={classes.container}
-                  key={elem.id}>
-                      <Product 
-                        details={elem} 
-                        addToCart={addToCart} 
-                        removeFromCart={removeFromCart} 
-                        orderId={orderId}
-                        image={'https://source.unsplash.com/random'}/>
-                  </Grid>))}
-              </Grid>
-            </Box>
-          
-            <Box className={classes.cartWrapper} flexGrow={1}>
-              <Cart 
-                cart={cart} 
-                addToCart={addToCart} 
-                removeFromCart={removeFromCart} 
-                handleNext={props.handleNext}
-                handleOrder={props.handleOrder}
-              />
-            </Box>
+              <Grid 
+                container 
+                spacing={1}
+                direction="row"
+                alignItems="flex-start"
+              >
+                
+                  {products.map(elem => (
+                    
+                    <Grid
+                    item xs={matches ? 4 : 6}
+                    className={classes.container}
+                    key={elem.id}>
+                        <Product 
+                          details={elem} 
+                          addToCart={addToCart} 
+                          removeFromCart={removeFromCart} 
+                          orderId={orderId}
+                          image={'https://source.unsplash.com/random'}/>
+                      </Grid>
+                      
+                      ))
+                    }
+                
+                </Grid>
+                
+              </Box>
+          </Container>
+          <Box className={classes.cartWrapper} flexGrow={1}>
+            <Cart 
+              cart={cart} 
+              addToCart={addToCart} 
+              removeFromCart={removeFromCart} 
+              handleNext={props.handleNext}
+              handleOrder={props.handleOrder}
+            />
           </Box>
-        </Container>
+        </Box>
+        
         </div>
       
     )
@@ -135,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2.5),
       //borderRadius: 5,
       //backgroundColor: '#6699CC',
-      backgroundColor: '#536999',
+      backgroundColor: '#2B468B',
       color: 'white',
       justifyContent: 'center',
     },
