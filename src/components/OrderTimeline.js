@@ -1,6 +1,8 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
+import axios from 'axios';
 
+import {customerAPI} from '../apis/rails-backend';
 import OrderCollectedButton from './OrderCollectedButton';
 import ThankYouOrder from './ThankYouOrder';
 
@@ -23,10 +25,15 @@ const OrderTimeline = (props) => {
   
   const matches = useMediaQuery('(min-width: 768px)');
 
-  const handleClear = () => {
+  const handleClear = (i) => {
     setPastOrders(pastOrders.map(order => {
-      return {...order, show: false};
+      if (order.id === i) {
+        return {...order, show: false};
+      } else {
+        return order;
+      }
     }));
+
     props.setPastOrders([]);
   }
 

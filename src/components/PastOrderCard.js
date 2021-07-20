@@ -132,12 +132,15 @@ const PastOrderCard = (props) => {
                             onClick={handleChipClick}
                             className={classes.chip}
                             /> 
-                        : <Chip
+                        : props.status === 'completed' 
+                            ? <Chip
                             icon={<ShoppingBasketIcon className={classes.doneIcon}/>}
                             size="small"
                             label="Order Collected"
                             className={classes.pastOrderChip}
-                            /> }
+                            /> 
+                            : null
+                        }
                     
                     
                 </Box>

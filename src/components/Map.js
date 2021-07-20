@@ -5,6 +5,8 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import OrderCollectedButton from './OrderCollectedButton';
 
+const colors = ['#FF5C6D', '#4285F4', '#FBBC05', '#34A853'];
+
 const getAdminToken = async () => {
   const adminLogin = {
     email: 'example@railstutorial.org',
@@ -279,7 +281,7 @@ const MapContainer = (props) => {
 
       {chargingStations}
 
-      {routes.map(obj => (
+      {routes.map( (obj, index) => (
         <Polyline 
         path={obj.routeCoord.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
         strokeColor="#FF5C6D"
@@ -299,7 +301,7 @@ const MapContainer = (props) => {
 
       {destination}
 
-      <Marker 
+      {/* <Marker 
       position={{
         lat: 1.368635520835842,
         lng: 103.81916601690331
@@ -325,7 +327,7 @@ const MapContainer = (props) => {
 
         <OrderCollectedButton/>
         
-      </InfoWindow>
+      </InfoWindow> */}
 
 
     </Map>

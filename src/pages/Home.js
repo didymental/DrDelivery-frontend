@@ -25,7 +25,8 @@ const Home = (props) => {
             <AppHeader 
                 setOrder={props.setOrder}
                 setState={props.setState}
-                order={props.order}/>
+                order={props.order}
+            />
             
             <Box className={classes.box}>
                 <div className={classes.root}>

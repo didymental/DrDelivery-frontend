@@ -9,7 +9,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SaveIcon from '@material-ui/icons/Save';
-import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import AppHeader from './AppHeader';
 import Typography from '@material-ui/core/Typography';
@@ -24,7 +23,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { isJSDocNullableType } from 'typescript';
 
 
 const Transition = React.forwardRef( (props, ref) => {
@@ -328,7 +326,11 @@ const Account = (props) => {
 
     return (
         <div>
-        <AppHeader handleLogout={props.handleLogout} setOrder={props.setOrder}/>
+        <AppHeader 
+            setState={props.setState}
+            setOrder={props.setOrder}
+            order={props.order}
+        />
         <Box className={classes.overallWrapper}>
         <Box > 
             <Box className={classes.profileWrapper} >

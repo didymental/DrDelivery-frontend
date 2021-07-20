@@ -52,7 +52,7 @@ const ThankYouOrder = (props) => {
               </Grid>
           </Grid>
           <Box className={classes.clearButton}>
-            <Button size="small" className={classes.buttonClear} onClick={handleClear}>
+            <Button size="small" className={classes.buttonClear} onClick={() => handleClear(order.id)}>
               Clear
             </Button>
           </Box>
