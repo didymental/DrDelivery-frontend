@@ -11,8 +11,6 @@ import OrderHistory  from '../pages/OrderHistory';
 import AccountActivated from '../pages/AccountActivated';
 
 
-
-
 const App = () => {
     
     const [state, setState] = useState({
@@ -48,8 +46,6 @@ const App = () => {
     }
 
     const renderPage = () => {
-        console.log('isLoggedIn: ' + state.isLoggedIn);
-        console.log('started order: ' + order.hasOrder);
         if (state.isLoggedIn && !order.hasOrder) {            
             return <Redirect to="/home" />;
         }
@@ -84,6 +80,7 @@ const App = () => {
                         /> }
                         token={state.user}
                         userID={state.userID}
+                        
                     />
                     <Route path="/order/address" exact component={ () => <OrderAddress 
                         
@@ -91,6 +88,7 @@ const App = () => {
                         setOrder={setOrder}
                         setState={setState}
                         order={order}
+                        
                         /> }
                     />
                     <Route path="/profile" exact component={() => 
@@ -98,6 +96,7 @@ const App = () => {
                             setState={setState}
                             setOrder={setOrder}
                             order={order}
+                            
                         />}/>
                     <Route path="/orderProgress" exact component={() => 
                         <Simulator 

@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
         //minHeight: 320,
     },
     rootDesktop: {
-        width: 340,
+        width: 250,
         //height: 300,
     },
     container: {

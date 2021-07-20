@@ -27,7 +27,6 @@ const ProfileMenu = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   
   const handleClick = (event) => {
-    console.log(event.currentTarget);
     setAnchorEl(event.currentTarget);
   }
 

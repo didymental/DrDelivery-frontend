@@ -62,9 +62,6 @@ const HorizontalLabelPositionBelowStepper = (props) => {
 
     toPost = {...toPost, order_entries: orders[0]}
 
-    console.log(toPost);
-    console.log(orders[0]);
-
     const token = localStorage.getItem('token');
     const response = await axios.post(newOrderAPI, toPost, {
       headers: {

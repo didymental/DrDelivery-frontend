@@ -19,9 +19,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 const OrderTimeline = (props) => {
   
   const merchants = props.merchants;
-  const [pastOrders, setPastOrders] = useState(props.pastOrders.map(order => {
-    return {...order, show: false};
-  }));
+  const [pastOrders, setPastOrders] = useState(props.pastOrders);
   
   const matches = useMediaQuery('(min-width: 768px)');
 
@@ -60,6 +58,7 @@ const OrderTimeline = (props) => {
             return order;
           }
         }));
+        props.setPastOrders(pastOrders.map(obj=> obj));
       }
     }
   }

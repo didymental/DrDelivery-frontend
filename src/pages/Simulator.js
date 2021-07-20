@@ -8,6 +8,8 @@ const Simulator = (props) => {
     const ws = new WebSocket(websocketAPI + '?token=' + token);
     const drones = new Map();
     const route = new Map();
+    const merchantAddresses = new Map();
+    const customerAddresses = new Map();
 
     return (<div>
         <AppHeader
@@ -19,6 +21,9 @@ const Simulator = (props) => {
             ws={ws}
             drones={drones}
             route={route}
+            merchantAddresses={merchantAddresses}
+            customerAddresses={customerAddresses}
+            
         />
         </div>);
 }

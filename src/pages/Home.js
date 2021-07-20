@@ -26,6 +26,7 @@ const Home = (props) => {
                 setOrder={props.setOrder}
                 setState={props.setState}
                 order={props.order}
+                
             />
             
             <Box className={classes.box}>

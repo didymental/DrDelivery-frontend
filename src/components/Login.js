@@ -78,7 +78,6 @@ const Login = (props) => {
             history.push("/home");
 
         }).catch(error => {
-            console.log(error.response);
             if (error.response) {
                 setError({...error, hasError: true, message: error.response.data.message});
             }

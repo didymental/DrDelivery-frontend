@@ -13,6 +13,7 @@ const OrderHistory = (props) => {
                 setOrder={props.setOrder}
                 setState={props.setState}
                 order={props.order}
+                
             />
             <Container className={classes.main}>
                 <PastOrders/>

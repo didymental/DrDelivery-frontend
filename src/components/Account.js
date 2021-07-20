@@ -164,7 +164,6 @@ const Account = (props) => {
             email: personalInfo.email, 
             contactNum: personalInfo.contact_no, 
         })
-        console.log(savedAddresses);
         setAddresses(savedAddresses);
         
     };
@@ -197,7 +196,6 @@ const Account = (props) => {
 
     useEffect(() => {
         savedDetails();
-        console.log(addresses);
     }, []);
 
     const handleNameChange = (input) => {
@@ -229,7 +227,6 @@ const Account = (props) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             }
         }).then(response => {
-            console.log(response);
             if (response.statusText === "OK") {
                 setOpen(true);
                 setSuccess(true);
@@ -240,12 +237,11 @@ const Account = (props) => {
         });
     }
     const handleAddressChange = () => {
-        console.log(addressIDs.size);
         const arrAddressID = Array.from(addressIDs.keys());
-        console.log(arrAddressID);
+        
 
         for (let i = 0; i < addressIDs.size; i++)  {
-            console.log('i am here');
+            
             let toPost = {
                 street_address: '',
                 city: '',
@@ -272,13 +268,13 @@ const Account = (props) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             }).then(response => {
-                console.log(response);
+                
                 if (response.statusText === "OK") {
                     setOpen(true);
                     setSuccess(true);
                 }
             }).catch(error => {
-                console.log(error);
+                
                 setOpen(true);
                 setSuccess(false);
             });
@@ -308,7 +304,7 @@ const Account = (props) => {
     }
 
     const deleteAccount = () => {
-        axios.patch(customerAPI + '/' + localStorage.getItem('userID'), {
+        axios.delete(customerAPI + '/' + localStorage.getItem('userID'), {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -393,7 +389,6 @@ const Account = (props) => {
                                     value={elem.name}
                                     handleChange={(input) => {
                                         let i = searchAddress(elem.id, addresses);
-                                        console.log(i);
                                         setAddresses(addresses.map((add, index) => {
                                             if (index === i) {
                                                 return {...add, name: input};

@@ -63,7 +63,9 @@ const Timeline = (props) => {
                 }
             });
             if (active) {
-                setPastOrders([...orderResponse.data])
+                setPastOrders([...orderResponse.data.map(order => {
+                    return {...order, show: false};
+                })]);
             }
         }
 
