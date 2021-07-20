@@ -51,7 +51,7 @@ const ProfileMenu = (props) => {
   return (
     <div className={classes.button}>
       <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} className={classes.button}>
-        Profile
+        Menu
       </Button>
       <Menu 
         id="simple-menu"

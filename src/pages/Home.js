@@ -5,8 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import OrderCard from '../components/OrderCard.js';
 import AppHeader from '../components/AppHeader';
 import Box from '@material-ui/core/Box';
-import Timeline from '../components/Timeline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Tracker from '../components/Tracker';
 
 const Home = (props) => {
     const matches = useMediaQuery('(min-width: 769px)');
@@ -40,7 +40,7 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
-            <Timeline />
+            <Tracker/>
             <OrderCard 
                 handleOrder={(address) => props.handleOrder(address)}
                 updateAddress={(address_id) => props.updateAddress(address_id)}

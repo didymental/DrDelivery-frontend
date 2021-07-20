@@ -45,7 +45,7 @@ const getMerchantAddress = async (f, merchantID, addressID, droneID, merchantAdd
         'Authorization': `Bearer ${token}`,
     }
   }).then(response => {
-    console.log(merchantAddress);
+    
     f(merchantAddress.set(droneID, response.data));
   })
 }
@@ -110,7 +110,7 @@ const MapContainer = (props) => {
       }
 
       if (data.drone_curr_address !== undefined && data.drone_curr_address != null) { // if update from Drone Channel
-        console.log('taking from Drone Channel');
+        
         let drone = {
           id: data.drone.id,
           currLatitude: data.drone_curr_address.latitude,
@@ -133,7 +133,7 @@ const MapContainer = (props) => {
       } 
       
       if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
-        console.log('taking from Order Channel');
+        
         getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
         getMerchantAddress(
           setMerchantAddress, 
@@ -150,7 +150,7 @@ const MapContainer = (props) => {
   }
 
   const closeSocket = (event) => {
-    console.log("Disconnected from WS");
+    
     setState({...state, disconnected: true});
   }
 
@@ -185,7 +185,7 @@ const MapContainer = (props) => {
         }));
       }, 5000);
 
-      console.log('connected');
+      
       setState({...state, ws: props.ws, disconnected: false});
     }
 
@@ -213,7 +213,7 @@ const MapContainer = (props) => {
     }} />
 
   ))
-  console.log(chargingRoutes);
+
 
   const chargingStations = Array.from(chargingRoutes, ([key, value]) => ({key, value}))
                                 .map(obj => obj.value.map( arr => {
@@ -230,7 +230,7 @@ const MapContainer = (props) => {
                                     />
                                     )
                                 }));
-  console.log(Array.from(chargingRoutes, ([key, value]) => ({key, value})));
+  
 
 
   const shops = Array.from(merchantAddress, ([key, value]) => ({key, value}));
@@ -298,7 +298,7 @@ const MapContainer = (props) => {
 
       {
         shops.map( obj => {
-          console.log(obj.value);
+          
           return (
           
           <Marker 

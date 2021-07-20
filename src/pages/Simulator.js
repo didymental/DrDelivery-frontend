@@ -11,8 +11,6 @@ const Simulator = (props) => {
     const merchantAddresses = new Map();
     const customerAddresses = new Map();
     const chargingRoutes = new Map();
-    const shopInfo = new Map();
-    const shopInfoWin = new Map();
 
     return (<div>
         <AppHeader

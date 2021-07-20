@@ -34,15 +34,21 @@ const OrderCollectedButton = (props) => {
           },
         }).then(response => {
             //props.setIsComplete(true);
+            // if (response.statusText === "OK") {
+            //     props.setPastOrders(props.pastOrders.map(order => {
+            //         if (order.id === orderID) {
+            //             return {...order, show: true}; 
+            //         } else {
+            //             return order;
+            //         }
+            //     }));
+            //     props.ws.close();
+            // } else {
+            //     setOpen(true);
+            // }
+
             if (response.statusText === "OK") {
-                props.setPastOrders(props.pastOrders.map(order => {
-                    if (order.id === orderID) {
-                        return {...order, show: true}; 
-                    } else {
-                        return order;
-                    }
-                }));
-                props.ws.close();
+                props.setState({...props.state, show: props.state.show.set(props.orderID, true)});
             } else {
                 setOpen(true);
             }
@@ -118,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
       alignItems: 'center',
       justifyContent: 'center',
       padding: theme.spacing(1.25),
-      background: 'linear-gradient(45deg, #FF9068 30%, #FF4b1F 90%)',
+      background: '#1AA260',
       color: 'white',
     }
   }));

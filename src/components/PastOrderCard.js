@@ -136,7 +136,7 @@ const PastOrderCard = (props) => {
                             ? <Chip
                             icon={<ShoppingBasketIcon className={classes.doneIcon}/>}
                             size="small"
-                            label="Order Collected"
+                            label="Completed"
                             className={classes.pastOrderChip}
                             /> 
                             : null
