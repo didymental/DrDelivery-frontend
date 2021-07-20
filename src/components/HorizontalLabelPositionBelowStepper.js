@@ -184,6 +184,10 @@ const HorizontalLabelPositionBelowStepper = (props) => {
                   ws={new WebSocket(websocketAPI + '?token=' + localStorage.getItem('token'))}
                   drones={new Map()}
                   route={new Map()}
+                  merchantAddresses={new Map()}
+                  customerAddresses={new Map()}
+                  chargingRoutes={new Map()}
+                  
                 />
                 <OrderStatus orderStatus={orderStatus} />
                 </div>

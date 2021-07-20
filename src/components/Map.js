@@ -4,6 +4,51 @@ import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
 import React from 'react';
 import {useState, useEffect} from 'react';
 import OrderCollectedButton from './OrderCollectedButton';
+import Box from '@material-ui/core/Box';
+import Card from '@material-ui/core/Card';
+import CardMedia from '@material-ui/core/CardMedia';
+
+
+const getAdminToken = async () => {
+  const adminLogin = {
+    email: 'example@railstutorial.org',
+    password: 'foobar'
+  };
+
+  const response = await axios.post(loginAPI, adminLogin, {
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
+  });
+  return response.data.token;
+}
+
+const getCustAddress = async (f, addressID, droneID, customerAddress) => {
+  const token = localStorage.getItem('token');
+  axios.get(customerAPI + '/' + localStorage.getItem('userID') + '/addresses' + '/' + addressID, {
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+    }
+  }).then(response => {
+    f(customerAddress.set(droneID, response.data));
+  });
+}
+
+const getMerchantAddress = async (f, merchantID, addressID, droneID, merchantAddress) => {
+  const token = await getAdminToken();
+
+  axios.get(merchantAPI + '/' + merchantID + '/addresses' + '/' + addressID, {
+    headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+    }
+  }).then(response => {
+    console.log(merchantAddress);
+    f(merchantAddress.set(droneID, response.data));
+  })
+}
 
 const MapContainer = (props) => {
   const [state, setState] = useState({
@@ -98,8 +143,6 @@ const MapContainer = (props) => {
           merchantAddress
         );
 
-        console.log(merchantAddress);
-
       }
 
       
@@ -140,7 +183,7 @@ const MapContainer = (props) => {
           "identifier":"{\"channel\":\"OrderChannel\"}", 
           "data":"{\"action\": \"request\"}"
         }));
-      }, 3000);
+      }, 5000);
 
       console.log('connected');
       setState({...state, ws: props.ws, disconnected: false});
@@ -170,9 +213,10 @@ const MapContainer = (props) => {
     }} />
 
   ))
+  console.log(chargingRoutes);
 
-  const chargingStations = Array.from(chargingRoutes, ([drone_id, routeCoord]) => ({drone_id, routeCoord}))
-                                .map(obj => {
+  const chargingStations = Array.from(chargingRoutes, ([key, value]) => ({key, value}))
+                                .map(obj => obj.value.map( arr => {
                                   return (
                                     <Marker
                                       title={'Drone Charging Stations'}
@@ -182,52 +226,55 @@ const MapContainer = (props) => {
                                         anchor: new window.google.maps.Point(16,16),
                                         scaledSize: new window.google.maps.Size(32, 32),
                                       }}
-                                      position={{lat: obj.latitude, lng: obj.longitude}} 
+                                      position={{lat: arr.latitude, lng: arr.longitude}} 
                                     />
                                     )
-                                });
+                                }));
+  console.log(Array.from(chargingRoutes, ([key, value]) => ({key, value})));
 
-  // const chargingStations = chargingRoutes.map(obj => {
-    
-  //   return (
-  //   <Marker
-  //     title={'Drone Charging Stations'}
-  //     name={'Drone'}
-  //     icon={{
-  //       url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
-  //       anchor: new window.google.maps.Point(16,16),
-  //       scaledSize: new window.google.maps.Size(32, 32),
-  //     }}
-  //     position={{lat: obj.latitude, lng: obj.longitude}} 
-  //   />
-  //   )
-  // } )
 
   const shops = Array.from(merchantAddress, ([key, value]) => ({key, value}));
-  // console.log(shops);
-
-  // const merchantShops = merchantAddress === null 
-  //   ? null 
-  //   : (
-  //     <Marker 
-  //       title={merchantAddress.name + ' (' + merchantAddress.street_address + ')'}
-  //       name={merchantAddress.name}
-  //       icon={{
-  //         url: "https://res.cloudinary.com/didymusne/image/upload/v1626514207/shop_aq8bdk.png",
-  //         anchor: new window.google.maps.Point(16,16),
-  //         scaledSize: new window.google.maps.Size(32, 32),
-  //       }}
-  //       position={{lat: merchantAddress.latitude, lng: merchantAddress.longitude}}
-  //     />
-  // );
-
-  
   const destinations = Array.from(customerAddress, ([key, value]) => ({key, value}));
-  
-
   const routes = Array.from(route, ([drone_id, routeCoord]) => ({drone_id, routeCoord}));
+  
 
   const [shopInfo, setShopInfo] = useState(false);
+  const [shopInfoWin, setShopInfoWin] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  const displayShopWindow = (coord) => {
+    if (shopInfo) {
+
+    } else {
+      setShopInfo(true);
+      setShopInfoWin(coord);
+    }
+    
+  }
+  const hideShopWindow = () => {
+    setShopInfo(false);
+    setShopInfoWin({...shopInfoWin, latitude: null, longitude: null});
+  }
+
+  const [houseInfo, setHouseInfo] = useState(false);
+  const [houseInfoWin, setHouseInfoWin] = useState({
+    latitude: null,
+    longitude: null,
+  })
+  const displayHouseWindow = (coord) => {
+    if (houseInfo) {
+
+    } else {
+      setHouseInfo(true);
+      setHouseInfoWin(coord);
+    }
+    
+  }
+  const hideHouseWindow = () => {
+    setHouseInfo(false);
+    setHouseInfoWin({...shopInfoWin, latitude: null, longitude: null});
+  }
 
   return (
     <Map google={props.google} zoom={12}
@@ -250,34 +297,40 @@ const MapContainer = (props) => {
       ))}
 
       {
-        shops.map( obj => (
-          <div>
+        shops.map( obj => {
+          console.log(obj.value);
+          return (
+          
           <Marker 
             title={obj.value.name + ' (' + obj.value.street_address + ')'}
             name={obj.value.name}
             icon={{
-              url: "https://res.cloudinary.com/didymusne/image/upload/v1626777887/shops_epfb9q.png",
+              url: "https://res.cloudinary.com/didymusne/image/upload/v1626785322/shopsss_d7met1.png",
               anchor: new window.google.maps.Point(16,16),
               scaledSize: new window.google.maps.Size(32, 32),
             }}
             position={{lat: obj.value.latitude, lng: obj.value.longitude}}
-            onMouseover={() => setShopInfo(true)}
-            onMouseOut={() => setShopInfo(false)}
+            onMouseover={() => displayShopWindow({
+              latitude: obj.value.latitude, 
+              longitude: obj.value.longitude
+            })}
+            onMouseout={hideShopWindow}
         />
-          <InfoWindow
-          visible={shopInfo}
-          position={{lat: obj.value.latitude, lng: obj.value.longitude}}
-
-          onCloseClick={() => setShopInfo(false)}
-          >
-          <img src="https://res.cloudinary.com/didymusne/image/upload/v1626776826/SHOP_WINDOW_wwf2ha.png" />
-          </InfoWindow> 
-        </div>
-        ))
+        )})
       }
-      
 
-         
+          <InfoWindow 
+            visible={shopInfo}
+            position={{lat: shopInfoWin.latitude, lng: shopInfoWin.longitude}}
+            onCloseClick={hideShopWindow}
+          >
+           
+            <CardMedia 
+              image='https://res.cloudinary.com/didymusne/image/upload/v1626787222/SHOP_2_dxqwxj.png'
+              style={{height: 47, width: 165}}
+            />
+"
+          </InfoWindow>
 
       {
         destinations.map( obj => (
@@ -285,98 +338,39 @@ const MapContainer = (props) => {
             title={obj.value.name + ' (' + obj.value.street_address + ')'}
             name={obj.value.name}
             icon={{
-              url: "https://res.cloudinary.com/didymusne/image/upload/v1626521074/destination_kxogwh.png",
+              url: "https://res.cloudinary.com/didymusne/image/upload/v1626788922/image_4_kputdg.png",
               anchor: new window.google.maps.Point(16,16),
               scaledSize: new window.google.maps.Size(32, 32),
             }}
             position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+            onMouseover={() => displayHouseWindow({
+              latitude: obj.value.latitude, 
+              longitude: obj.value.longitude
+            })}
+            onMouseout={hideHouseWindow}
         />
         ))
       }
 
-      {/* <Polyline 
-        path={route.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
-        strokeColor="#FF5C6D"
-        strokeOpacity={0.8}
-        strokeWeight={8}
-      /> */}
-
-      {/* {merchantShops} */}
-
-      {/* <Marker 
-      position={{
-        lat: 1.368635520835842,
-        lng: 103.81916601690331
-      }}
-
-      onClick={() => { 
-        console.log('click');
-        setClick(true); }
-      }
-      />
-
-      <InfoWindow
-        visible={click}
-
-        position={{
-          lat: 1.368635520835842,
-          lng: 103.81916601690331
-        }}
-
-        onCloseClick={() => setClick(false)}
-      
-      >
-
-        <OrderCollectedButton/>
-        
-      </InfoWindow> */}
+      <InfoWindow 
+            visible={houseInfo}
+            position={{lat: houseInfoWin.latitude, lng: houseInfoWin.longitude}}
+            onCloseClick={hideHouseWindow}
+            
+          >
+           
+            <CardMedia 
+              image='https://res.cloudinary.com/didymusne/image/upload/v1626789214/DEST_xnldjd.png'
+              style={{height: 47, width: 165}}
+            />
+"
+          </InfoWindow>
 
 
     </Map>
   )
 
 
-}
-
-const getAdminToken = async () => {
-  const adminLogin = {
-    email: 'example@railstutorial.org',
-    password: 'foobar'
-  };
-
-  const response = await axios.post(loginAPI, adminLogin, {
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-    },
-  });
-  return response.data.token;
-}
-
-const getCustAddress = async (f, addressID, droneID, customerAddress) => {
-  const token = localStorage.getItem('token');
-  axios.get(customerAPI + '/' + localStorage.getItem('userID') + '/addresses' + '/' + addressID, {
-    headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`,
-    }
-  }).then(response => {
-    f(customerAddress.set(droneID, response.data));
-  });
-}
-
-const getMerchantAddress = async (f, merchantID, addressID, droneID, merchantAddress) => {
-  const token = await getAdminToken();
-
-  axios.get(merchantAPI + '/' + merchantID + '/addresses' + '/' + addressID, {
-    headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`,
-    }
-  }).then(response => {
-    console.log(merchantAddress);
-    f(merchantAddress.set(droneID, response.data));
-  })
 }
 
 const colors = [
