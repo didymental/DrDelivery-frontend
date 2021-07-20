@@ -48,6 +48,8 @@ const App = () => {
     const renderPage = () => {
         if (state.isLoggedIn && !order.hasOrder) {            
             return <Redirect to="/home" />;
+        } else {
+            return <Redirect to="/" />;
         }
     }
 
