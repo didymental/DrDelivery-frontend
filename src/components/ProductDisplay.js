@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import Cart from './Cart';
 import {loginAPI, merchantAPI} from '../apis/rails-backend';
@@ -12,10 +12,14 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Typography } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-
+import Fab from '@material-ui/core/Fab';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Badge from '@material-ui/core/Badge';
+import AppBar from '@material-ui/core/AppBar';
 
 const ProductDisplay = (props) => {
     const matches = useMediaQuery('(min-width: 768px)');
+    const matched = useMediaQuery('(min-width: 769px)');
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     const [orderId, setOrderId] = useState(0);
@@ -72,9 +76,38 @@ const ProductDisplay = (props) => {
         getProducts().then(response => setLoading(false));
     }, []);
 
+    const bottomRef = useRef();
+
 
     return loading ? <LinearProgress/> : (
       <div className={classes.root}>
+        {matched ? null : (
+          
+            
+              <AppBar position="fixed"
+              style={ {
+                background: 'transparent', 
+                boxShadow: 'none',
+              }}
+              
+              >
+            <Fab 
+              size="small" 
+              color="secondary" 
+              aria-label="go to cart"
+              onClick={() => {
+                bottomRef.current.scrollIntoView({behavior: 'smooth'});
+              }}
+              className={classes.fab}
+            > 
+            
+              <ShoppingCartBadge count={cart.length}/>
+            </Fab>
+            </AppBar>
+            
+            
+          )}
+        
         <Box display={{sm: 'block', md: 'flex'}}>
           <Container>
             <Container className={classes.merchantWrapper}>
@@ -113,7 +146,7 @@ const ProductDisplay = (props) => {
                 
               </Box>
           </Container>
-          <Box className={classes.cartWrapper} flexGrow={1}>
+          <Box className={classes.cartWrapper} flexGrow={1} ref={bottomRef}>
             <Cart 
               cart={cart} 
               addToCart={addToCart} 
@@ -127,6 +160,16 @@ const ProductDisplay = (props) => {
         </div>
       
     )
+}
+
+const ShoppingCartBadge = (props) => {
+  const classes = useStyles();
+  return (
+          <Badge badgeContent={props.count} >
+              <ShoppingCartIcon />
+          </Badge>
+    
+  );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -157,7 +200,15 @@ const useStyles = makeStyles((theme) => ({
     merchantWrapper: {
       padding: theme.spacing(2),
       margin: 'auto',
-    }
+    },
+    fab: {
+      marginTop: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      display: 'flex',
+      alignSelf: 'flex-end',
+      background: '#FF4774'
+    },
+    
 }));
 
 export default ProductDisplay;
