@@ -24,6 +24,8 @@ import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CheckIcon from '@material-ui/icons/Check';
+import Container from '@material-ui/core/Container';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const Transition = React.forwardRef( (props, ref) => {
@@ -36,6 +38,7 @@ const EditableTextField = (props) => {
     })
     const [text, setText] = useState(null);
     const [editCount, setEditCount] = useState(0);
+
     
     const classes = useStyles();
 
@@ -51,6 +54,7 @@ const EditableTextField = (props) => {
 
     const handleSave = () => {
         setState({...state, editMode: false});
+        console.log(text);
         props.handleChange(text);
     }
  
@@ -140,60 +144,82 @@ const Account = (props) => {
     const [open, setOpen] = useState(false);
     const [error, setError] = useState([]);
 
+    const [loadingAddress, setloadingAddress] = useState(true);
+    const [loadingProfile, setLoadingProfile] = useState(true);
+
     const classes = useStyles();
 
     const savedDetails = async () => {
         const token = localStorage.getItem('token');
         const userid = localStorage.getItem('userID');
-        const response = await axios.get(customerAPI + '/' + userid, {
+        axios.get(customerAPI + '/' + userid, {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
             }
+        }).then(response => {
+            const personalInfo = response.data;
+            setProfile({...profile, 
+                name: personalInfo.name, 
+                email: personalInfo.email, 
+                contactNum: personalInfo.contact_no, 
+            })
+            setLoadingProfile(false);
+        }).catch(err => {
+            setError([...error, err.message]);
         });
 
-        const addressResponse = await axios.get(customerAPI + '/' + userid + '/addresses', {
+        axios.get(customerAPI + '/' + userid + '/addresses', {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
             }
+        }).then(res => {
+            const savedAddresses = res.data;
+            setAddresses(savedAddresses);
+            setloadingAddress(false);
         });
-        const personalInfo = await response.data;
-        const savedAddresses = await addressResponse.data;
+        // const personalInfo = await response.data;
+        // const savedAddresses = await addressResponse.data;
         
-        setProfile({...profile, 
-            name: personalInfo.name, 
-            email: personalInfo.email, 
-            contactNum: personalInfo.contact_no, 
-        })
-        setAddresses(savedAddresses);
+        // setProfile({...profile, 
+        //     name: personalInfo.name, 
+        //     email: personalInfo.email, 
+        //     contactNum: personalInfo.contact_no, 
+        // })
+        // setAddresses(savedAddresses);
         
     };
 
     function searchAddress(id, arr) {
-        
-        arr.sort((i, j) => i.id - j.id);
-        if (arr.length === 0) {
-            return null;
-        } else {
-            let len = arr.length;
-            let start = 0;
-            let end = len - 1;
-            
-            while (start < end) {
-                let mid = start + Math.floor((end - start)/2);
-                if (id <= arr[mid].id) {
-                    end = mid;
-                } else {
-                    start = mid + 1;
-                }
+        for (let i = 0; i < arr.length; i++) {
+            if (id === arr[i].id) {
+                return i;
             }
-
-            if (arr[start].id === id) {
-                return start;
-            }
-
         }
+        
+        // // arr.sort((i, j) => i.id - j.id);
+        // if (arr.length === 0) {
+        //     return null;
+        // } else {
+        //     let len = arr.length;
+        //     let start = 0;
+        //     let end = len - 1;
+            
+        //     while (start < end) {
+        //         let mid = start + Math.floor((end - start)/2);
+        //         if (id <= arr[mid].id) {
+        //             end = mid;
+        //         } else {
+        //             start = mid + 1;
+        //         }
+        //     }
+
+        //     if (arr[start].id === id) {
+        //         return start;
+        //     }
+
+        // }
     }
 
     
@@ -323,6 +349,8 @@ const Account = (props) => {
         });
     }
     
+    console.log(loadingProfile);
+    console.log(loadingAddress);
 
     return (
         <div>
@@ -335,7 +363,15 @@ const Account = (props) => {
         <Box > 
             <Box className={classes.profileWrapper} >
                 <Typography variant="h4">Personal Details </Typography>
-                <Grid 
+                {loadingProfile 
+                    ? <CircularProgress 
+                        size={50} 
+                        color="secondary"
+                        className={classes.progress}
+                    /> 
+
+                    : (
+                        <Grid 
                     container 
                     spacing={1}
                     direction={matches ? "row" : "column"}
@@ -372,13 +408,23 @@ const Account = (props) => {
                         </Box>
                     </Box>
                 </Grid>
+                    )
+                }
             </Box>
             
             <Box className={classes.profileWrapper} >
                 <Typography variant="h4">
                     Saved Addresses 
                 </Typography>
-                <Grid 
+                {
+                    loadingAddress 
+                        ? <CircularProgress 
+                        size={50} 
+                        color="secondary"
+                        className={classes.progress}
+                    /> 
+                    : (
+                        <Grid 
                     container 
                     //spacing={1}
                     direction={matches ? "row" : "column"}
@@ -512,6 +558,8 @@ const Account = (props) => {
                     }
                     )}
                 </Grid>
+                    )
+                }
             </Box>
         </Box>
 
@@ -522,38 +570,42 @@ const Account = (props) => {
         >
             <Grid 
                 item
-                justifyContent="center"
             >
+                <Container>
                 <Button onClick={saveChanges} className={classes.saveButtonWrapper}>
                     <Grid 
                         container
                         direction="row"
-                        spacing={1}
+                        //spacing={1}
                     >
                         <Grid 
                             item
-                            justifyContent="center"
+                            xs={2}
                         >
+                            <Container>
                             <SaveIcon className={classes.saveButton}/>
+                            </Container>
                         </Grid>
 
                         <Grid 
                             item
-                            justifyContent="center"
                         >
+                            <Container>
                             <Typography variant="body1">
                                 <Box fontWeight="fontWeightMedium" className={classes.saveButton}>
                                     Save All Changes
                                 </Box> 
                             </Typography>
+                            </Container>
                         </Grid>
                     </Grid>
                 </Button>
+                </Container>
             </Grid>
             <Grid 
                 item
-                justifyContent="center"
             >
+                <Container>
                 <Button onClick={() => {
                     setDel(true);
                     
@@ -561,29 +613,33 @@ const Account = (props) => {
                     <Grid 
                         container
                         direction="row"
-                        spacing={1}
+                        //spacing={1}
                     >
                         <Grid 
                             item
-                            alignItem="center"
-                            justifyContent="center"
+                            xs={2}
                         >
+                            <Container>
                             <DeleteIcon className={classes.saveButton}/>
+                            </Container>
                         </Grid>
+                        
 
                         <Grid 
                             item
-                            alignItem="center"
-                            justifyContent="center"
+                            
                         >
+                            <Container>
                             <Typography variant="body1">
                                 <Box fontWeight="fontWeightMedium" className={classes.saveButton}>
                                     Delete Account
                                 </Box> 
                             </Typography>
+                            </Container>
                         </Grid>
                     </Grid>
                 </Button>
+                </Container>
             </Grid>
         </Grid>
 
@@ -709,7 +765,7 @@ const useStyles = makeStyles((theme) => ({
     },
     saveButton: {
         display: 'flex',
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
         color: 'white',
     },
     overallWrapper: {
@@ -725,6 +781,11 @@ const useStyles = makeStyles((theme) => ({
     endButtonWrapper: {
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
+    },
+    progress: {
+        margin: 'auto',
+        display: 'flex',
+        padding: theme.spacing(2),
     }
   }));
 
