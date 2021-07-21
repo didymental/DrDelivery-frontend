@@ -74,7 +74,7 @@ const Tracker = (props) => {
                 data = JSON.parse(text);
             }
 
-            if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
+            if (data.order !== undefined) { // if update from Order Channel
                 if (data.order.status !== "completed") {
                     setState({...state, 
                         orderTracked: state.orderTracked.set(data.order.id, data.order),

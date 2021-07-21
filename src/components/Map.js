@@ -136,7 +136,7 @@ const MapContainer = (props) => {
         
       } 
       
-      if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
+      if (data.order !== undefined) { // if update from Order Channel
         
         getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
         getMerchantAddress(

@@ -89,6 +89,9 @@ const ProductDisplay = (props) => {
                 background: 'transparent', 
                 boxShadow: 'none',
               }}
+              className={classes.fabWrapper}
+
+
               
               >
             <Fab 
@@ -208,6 +211,9 @@ const useStyles = makeStyles((theme) => ({
       alignSelf: 'flex-end',
       background: '#FF4774'
     },
+    fabWrapper: {
+      marginTop: '100%',
+    }
     
 }));
 
