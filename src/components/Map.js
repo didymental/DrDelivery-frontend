@@ -3,10 +3,9 @@ import axios from 'axios';
 import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
 import React from 'react';
 import {useState, useEffect} from 'react';
-import OrderCollectedButton from './OrderCollectedButton';
-import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {makeStyles} from '@material-ui/core/styles';
 
 
 const getAdminToken = async () => {
@@ -61,8 +60,11 @@ const MapContainer = (props) => {
   const [chargingRoutes, setChargingRoutes] = useState(props.chargingRoutes);
   const [merchantAddress, setMerchantAddress] = useState(props.merchantAddresses);
   const [customerAddress, setCustomerAddress] = useState(props.customerAddresses);
-  const [click, setClick] = useState(false);
+  // const [click, setClick] = useState(false);
+  const [loadingDrone, setLoadingDrone] = useState(true);
+  const [loadingOrder, setLoadingOrder] = useState(true);
   //const [data, setData] = useState({});
+  const classes = useStyles();
 
   function immutableUpdate(arr, newDrone, i) {
     return arr.map((item, index) => i === index ? newDrone: item );
@@ -130,6 +132,8 @@ const MapContainer = (props) => {
         setChargingRoutes(
           chargingRoutes.set(data.drone.id, stationsVisibleToUser.filter(obj => obj.addressable_type === "Station"))
         );
+        setLoadingDrone(false);
+        
       } 
       
       if (data.order_curr_address != null && data.order.drone_id != null) { // if update from Order Channel
@@ -142,6 +146,7 @@ const MapContainer = (props) => {
           data.order.drone_id,
           merchantAddress
         );
+        setLoadingOrder(false);
 
       }
 
@@ -276,7 +281,9 @@ const MapContainer = (props) => {
     setHouseInfoWin({...shopInfoWin, latitude: null, longitude: null});
   }
 
-  return (
+  return loadingDrone && loadingOrder 
+  ? <CircularProgress size={50} color="secondary" className={classes.container}/>
+  : (
     <Map google={props.google} zoom={12}
     initialCenter={{
       lat: 1.368635520835842,
@@ -372,6 +379,17 @@ const MapContainer = (props) => {
 
 
 }
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+      margin: 'auto',
+      display: 'flex',
+      padding: theme.spacing(2),
+      // marginLeft: theme.spacing(2),
+      // marginTop: theme.spacing(1),
+  },
+}
+));
 
 const colors = [
   '#D45F01',

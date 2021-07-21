@@ -23,6 +23,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import CheckIcon from '@material-ui/icons/Check';
 
 
 const Transition = React.forwardRef( (props, ref) => {
@@ -108,7 +109,7 @@ const EditableTextField = (props) => {
                                         <SettingsBackupRestoreIcon onClick={()=> {setEditCount(0)}}/>
                                     </IconButton>
                                     <IconButton onClick={handleSave}>
-                                        <SaveIcon/>
+                                        <CheckIcon/>
                                     </IconButton>
                                 </div>
                             )
@@ -137,6 +138,7 @@ const Account = (props) => {
 
     const [success, setSuccess] = useState(false);
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState([]);
 
     const classes = useStyles();
 
@@ -169,6 +171,8 @@ const Account = (props) => {
     };
 
     function searchAddress(id, arr) {
+        
+        arr.sort((i, j) => i.id - j.id);
         if (arr.length === 0) {
             return null;
         } else {
@@ -231,9 +235,10 @@ const Account = (props) => {
                 setOpen(true);
                 setSuccess(true);
             }
-        }).catch(error => {
+        }).catch(err => {
             setOpen(true);
             setSuccess(false);
+            setError([...error, err.message]);
         });
     }
     const handleAddressChange = () => {
@@ -252,7 +257,7 @@ const Account = (props) => {
                 name: '',
             }
             const index = searchAddress(arrAddressID[i], addresses);
-    
+            
             toPost = {...toPost, 
                 street_address: addresses[index].street_address,
                 city: addresses[index].city,
@@ -268,15 +273,14 @@ const Account = (props) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 }
             }).then(response => {
-                
                 if (response.statusText === "OK") {
                     setOpen(true);
                     setSuccess(true);
                 }
-            }).catch(error => {
-                
+            }).catch(err => {
                 setOpen(true);
                 setSuccess(false);
+                setError([...error, err.message]);
             });
         }
         
@@ -313,7 +317,7 @@ const Account = (props) => {
             if (response.statusText === "OK") {
                 handleLogout();
             }
-        }).catch(error => {
+        }).catch(err => {
             setOpen(true);
             setSuccess(false);
         });
@@ -381,7 +385,7 @@ const Account = (props) => {
                 >
                     {addresses.map(elem => {
                         return (
-                            <div>
+                            
                             <Box display={{sm: 'block', md: 'flex'}}>
                                 <Box className={classes.container}>
                                     <EditableTextField
@@ -392,6 +396,8 @@ const Account = (props) => {
                                         setAddresses(addresses.map((add, index) => {
                                             if (index === i) {
                                                 return {...add, name: input};
+                                            } else {
+                                                return add;
                                             }
                                         }));
                                         setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -407,6 +413,8 @@ const Account = (props) => {
                                         setAddresses(addresses.map((add, index) => {
                                             if (index === i) {
                                                 return {...add, building_no: input};
+                                            } else {
+                                                return add;
                                             }
                                         }));
                                         setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -422,6 +430,8 @@ const Account = (props) => {
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
                                                     return {...add, street_address: input};
+                                                } else {
+                                                    return add;
                                                 }
                                             }));
                                             setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -437,6 +447,8 @@ const Account = (props) => {
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
                                                     return {...add, unit_number: input};
+                                                } else {
+                                                    return add;
                                                 }
                                             }));
                                             setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -452,6 +464,8 @@ const Account = (props) => {
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
                                                     return {...add, postcode: input};
+                                                } else {
+                                                    return add;
                                                 }
                                             }));
                                             setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -467,6 +481,8 @@ const Account = (props) => {
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
                                                     return {...add, city: input};
+                                                } else {
+                                                    return add;
                                                 }
                                             }));
                                             setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -482,6 +498,8 @@ const Account = (props) => {
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
                                                     return {...add, country: input};
+                                                } else {
+                                                    return add;
                                                 }
                                             }));
                                             setAddressIDs(addressIDs.set(elem.id, elem.id));
@@ -489,7 +507,7 @@ const Account = (props) => {
                                     />
                                 </Box>
                             </Box>
-                            </div>
+                            
                         )
                     }
                     )}
@@ -536,7 +554,10 @@ const Account = (props) => {
                 item
                 justifyContent="center"
             >
-                <Button onClick={() => setDel(true)} className={classes.deleteButtonWrapper}>
+                <Button onClick={() => {
+                    setDel(true);
+                    
+                }} className={classes.deleteButtonWrapper}>
                     <Grid 
                         container
                         direction="row"
@@ -578,13 +599,13 @@ const Account = (props) => {
                     (
                         <div>
                             <DialogTitle id="success">
-                                Your Changes have been successful
+                                Your Changes are successful 🙌
                             </DialogTitle>
-                            <DialogContent>
+                            {/* <DialogContent>
                                 <DialogContentText>
-                                    Thank you for shopping with us! 
+                                    
                                 </DialogContentText>
-                            </DialogContent>
+                            </DialogContent> */}
                             <DialogActions>
                                 <Button onClick={handleClose}>
                                     Close
@@ -600,11 +621,17 @@ const Account = (props) => {
                             </DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
-                                    Contact our hotline if this is a mistake.
+                                    {error.length === 0 
+                                        ? 'Contact our hotline if this is a mistake.'
+                                        : error.reduce( (acc, curr_value) => acc + curr_value, '')}
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={handleClose}>
+                                <Button onClick={ () => {
+                                        handleClose();
+                                        window.location.reload();
+                                    }
+                                }>
                                     Acknowledge
                                 </Button>
                             </DialogActions>
@@ -630,8 +657,10 @@ const Account = (props) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button > 
-                        {/* onClick={deleteAccount}> */}
+                    <Button 
+                        onClick={deleteAccount}
+                    > 
+                        
                         Confirm
                     </Button>
                 </DialogActions>
