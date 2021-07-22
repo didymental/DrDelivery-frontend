@@ -92,6 +92,7 @@ const SignUpForm = (props) => {
                         label="Name"
                         variant="outlined"
                         onChange={handleNameInput}
+                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Name")}
                     />
                 </div>
                 
@@ -101,6 +102,7 @@ const SignUpForm = (props) => {
                         label="Email"
                         variant="outlined"
                         onChange={handleEmailInput}
+                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Email")}
                     />
                 </div>
                 
@@ -110,6 +112,7 @@ const SignUpForm = (props) => {
                         label="Contact Number"
                         variant="outlined"
                         onChange={handleNumberInput}
+                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Contact")}
                     />
                 </div>
                 
@@ -121,6 +124,7 @@ const SignUpForm = (props) => {
                         autoComplete="current-password"
                         variant="outlined"
                         onChange={handlePasswordInput}
+                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Password")}
                         />
                 </div>
                 
@@ -131,6 +135,7 @@ const SignUpForm = (props) => {
                         type="password"
                         variant="outlined"
                         onChange={handlePasswordConfirmation}
+                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Password")}
                         />
                 </div>
                 

@@ -97,6 +97,8 @@ const Login = (props) => {
                             label="Email"
                             variant="outlined"
                             onChange={handleEmailInput}
+                            error={error.hasError}
+                            helperText={error.message}
                         />
                     </Container>
                     
@@ -123,12 +125,12 @@ const Login = (props) => {
                         </Box>    
                     </Box>
                 </form>
-                <Snackbar open={error.hasError}>
+                {/* <Snackbar open={error.hasError}>
                     <Alert severity="error" onClose={() => setError({...state, hasError: false, message: ''})}>
                         <AlertTitle>Error</AlertTitle>
                         {error.message}
                     </Alert>
-                </Snackbar>
+                </Snackbar> */}
 
             <div className={classes.footer}>
                 {SignUp()}
