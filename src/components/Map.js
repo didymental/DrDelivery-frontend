@@ -107,12 +107,14 @@ const MapContainer = (props) => {
   const incomingMessageListener = (message) => {
     let messageData = JSON.parse(message.data);
     if (messageData.type !== "ping") {
+      
       let data = {};      
       if (messageData.message !== undefined) {
         
         const text = messageData.message;
         
         data = JSON.parse(text);
+        setNoOrder(false);
         
         
       }
@@ -160,14 +162,13 @@ const MapContainer = (props) => {
 
       }
 
-      setLoading(false);
+      
       
       
     }
 
-    if (messageData.type === "ping") {
-      setNoOrder(false);
-    }
+
+    setLoading(false);
 
 
   }
@@ -309,7 +310,7 @@ const MapContainer = (props) => {
             </Box>
         </Typography>
     </Box>)
-    : noOrder && loadingOrder
+    : noOrder && !loadingOrder
       ? (
         <Box className={classes.pastOrderContainer}>
         <Typography variant="h4">
@@ -425,9 +426,11 @@ const useStyles = makeStyles((theme) => ({
       // marginTop: theme.spacing(1),
   },
   pastOrderContainer: {
+    display: 'flex',
     padding: theme.spacing(1.5),
     justifyContent: 'center',
     alignItems:'center',
+    alignSelf: 'center',
 },
 }
 ));
