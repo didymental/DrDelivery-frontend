@@ -36,6 +36,42 @@ const TrackerCard = (props) => {
                 </Box>
             </Paper>
         )
+        : status === "awaiting_drone_pickup"
+        ? order.drone_id !== undefined
+            ? (
+                <Paper className={classes.outerbox}>
+                    <Typography variant="body1">
+                        <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
+                        {convertStatusToString(status)}
+                        </Box>
+                    </Typography>
+                    <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
+                    <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
+                    <Box className={classes.buttonWrapper}>
+                    <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
+                        See Order Progress
+                        <ChevronRightIcon/>
+                    </Button>
+                    </Box>
+                </Paper>
+            )
+            : (
+                <Paper className={classes.outerbox}>
+                    <Typography variant="body1">
+                        <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
+                        {'Drone is being assigned to your order'}
+                        </Box>
+                    </Typography>
+                    <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
+                    <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
+                    <Box className={classes.buttonWrapper}>
+                    <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
+                        See Order Progress
+                        <ChevronRightIcon/>
+                    </Button>
+                    </Box>
+                </Paper>
+            )
         : status !== "completed"
             ? (
                 <Paper className={classes.outerbox}>
