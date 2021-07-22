@@ -5,7 +5,10 @@ import React from 'react';
 import {useState, useEffect} from 'react';
 import CardMedia from '@material-ui/core/CardMedia';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {makeStyles} from '@material-ui/core/styles';
+import { Typography } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 
 
 const getAdminToken = async () => {
@@ -60,10 +63,13 @@ const MapContainer = (props) => {
   const [chargingRoutes, setChargingRoutes] = useState(props.chargingRoutes);
   const [merchantAddress, setMerchantAddress] = useState(props.merchantAddresses);
   const [customerAddress, setCustomerAddress] = useState(props.customerAddresses);
-  // const [click, setClick] = useState(false);
   const [loadingDrone, setLoadingDrone] = useState(true);
   const [loadingOrder, setLoadingOrder] = useState(true);
-  //const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [assigned, setAssigned] = useState(false);
+  const [noOrder, setNoOrder] = useState(true);
+  
+  
   const classes = useStyles();
 
   function immutableUpdate(arr, newDrone, i) {
@@ -137,7 +143,7 @@ const MapContainer = (props) => {
       } 
       
       if (data.order !== undefined) { // if update from Order Channel
-        
+        console.log(data.order);
         getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
         getMerchantAddress(
           setMerchantAddress, 
@@ -147,11 +153,23 @@ const MapContainer = (props) => {
           merchantAddress
         );
         setLoadingOrder(false);
+        if (data.order.drone_id !== undefined) {
+          console.log(data.order.drone_id);
+          setAssigned(true);
+        }
 
       }
 
+      setLoading(false);
+      
       
     }
+
+    if (messageData.type === "ping") {
+      setNoOrder(false);
+    }
+
+
   }
 
   const closeSocket = (event) => {
@@ -281,9 +299,27 @@ const MapContainer = (props) => {
     setHouseInfoWin({...shopInfoWin, latitude: null, longitude: null});
   }
 
-  return loadingDrone && loadingOrder 
-  ? <CircularProgress size={50} color="secondary" className={classes.container}/>
-  : (
+  return loading 
+  ? <LinearProgress />
+  : assigned && loadingDrone 
+    ? (<Box className={classes.pastOrderContainer}>
+        <Typography variant="h4">
+            <Box fontWeight="fontWeightBold">
+            A drone is being assigned to your order
+            </Box>
+        </Typography>
+    </Box>)
+    : noOrder && loadingOrder
+      ? (
+        <Box className={classes.pastOrderContainer}>
+        <Typography variant="h4">
+            <Box fontWeight="fontWeightBold">
+            There is no order in progress
+            </Box>
+        </Typography>
+        </Box>
+      )
+      : (
     <Map google={props.google} zoom={12}
     initialCenter={{
       lat: 1.368635520835842,
@@ -388,6 +424,11 @@ const useStyles = makeStyles((theme) => ({
       // marginLeft: theme.spacing(2),
       // marginTop: theme.spacing(1),
   },
+  pastOrderContainer: {
+    padding: theme.spacing(1.5),
+    justifyContent: 'center',
+    alignItems:'center',
+},
 }
 ));
 
