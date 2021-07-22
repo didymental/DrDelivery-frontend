@@ -26,6 +26,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CheckIcon from '@material-ui/icons/Check';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
 
 
 const Transition = React.forwardRef( (props, ref) => {
@@ -54,7 +55,6 @@ const EditableTextField = (props) => {
 
     const handleSave = () => {
         setState({...state, editMode: false});
-        console.log(text);
         props.handleChange(text);
     }
  
@@ -109,9 +109,9 @@ const EditableTextField = (props) => {
                             )
                             : (
                                 <div>
-                                    <IconButton >
+                                    {/* <IconButton >
                                         <SettingsBackupRestoreIcon onClick={()=> {setEditCount(0)}}/>
-                                    </IconButton>
+                                    </IconButton> */}
                                     <IconButton onClick={handleSave}>
                                         <CheckIcon/>
                                     </IconButton>
@@ -166,7 +166,7 @@ const Account = (props) => {
             })
             setLoadingProfile(false);
         }).catch(err => {
-            setError([...error, err.message]);
+            setError([...error, err.response.data.message]);;
         });
 
         axios.get(customerAPI + '/' + userid + '/addresses', {
@@ -264,7 +264,7 @@ const Account = (props) => {
         }).catch(err => {
             setOpen(true);
             setSuccess(false);
-            setError([...error, err.message]);
+            setError([...error, err.response.data.message]);;
         });
     }
     const handleAddressChange = () => {
@@ -306,7 +306,7 @@ const Account = (props) => {
             }).catch(err => {
                 setOpen(true);
                 setSuccess(false);
-                setError([...error, err.message]);
+                setError([...error, err.response.data.message]);;
             });
         }
         
@@ -340,17 +340,17 @@ const Account = (props) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             }
         }).then(response => {
-            if (response.statusText === "OK") {
+            console.log(response);
+            if (response.status === 204) {
                 handleLogout();
+                window.location.reload();
             }
         }).catch(err => {
+            console.log(err);
             setOpen(true);
             setSuccess(false);
         });
     }
-    
-    console.log(loadingProfile);
-    console.log(loadingAddress);
 
     return (
         <div>
@@ -413,9 +413,14 @@ const Account = (props) => {
             </Box>
             
             <Box className={classes.profileWrapper} >
-                <Typography variant="h4">
-                    Saved Addresses 
-                </Typography>
+                {
+                    addresses.length === 0 
+                        ? null
+                        : <Typography variant="h4">
+                        Saved Addresses 
+                    </Typography>
+                }
+                
                 {
                     loadingAddress 
                         ? <CircularProgress 
@@ -431,7 +436,7 @@ const Account = (props) => {
                 >
                     {addresses.map(elem => {
                         return (
-                            
+                            <Paper className={matches ? classes.paperWrap : classes.mobilePaperWrap} elevation={4}>
                             <Box display={{sm: 'block', md: 'flex'}}>
                                 <Box className={classes.container}>
                                     <EditableTextField
@@ -553,8 +558,9 @@ const Account = (props) => {
                                     />
                                 </Box>
                             </Box>
-                            
+                            </Paper>    
                         )
+                        
                     }
                     )}
                 </Grid>
@@ -679,7 +685,7 @@ const Account = (props) => {
                                 <DialogContentText>
                                     {error.length === 0 
                                         ? 'Contact our hotline if this is a mistake.'
-                                        : error.reduce( (acc, curr_value) => acc + curr_value, '')}
+                                        : error.reduce( (acc, curr_value) => acc + '\n' + curr_value, '')}
                                 </DialogContentText>
                             </DialogContent>
                             <DialogActions>
@@ -786,6 +792,14 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
         display: 'flex',
         padding: theme.spacing(2),
+    },
+    paperWrap: {
+        marginBottom: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    },
+    mobilePaperWrap: {
+        marginRight: theme.spacing(10),
+        paddingBottom: theme.spacing(2),
     }
   }));
 

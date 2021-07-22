@@ -77,6 +77,7 @@ const FormDialog = ({open, setOpen, handleSuccess, success}) => {
 
 const AddressTextField = (props) => {
     const [open, setOpen] = useState(false);
+    
     const loading = props.options.length === 0 && open;
     const [state, setState] = useState({
         address: null,
@@ -122,12 +123,6 @@ const AddressTextField = (props) => {
         };
     }, [loading, setError, setState, error, props, state]);
 
-    // useEffect(() => {
-    //     if (!open) {
-    //         // props.setOptions([]);
-    //     }
-    // }, [open]);
-
     const displayAddressDetails = (event, value) => {
         let postcode = '';
         let addressID = '';
@@ -154,8 +149,13 @@ const AddressTextField = (props) => {
         <Autocomplete 
             id="address"
             open={open}
-            onOpen={ () => setOpen(true)}
-            onClose={ () => setOpen(false)}
+            onOpen={ () => { 
+                setOpen(true);
+            }}
+            onClose={ () => {
+                setOpen(false);
+                props.setOptions([]); // enable reload each time it is open
+            }}
             options={props.options}
             getOptionLabel={(option)=> option}
             getOptionSelected={(option, value) => option === value}
@@ -224,6 +224,8 @@ const Form = (props) => {
                                     success={props.success}
                                     options={options}
                                     setOptions={setOptions}
+                                    setState={props.setState}
+                                    state={props.state}
                                 />
                                 </div>
                             <TextField 
@@ -259,7 +261,6 @@ const Form = (props) => {
 }
 
 const OrderCard = (props) => {  
-    
     const [success, setSuccess] = useState(false);
     const handleSuccess = (status) => {
         setSuccess(status);
