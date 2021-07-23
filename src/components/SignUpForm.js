@@ -57,9 +57,7 @@ const SignUpForm = (props) => {
     }
 
     const handlePasswordConfirmation = (input) => {
-        if (input.target.value === state.password) {
-            setState({...state, password_confirmation: input.target.value});
-        } 
+        setState({...state, password_confirmation: input.target.value}); 
     }
 
     const handleSubmit = (event) => {
@@ -72,18 +70,15 @@ const SignUpForm = (props) => {
                 'Accept': 'application/json',
             },
         }).then(response => {
-            console.log(response);
             setSignUpSuccess(true);
             // props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
             setLoading(false);
         }).catch(error => {
             if (error.response) {
-                console.log(error.response);
                 if (error.response.data.message === undefined) {
                     setSignUpFail({...signupFail, message: error.response.data, fail: true});
                 } else {
                     setSignUpFail({...signupFail, message: error.response.data.message, fail: true});
-                    console.log(signupFail.message);
                 }
                 
             } 
