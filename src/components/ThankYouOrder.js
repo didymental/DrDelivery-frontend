@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
       maxWidth: '650px',
       marginBottom: theme.spacing(2),
+      minWidth: '250px',
       //display: 'flex',
     },
     innerBox: {

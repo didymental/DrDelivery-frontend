@@ -187,6 +187,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
                   merchantAddresses={new Map()}
                   customerAddresses={new Map()}
                   chargingRoutes={new Map()}
+                  entry={'order'}
                   
                 />
                 <OrderStatus orderStatus={orderStatus} />

@@ -11,6 +11,8 @@ const TrackerCard = (props) => {
     const merchants = props.merchants;
     const merchantID = props.merchantID;
     const order = props.order;
+    console.log(props.entry);
+    console.log(status);
 
     const history = useHistory();
 
@@ -36,8 +38,50 @@ const TrackerCard = (props) => {
                 </Box>
             </Paper>
         )
-        : status === "awaiting_drone_pickup"
-        ? order.drone_id !== undefined
+        : 
+        // status === "awaiting_drone_pickup"
+        // ? order.drone_id !== undefined
+        //     ? (
+        //         <Paper className={classes.outerbox}>
+        //             <Typography variant="body1">
+        //                 <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
+        //                 {convertStatusToString(status)}
+        //                 </Box>
+        //             </Typography>
+        //             <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
+        //             <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
+        //             <Box className={classes.buttonWrapper}>
+        //             <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
+        //                 See Order Progress
+        //                 <ChevronRightIcon/>
+        //             </Button>
+        //             </Box>
+        //         </Paper>
+        //     )
+        //     : (
+        //         <Paper className={classes.outerbox}>
+        //             <Typography variant="body1">
+        //                 <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
+        //                 {'Drone is being assigned to your order'}
+        //                 </Box>
+        //             </Typography>
+        //             <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
+        //             <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
+        //             {props.entry !== "home" 
+        //                     ? (<Box className={classes.buttonWrapper}>
+                        
+        //                         <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
+        //                             See Order Progress
+        //                             <ChevronRightIcon/>
+        //                         </Button>
+        //                         </Box>)
+        //                     : null 
+        //                 }
+                    
+        //         </Paper>
+        //     )
+        // : 
+        status !== "completed"
             ? (
                 <Paper className={classes.outerbox}>
                     <Typography variant="body1">
@@ -47,47 +91,16 @@ const TrackerCard = (props) => {
                     </Typography>
                     <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
                     <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
-                    <Box className={classes.buttonWrapper}>
-                    <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
-                        See Order Progress
-                        <ChevronRightIcon/>
-                    </Button>
-                    </Box>
-                </Paper>
-            )
-            : (
-                <Paper className={classes.outerbox}>
-                    <Typography variant="body1">
-                        <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
-                        {'Drone is being assigned to your order'}
-                        </Box>
-                    </Typography>
-                    <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
-                    <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
-                    <Box className={classes.buttonWrapper}>
-                    <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
-                        See Order Progress
-                        <ChevronRightIcon/>
-                    </Button>
-                    </Box>
-                </Paper>
-            )
-        : status !== "completed"
-            ? (
-                <Paper className={classes.outerbox}>
-                    <Typography variant="body1">
-                        <Box fontWeight="fontWeightBold" className={classes.detailsBox}>
-                        {convertStatusToString(status)}
-                        </Box>
-                    </Typography>
-                    <Typography variant="body1">{searchMerchantName(merchantID, merchants)}</Typography>
-                    <LinearProgress variant="determinate" value={getValue(convertStatusToString(status))}/>
-                    <Box className={classes.buttonWrapper}>
-                    <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
-                        See Order Progress
-                        <ChevronRightIcon/>
-                    </Button>
-                    </Box>
+                    {props.entry === "menu" || props.entry === "order"
+                            ? null 
+                            : (<Box className={classes.buttonWrapper}>
+                        
+                                <Button className={classes.button} onClick={() => history.push('/orderProgress')}>
+                                    See Order Progress
+                                    <ChevronRightIcon/>
+                                </Button>
+                                </Box>)
+                        }
                 </Paper>
 
             ) :
@@ -97,6 +110,9 @@ const TrackerCard = (props) => {
 function getValue(str) {
     switch(str) {
         case 'Merchant Preparing': 
+            return 0;
+        
+        case 'Drone is being assigned': 
             return 25;
 
         case 'Drone is Picking Up Your Order':
@@ -151,6 +167,9 @@ function convertStatusToString(status) {
         case 'completed':
             return 'Completed';
 
+        case 'Drone is being assigned':
+            return 'Drone is being assigned';
+
         default: 
             return '';
     }
@@ -161,7 +180,10 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
       maxWidth: '650px',
       marginBottom: theme.spacing(2),
+      marginRight: theme.spacing(2),
       //display: 'flex',
+      minWidth: '250px',
+      marginLeft: theme.spacing(2),
     },
     innerBox: {
       display: 'flex',

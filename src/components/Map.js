@@ -1,3 +1,4 @@
+/*global google*/
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
 import axios from 'axios';
 import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
@@ -9,7 +10,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import {makeStyles} from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-
+import Grid from '@material-ui/core/Grid';
+import Tracker from './Tracker';
 
 const getAdminToken = async () => {
   const adminLogin = {
@@ -129,8 +131,8 @@ const MapContainer = (props) => {
         setState({...state, drones: state.drones.set(drone.id, drone)});
 
         const droneLocation = { 
-          latitude: data.drone_curr_address.latitude,
-          longitude: data.drone_curr_address.longitude,
+          latitude: parseFloat(data.drone_curr_address.latitude),
+          longitude: parseFloat(data.drone_curr_address.longitude),
         }
 
         const stationsVisibleToUser = data.drone_address_route.slice(0, data.drone_address_route.length - 1);
@@ -229,11 +231,11 @@ const MapContainer = (props) => {
     <Marker
     title={'Your order is being delivered by Drone ' + obj.drone.id}
     name={'Drone'}
-    position={{lat: obj.drone.currLatitude, lng: obj.drone.currLongitude}}
+    position={{lat: parseFloat(obj.drone.currLatitude), lng: parseFloat(obj.drone.currLongitude)}}
     icon={{
       url: "https://res.cloudinary.com/didymusne/image/upload/v1626512005/droneMarker_bclqa7.png",
-      anchor: new window.google.maps.Point(16,16),
-      scaledSize: new window.google.maps.Size(32,32)
+      anchor: new props.google.maps.Point(16,16),
+      scaledSize: new props.google.maps.Size(32,32)
     }} />
 
   ))
@@ -247,8 +249,8 @@ const MapContainer = (props) => {
                                       name={'Drone'}
                                       icon={{
                                         url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
-                                        anchor: new window.google.maps.Point(16,16),
-                                        scaledSize: new window.google.maps.Size(32, 32),
+                                        anchor: new props.google.maps.Point(16,16),
+                                        scaledSize: new props.google.maps.Size(32, 32),
                                       }}
                                       position={{lat: arr.latitude, lng: arr.longitude}} 
                                     />
@@ -300,10 +302,22 @@ const MapContainer = (props) => {
     setHouseInfoWin({...shopInfoWin, latitude: null, longitude: null});
   }
 
+  const style = {
+    //width: '50vw',
+    //height: '75vh',
+    'marginLeft': 'auto',
+    'marginRight': 'auto',
+    //'marginTop': '2vh',
+  }
+
   return loading 
   ? <LinearProgress />
-  : assigned && loadingDrone 
-    ? (<Box className={classes.pastOrderContainer}>
+  : <Box>
+    
+    {/* {
+      assigned && loadingDrone 
+    ? (
+    <Box className={classes.pastOrderContainer}>
         <Typography variant="h4">
             <Box fontWeight="fontWeightBold">
             A drone is being assigned to your order
@@ -321,98 +335,132 @@ const MapContainer = (props) => {
         </Box>
       )
       : (
-    <Map google={props.google} zoom={12}
-    initialCenter={{
-      lat: 1.368635520835842,
-      lng: 103.81916601690331
-    }}>
-
-      {droneMarkers}
-
-      {chargingStations}
-
-      {routes.map( (obj, index) => (
-        <Polyline 
-        path={obj.routeCoord.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
-        strokeColor={colors[index % 300]}
-        strokeOpacity={0.8}
-        strokeWeight={8}
-      />
-      ))}
-
-      {
-        shops.map( obj => {
-          
-          return (
-          
-          <Marker 
-            title={obj.value.name + ' (' + obj.value.street_address + ')'}
-            name={obj.value.name}
-            icon={{
-              url: "https://res.cloudinary.com/didymusne/image/upload/v1626785322/shopsss_d7met1.png",
-              anchor: new window.google.maps.Point(16,16),
-              scaledSize: new window.google.maps.Size(32, 32),
-            }}
-            position={{lat: obj.value.latitude, lng: obj.value.longitude}}
-            onMouseover={() => displayShopWindow({
-              latitude: obj.value.latitude, 
-              longitude: obj.value.longitude
-            })}
-            onMouseout={hideShopWindow}
-        />
-        )})
-      }
-
-          <InfoWindow 
-            visible={shopInfo}
-            position={{lat: shopInfoWin.latitude, lng: shopInfoWin.longitude}}
-            onCloseClick={hideShopWindow}
-          >
-           
-            <CardMedia 
-              image='https://res.cloudinary.com/didymusne/image/upload/v1626787222/SHOP_2_dxqwxj.png'
-              style={{height: 47, width: 165}}
-            />
-"
-          </InfoWindow>
-
-      {
-        destinations.map( obj => (
-          <Marker 
-            title={obj.value.name + ' (' + obj.value.street_address + ')'}
-            name={obj.value.name}
-            icon={{
-              url: "https://res.cloudinary.com/didymusne/image/upload/v1626788922/image_4_kputdg.png",
-              anchor: new window.google.maps.Point(16,16),
-              scaledSize: new window.google.maps.Size(32, 32),
-            }}
-            position={{lat: obj.value.latitude, lng: obj.value.longitude}}
-            onMouseover={() => displayHouseWindow({
-              latitude: obj.value.latitude, 
-              longitude: obj.value.longitude
-            })}
-            onMouseout={hideHouseWindow}
-        />
-        ))
-      }
-
-      <InfoWindow 
-            visible={houseInfo}
-            position={{lat: houseInfoWin.latitude, lng: houseInfoWin.longitude}}
-            onCloseClick={hideHouseWindow}
+        <Box className={classes.pastOrderContainer}>
+        <Typography variant="h4">
+            <Box fontWeight="fontWeightBold">
             
+            </Box>
+        </Typography>
+        </Box>
+      )
+    } */}
+    <Grid
+      container
+      direction="row"
+    >
+      <Grid 
+        item 
+        xs={12}
+        >
+          <Box borderBottom={0.2}>
+          <Tracker entry={props.entry} />
+          </Box>
+      </Grid>
+      <Grid 
+        item 
+        xs={12}
+      >
+          <Map google={props.google} zoom={12}
+          initialCenter={{
+            lat: 1.368635520835842,
+            lng: 103.81916601690331
+          }}
+          gestureHandling='cooperative'
+          // containerStyle={containerStyle}
+          style={style}
           >
-           
-            <CardMedia 
-              image='https://res.cloudinary.com/didymusne/image/upload/v1626789214/DEST_xnldjd.png'
-              style={{height: 47, width: 165}}
+
+            
+
+            {chargingStations}
+
+            {routes.map( (obj, index) => (
+              <Polyline 
+              path={obj.routeCoord.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
+              strokeColor={colors[index % 300]}
+              strokeOpacity={0.8}
+              strokeWeight={8}
             />
-"
-          </InfoWindow>
+            ))}
+
+            {
+              shops.map( obj => {
+                
+                return (
+                
+                <Marker 
+                  title={obj.value.name + ' (' + obj.value.street_address + ')'}
+                  name={obj.value.name}
+                  icon={{
+                    url: "https://res.cloudinary.com/didymusne/image/upload/v1626785322/shopsss_d7met1.png",
+                    anchor: new props.google.maps.Point(16,16),
+                    scaledSize: new props.google.maps.Size(32, 32),
+                  }}
+                  position={{lat: obj.value.latitude, lng: obj.value.longitude}}
+                  onMouseover={() => 
+                    displayShopWindow({
+                    latitude: obj.value.latitude, 
+                    longitude: obj.value.longitude
+                  })}
+                  onMouseout={hideShopWindow}
+              />
+              )})
+            }
+
+                <InfoWindow 
+                  visible={shopInfo}
+                  position={{lat: parseFloat(shopInfoWin.latitude), lng: parseFloat(shopInfoWin.longitude)}}
+                  onCloseClick={hideShopWindow}
+                >
+                
+                  <CardMedia 
+                    image='https://res.cloudinary.com/didymusne/image/upload/v1626787222/SHOP_2_dxqwxj.png'
+                    style={{height: 47, width: 165}}
+                  />
+      "
+                </InfoWindow>
+
+            {
+              destinations.map( obj => (
+                <Marker 
+                  title={obj.value.name + ' (' + obj.value.street_address + ')'}
+                  name={obj.value.name}
+                  icon={{
+                    url: "https://res.cloudinary.com/didymusne/image/upload/v1626788922/image_4_kputdg.png",
+                    anchor: new window.google.maps.Point(16,16),
+                    scaledSize: new window.google.maps.Size(32, 32),
+                  }}
+                  position={{lat: parseFloat(obj.value.latitude), lng: parseFloat(obj.value.longitude)}}
+                  onMouseover={() => displayHouseWindow({
+                    latitude: obj.value.latitude, 
+                    longitude: obj.value.longitude
+                  })}
+                  onMouseout={hideHouseWindow}
+              />
+              ))
+            }
+
+            {droneMarkers}
+
+            <InfoWindow 
+                  visible={houseInfo}
+                  position={{lat: parseFloat(houseInfoWin.latitude), lng: parseFloat(houseInfoWin.longitude)}}
+                  onCloseClick={hideHouseWindow}
+                  
+                >
+                
+                  <CardMedia 
+                    image='https://res.cloudinary.com/didymusne/image/upload/v1626789214/DEST_xnldjd.png'
+                    style={{height: 47, width: 165}}
+                  />
+                </InfoWindow>
 
 
-    </Map>
-  )
+          </Map>
+        </Grid>
+    </Grid>
+  
+  </Box>
 
 
 }
@@ -431,7 +479,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems:'center',
     alignSelf: 'center',
-},
+  },
+  mapContainer: {
+    width: '70%',
+    height: '70%',
+  },
 }
 ));
 
