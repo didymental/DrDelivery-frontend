@@ -111,7 +111,7 @@ const Tracker = (props) => {
                 </Box>
                     
                       
-                      <Box display={{sm: 'block', md: 'flex'}} overflow="auto" >
+                      <Box display='flex' overflow="auto" >
                     {
                         orderTrackedArrForm.map(obj => (
                           
