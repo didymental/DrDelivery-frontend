@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -35,6 +36,7 @@ const SignUpForm = (props) => {
         message: [],
         fail: false,
     });
+    const [loading, setLoading] = useState(false);
 
     const classes = useStyles();
 
@@ -62,6 +64,7 @@ const SignUpForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setLoading(true);
         let user = {...state};
         axios.post(customerAPI, user, {
             headers: {
@@ -72,13 +75,21 @@ const SignUpForm = (props) => {
             console.log(response);
             setSignUpSuccess(true);
             // props.handleLogin({email: state.email, password: state.password}, response.data.user_id);
+            setLoading(false);
         }).catch(error => {
             if (error.response) {
                 console.log(error.response);
-                setSignUpFail({...signupFail, message: error.response.data.message, fail: true});
-                console.log(signupFail.message);
+                if (error.response.data.message === undefined) {
+                    setSignUpFail({...signupFail, message: error.response.data, fail: true});
+                } else {
+                    setSignUpFail({...signupFail, message: error.response.data.message, fail: true});
+                    console.log(signupFail.message);
+                }
+                
             } 
+            setLoading(false);
         });
+        
     }
 
     return (
@@ -168,6 +179,9 @@ const SignUpForm = (props) => {
                     {signupFail.message.map(err =>  err + '. \n')}
                 </Alert>
             </Snackbar>
+            <Box className={classes.loadingWrapper}>
+            {loading ? <CircularProgress className={classes.loading} size={20}/> : null}
+            </Box>
             </Box>
         </div>
     )
@@ -198,6 +212,19 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
         color: 'white',
         borderRadius: 10,
+    },
+    loading: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        color: 'grey',
+        marginBottom: theme.spacing(2),
+    },
+    loadingWrapper: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
   }));
 

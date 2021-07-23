@@ -15,6 +15,7 @@ import Container from '@material-ui/core/Container';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -55,6 +56,8 @@ const Login = (props) => {
         message: '',
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleEmailInput = (input) => {
         setState({...state, email: input.target.value});
     }
@@ -67,6 +70,7 @@ const Login = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setLoading(true);
         let user = {...state};
         axios.post(loginAPI, user, {
             headers: {
@@ -74,13 +78,15 @@ const Login = (props) => {
                 'Accept': 'application/json',
             },
         }).then(response => {
+            setLoading(false);
             props.handleLogin(response.data.token, response.data.user_id);
             history.push("/home");
-
+            
         }).catch(error => {
             if (error.response) {
                 setError({...error, hasError: true, message: error.response.data.message});
             }
+            setLoading(false);
         });
         setState({...state, email: '', password: ''});
     }
@@ -131,6 +137,9 @@ const Login = (props) => {
                         {error.message}
                     </Alert>
                 </Snackbar> */}
+                <Box className={classes.loadingWrapper}>
+                {loading ? <CircularProgress className={classes.loading} size={20}/> : null}
+                </Box>
 
             <div className={classes.footer}>
                 {SignUp()}
@@ -207,6 +216,19 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         color: 'white',
         verticalAlign: 'middle',
+    },
+    loading: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        color: 'grey',
+        marginBottom: theme.spacing(2),
+    },
+    loadingWrapper: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
   }));
   //orderRadius={15} borderColor="primary.main" bgcolor="#E1306C"
