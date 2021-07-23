@@ -6,13 +6,13 @@ import {websocketAPI} from '../apis/rails-backend';
 import TrackerCard from './TrackerCard';
 import ThankYouOrder from './ThankYouOrder';
 import Box from '@material-ui/core/Box';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 
-
-
 const Tracker = (props) => {
     const ws = new WebSocket(websocketAPI + '?token=' + localStorage.getItem('token'));
+    const entry = props.entry;
 
     const [state, setState] = useState({
         ws: null,
@@ -98,14 +98,68 @@ const Tracker = (props) => {
     const orderTrackedArrForm = Array.from(state.orderTracked, ([order_id, order]) => ({order_id, order}));
 
 
-    return orderTrackedArrForm.filter(obj => obj.order.status !== "completed" 
-        || state.show.get(obj.order_id)).length === 0 
-        ? null
-        : (
-            <Box className={classes.outerbox}>
-                <Typography variant="h5">
-                <Box fontWeight="bold" className={classes.box}>Your Order Progress</Box>
-                </Typography>
+    return entry === 'order' || entry === 'menu'
+      ? orderTrackedArrForm.filter(obj => obj.order.status !== "completed" 
+          || state.show.get(obj.order_id)).length === 0 
+          ? null
+          : (
+              <Box >
+                <Box className={classes.outerbox}>
+                  <Typography variant="h5">
+                  <Box fontWeight="bold" className={classes.box}>Your Order Progress</Box>
+                  </Typography>
+                </Box>
+                    
+                      
+                      <Box display={{sm: 'block', md: 'flex'}} overflow="auto" >
+                    {
+                        orderTrackedArrForm.map(obj => (
+                          
+                            state.show.get(obj.order_id) 
+                            ? (
+                             
+                              <Box flexGrow={1}>
+                                <ThankYouOrder
+                                    state={state}
+                                    setState={setState}
+                                    merchants={merchants}
+                                    order={obj.order}
+                                />
+                                </Box>
+                           
+                            )
+                            : (
+                              
+                              <Box flexGrow={1}>
+                                <TrackerCard 
+                                    merchants={merchants}
+                                    order={obj.order}
+                                    merchantID={obj.order.merchant_id}
+                                    status={obj.order.drone_id === null ? 'Drone is being assigned' : obj.order.status}
+                                    setState={setState}
+                                    state={state}
+                                    entry={entry}
+                                />
+                              </Box>
+                              
+                            )
+                    )
+                    )
+                    }
+                    </Box>
+                    
+                  </Box>
+          )
+      : orderTrackedArrForm.filter(obj => obj.order.status !== "completed" 
+      || state.show.get(obj.order_id)).length === 0 
+      ? null
+      : (
+        <Box>
+          <Box className={classes.outerbox}>
+              <Typography variant="h5">
+              <Box fontWeight="bold" className={classes.box}>Your Order Progress</Box>
+              </Typography>
+            </Box>
                 {
                     orderTrackedArrForm.map(obj => (
             
@@ -124,15 +178,16 @@ const Tracker = (props) => {
                             merchants={merchants}
                             order={obj.order}
                             merchantID={obj.order.merchant_id}
-                            status={obj.order.status}
+                            status={obj.order.drone_id === null ? 'Drone is being assigned' : obj.order.status}
                             setState={setState}
                             state={state}
+                            entry={entry}
                         />)
                 )
                 )
                 }
-                </Box>
-        )
+              </Box>
+      )
 }
 
 const getAdminToken = async () => {
@@ -174,45 +229,18 @@ function convertStatusToString(status) {
 
 const useStyles = makeStyles((theme) => ({
     outerbox: {
-      padding: theme.spacing(3),
+      //padding: theme.spacing(2),
       maxWidth: '650px',
       marginBottom: theme.spacing(2),
-      //display: 'flex',
-    },
-    innerBox: {
+      marginLeft: theme.spacing(2),
+      marginTop: theme.spacing(2),
       display: 'flex',
     },
     box: {
       //padding: theme.spacing(2),
       marginBottom: theme.spacing(2),
+      alignSelf: 'flex-start',
     },
-    buttonWrapper: {
-      marginTop: theme.spacing(1.25),
-      display: 'flex',
-      justifyContent: 'flex-end',
-    },
-    button: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: theme.spacing(1.25),
-      background: 'linear-gradient(45deg, #FF9068 30%, #FF4b1F 90%)',
-      color: 'white',
-    },
-    detailsBox: {
-      marginBottom: theme.spacing(1),
-      display: 'flex',
-      //flexDirection: 'column',
-    },
-    clearButton: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginLeft: theme.spacing(2.5),
-      //padding: theme.spacing(0.5),
-    },
-    buttonClear: {
-      background: '#E9E9E9',
-    }
   }));
 
 export default Tracker;

@@ -40,7 +40,7 @@ const Home = (props) => {
                     </Typography>
                 </div>
             </Box>
-            <Tracker/>
+            <Tracker entry="home"/>
             <OrderCard 
                 handleOrder={(address) => props.handleOrder(address)}
                 updateAddress={(address_id) => props.updateAddress(address_id)}
