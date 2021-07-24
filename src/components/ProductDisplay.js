@@ -31,10 +31,18 @@ const ProductDisplay = (props) => {
     }
 
     const removeFromCart = (item) => {
-        let cartCopy = cart.filter((order) => order.id !== item.id);
-        let toDelete = cart.filter((order) => order.id === item.id);
-        for (let i = 0; i < toDelete.length - 1; i++) {
-          cartCopy = [...cartCopy, toDelete[i]];
+        // let cartCopy = cart.filter((order) => order.id !== item.id);
+        // let toDelete = cart.filter((order) => order.id === item.id);
+        // for (let i = 0; i < toDelete.length - 1; i++) {
+        //   cartCopy = [...cartCopy, toDelete[i]];
+        // }
+
+        let cartCopy = [];
+
+        for (let i = 0; i < cart.length; i++) {
+          if (cart[i].id !== item.id) {
+            cartCopy = [...cartCopy, cart[i]];
+          } 
         }
         setCart(cartCopy);
     }

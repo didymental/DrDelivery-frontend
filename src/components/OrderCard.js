@@ -78,7 +78,7 @@ const FormDialog = ({open, setOpen, handleSuccess, success}) => {
 const AddressTextField = (props) => {
     const [open, setOpen] = useState(false);
     
-    const loading = props.options.length === 0 && open;
+    
     const [state, setState] = useState({
         address: null,
         postal: [],
@@ -87,6 +87,11 @@ const AddressTextField = (props) => {
     const [error, setError] = useState({
         hasError: false,
     })
+    const loading = props.options.length === 0 && open && 
+        (state.address === null 
+            ? true
+            : state.address.length !== 0
+        );
 
     useEffect(() => {
         let active = true;
