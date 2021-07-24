@@ -37,7 +37,7 @@ const EditableTextField = (props) => {
     const [state, setState] = useState({
         editMode: false,
     })
-    const [text, setText] = useState(null);
+    const [text, setText] = useState(props.value);
     const [editCount, setEditCount] = useState(0);
 
     
@@ -71,10 +71,7 @@ const EditableTextField = (props) => {
                     id={props.name}
                     value={props.value}
                     margin="normal"
-                    // error={props.isError}
-                    //onChange={handleChange}
                     disabled={true}
-                    //className={classes.textField}
                 />
                 
                 </div>
@@ -93,10 +90,8 @@ const EditableTextField = (props) => {
                 id={props.name}
                 value={editCount === 0 ? props.value : text}
                 margin="normal"
-                // error={props.isError}
                 onChange={handleChange}
                 disabled={!state.editMode}
-                //className={classes.textField}
                 
                 InputProps={{
                     endAdornment:
@@ -277,7 +272,7 @@ const Account = (props) => {
                 street_address: '',
                 city: '',
                 country: '',
-                postcode: '',
+                postal_code: '',
                 building_no: '',
                 unit_number: '',
                 name: '',
@@ -288,7 +283,7 @@ const Account = (props) => {
                 street_address: addresses[index].street_address,
                 city: addresses[index].city,
                 country: addresses[index].country,
-                postcode: addresses[index].postcode,
+                postal_code: addresses[index].postal_code,
                 building_no: addresses[index].building_no,
                 unit_number: addresses[index].unit_number,
                 name: addresses[index].name,
@@ -509,12 +504,12 @@ const Account = (props) => {
                                 <Box className={classes.container} >
                                     <EditableTextField
                                         name={'Postal Code'}
-                                        value={elem.postcode}
+                                        value={elem.postal_code}
                                         handleChange={(input) => {
                                             let i = searchAddress(elem.id, addresses);
                                             setAddresses(addresses.map((add, index) => {
                                                 if (index === i) {
-                                                    return {...add, postcode: input};
+                                                    return {...add, postal_code: input};
                                                 } else {
                                                     return add;
                                                 }

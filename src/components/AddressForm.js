@@ -21,7 +21,7 @@ const AddressForm = (props) => {
             street_address: '',
             city: parseInt(''),
             country: '',
-            postcode: '', 
+            postal_code: '', 
             building_no: '',
             unit_number: '',
             name: '',
@@ -43,8 +43,8 @@ const AddressForm = (props) => {
         console.log(input.target.value);
         setState({...state, country: input.target.value});
     };
-    const handlePostCode = (input) => {
-        setState({...state, postcode: input.target.value}); 
+    const handlePostalCode = (input) => {
+        setState({...state, postal_code: input.target.value}); 
     };
     const handleBuildingNumInput = (input) => {
         setState({...state, building_no: input.target.value});
@@ -68,20 +68,28 @@ const AddressForm = (props) => {
                 props.handleClose();
             }
         }).catch(err => {
-            console.log(err.response.data);
-            setState({...state, errorMessages: [...state.errorMessages, err.response.data.message]});
+            if (err.response.data.message === undefined) {
+                setState({...state, errorMessages: ['We are currently facing an issue, please try again another time']})
+            } else {
+                setState({...state, errorMessages: err.response.data.message});
+            }
+            
         });
     }
 
     function findError(errArr, str) {
-        console.log(errArr);
-        if (errArr.filter(msg => msg.includes("Invalid")).length > 0) { // invalid address error
-            return <MenuItem>Address is invalid</MenuItem>;
+        if (errArr[0] === 'We are currently facing an issue, please try again another time') {
+            return <MenuItem>{errArr[0]}</MenuItem>
+        } else if (errArr.filter(msg => msg.includes("Invalid")).length > 0) { // invalid address error
+            if (str === "Postal" || str === "Country") {
+                return <MenuItem>Address is invalid</MenuItem>;
+            }
         } else {
             const relevantMessages = (
                 <Box>
                     {
-                errArr.filter(msg => msg.includes(str)).map( msg => <MenuItem>{msg}</MenuItem>)
+                        
+                        errArr.filter(msg => msg.includes(str)).map( msg => <MenuItem>{msg}</MenuItem>)
                     }
                 </Box>
             )
@@ -172,12 +180,6 @@ const AddressForm = (props) => {
                         helperText={state.errorMessages.length === 0 
                             ? null 
                             : findError(state.errorMessages, "Unit")
-                            
-                            // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Unit")
-                            //         ? 'Unit Number cannot be blank'
-                            //         : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                            //         ? 'Unit Number is invalid'
-                            //         : null
                             }
                         />
                 
@@ -188,19 +190,11 @@ const AddressForm = (props) => {
                         label="Postal Code"
                         value={undefined}
                         variant="outlined"
-                        onChange={handlePostCode}
+                        onChange={handlePostalCode}
                         error={state.errorMessages.length !== 0}
                         helperText={state.errorMessages.length === 0 
                             ? null 
-                            : findError(state.errorMessages, "Postcode")
-                            
-                            // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Postcode can't be blank")
-                            //     ? 'Postal Code cannot be blank'
-                            //     : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Postcode is not a number")
-                            //         ? 'Postal Code must be a number'
-                            //         : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                            //         ? 'Postal code is invalid'
-                            //         : null
+                            : findError(state.errorMessages, "Postal")
                             }
                     />
                 
@@ -216,7 +210,7 @@ const AddressForm = (props) => {
                             id="city"
                             label="City"
                             variant="outlined"
-                            value={undefined}
+                            value=''
                             onChange={handleCityInput}
                             error={state.errorMessages.length !== 0}
                             helperText={state.errorMessages.length === 0 
@@ -249,7 +243,7 @@ const AddressForm = (props) => {
                     <Select
                         id="country"
                         label="Country"
-                        value={undefined}
+                        value=''
                         variant="outlined"
                         onChange={handleCountryInput}
                         error={state.errorMessages.length !== 0}
