@@ -71,7 +71,7 @@ const AddressForm = (props) => {
             if (err.response.data.message === undefined) {
                 setState({...state, errorMessages: ['We are currently facing an issue, please try again another time']})
             } else {
-                setState({...state, errorMessages: err.response.data.message});
+                setState({...state, errorMessages: state.errorMessages.concat(err.response.data.message)});
             }
             
         });
@@ -137,13 +137,6 @@ const AddressForm = (props) => {
                         helperText={state.errorMessages.length === 0 
                             ? null 
                             : findError(state.errorMessages, "Building")
-                            // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Building no can't be blank") 
-                            //         ? 'Building number cannot be blank'
-                            //         : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Building") 
-                            //             ? 'Building number must be a number'
-                            //             : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                            //             ? 'Building number is invalid'
-                            //                 : null
                             }
                     />
                 
@@ -159,12 +152,6 @@ const AddressForm = (props) => {
                         helperText={state.errorMessages.length === 0 
                             ? null 
                             : findError(state.errorMessages, "Street")
-                            
-                            // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Street")
-                            //     ? 'Street Address cannot be blank'
-                            //     : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                            //     ? 'Street Address is invalid'
-                            //     : null
                             }
                     />
                 
@@ -188,7 +175,6 @@ const AddressForm = (props) => {
                     className={classes.actionCard}
                         id="postal-code"
                         label="Postal Code"
-                        value={undefined}
                         variant="outlined"
                         onChange={handlePostalCode}
                         error={state.errorMessages.length !== 0}
@@ -210,18 +196,12 @@ const AddressForm = (props) => {
                             id="city"
                             label="City"
                             variant="outlined"
-                            value=''
+                            value={undefined}
                             onChange={handleCityInput}
                             error={state.errorMessages.length !== 0}
                             helperText={state.errorMessages.length === 0 
                                 ? null 
                                 : findError(state.errorMessages, "City")
-                                
-                                // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("City")
-                                //     ? 'City cannot be blank'
-                                //     : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                                //     ? 'City is invalid'
-                                //     : null
                                 }
                         >
                             <MenuItem value={'Singapore'}>
@@ -243,20 +223,10 @@ const AddressForm = (props) => {
                     <Select
                         id="country"
                         label="Country"
-                        value=''
+                        value={undefined}
                         variant="outlined"
                         onChange={handleCountryInput}
                         error={state.errorMessages.length !== 0}
-                        // helperText={state.errorMessages.length === 0 
-                        //     ? null 
-                        //     : 
-                        
-                            // state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Country") 
-                            //     ? 'Country cannot be blank'
-                            //     : state.errorMessages.reduce((acc, curr) => acc + curr, '').includes("Invalid address created")
-                            //     ? 'Country is invalid'
-                            //     : null
-                            //}
                     >
                         <MenuItem value={'Singapore'}>
                             Singapore
@@ -312,7 +282,6 @@ const useStyles = makeStyles((theme) => ({
     },
     formControl: {
         margin: theme.spacing(1),
-        //minWidth: 120,
         display: 'flex',
       },
   }));
