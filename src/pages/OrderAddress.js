@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     overallPage: {
         background: '#ffffff',
         minHeight: '100vh',
-        backgroundImage: 'url(/assets/droneBackground.jpg)',
+        // backgroundImage: 'url(/assets/droneBackground.jpg)',
         // backgroundImage: `url("https://res.cloudinary.com/didymusne/image/upload/v1625760180/orderMerchants_1_howza1.png")`,
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
