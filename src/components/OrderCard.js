@@ -112,7 +112,7 @@ const AddressTextField = (props) => {
             });
             const info = await response.data;
             let addresses = await info.map(infoObj => infoObj.name);
-            let postal = await info.map(infoObj => infoObj.building_no + ' ' + infoObj.street_address);
+            let postal = await info.map(infoObj => infoObj.building_number + ' ' + infoObj.street_address);
             let addressID = await info.map(infoObj => infoObj.id);
             if (active) {
                 props.setOptions(addresses);
