@@ -1,4 +1,3 @@
-/*global google*/
 import { Map, GoogleApiWrapper, Marker, InfoWindow, Polyline  } from 'google-maps-react';
 import axios from 'axios';
 import {loginAPI, customerAPI, merchantAPI} from '../apis/rails-backend';
@@ -12,6 +11,7 @@ import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Tracker from './Tracker';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const getAdminToken = async () => {
   const adminLogin = {
@@ -74,38 +74,6 @@ const MapContainer = (props) => {
   
   const classes = useStyles();
 
-  function immutableUpdate(arr, newDrone, i) {
-    return arr.map((item, index) => i === index ? newDrone: item );
-  }
-
-
-  const openEventListener = (event) => {
-    props.ws.send(JSON.stringify({
-      "command":"subscribe",
-      "identifier":"{\"channel\":\"DroneChannel\"}"
-    }));
-
-    
-    props.ws.send(JSON.stringify({
-      "command":"message",
-      "identifier":"{\"channel\":\"DroneChannel\"}", 
-      "data":"{\"action\": \"request\"}"
-    }));
-
-    props.ws.send(JSON.stringify({
-      "command":"subscribe",
-      "identifier":"{\"channel\":\"OrderChannel\"}"
-    }));
-
-    props.ws.send(JSON.stringify({
-      "command":"message",
-      "identifier":"{\"channel\":\"OrderChannel\"}", 
-      "data":"{\"action\": \"request\"}"
-    }));
-
-    setState({...state, ws: props.ws, disconnected: false});
-  }
-
   const incomingMessageListener = (message) => {
     let messageData = JSON.parse(message.data);
     if (messageData.type !== "ping") {
@@ -147,7 +115,6 @@ const MapContainer = (props) => {
       } 
       
       if (data.order !== undefined) { // if update from Order Channel
-        console.log(data.order);
         getCustAddress(setCustomerAddress, data.order.drop_off_address_id, data.order.drone_id, customerAddress);
         getMerchantAddress(
           setMerchantAddress, 
@@ -158,15 +125,10 @@ const MapContainer = (props) => {
         );
         setLoadingOrder(false);
         if (data.order.drone_id !== undefined) {
-          console.log(data.order.drone_id);
           setAssigned(true);
         }
 
       }
-
-      
-      
-      
     }
 
 
@@ -180,10 +142,11 @@ const MapContainer = (props) => {
     setState({...state, disconnected: true});
   }
 
+  const matches = useMediaQuery('(min-width: 769px)');
+
   useEffect(() => {
     props.ws.addEventListener('message', incomingMessageListener);
     props.ws.addEventListener('close', closeSocket);
-    //props.ws.addEventListener('open', openEventListener);
 
     props.ws.onopen = () => {
       props.ws.send(JSON.stringify({
@@ -219,11 +182,6 @@ const MapContainer = (props) => {
       props.ws.close();
     }
   }, []);
-
-  // const crossIslandCoords = [
-  //   {lat: 1.3620840130644598,  lng: 103.98977274957653},
-  //   {lat: 1.3155814794529335,  lng: 103.6265150404711}
-  // ];
 
   const arrForm = Array.from(state.drones, (([drone_id, drone]) => ({drone_id, drone})));
 
@@ -303,62 +261,26 @@ const MapContainer = (props) => {
   }
 
   const style = {
-    //width: '50vw',
-    //height: '75vh',
     'marginLeft': 'auto',
     'marginRight': 'auto',
-    //'marginTop': '2vh',
   }
 
   return loading 
   ? <LinearProgress />
   : <Box>
-    
-    {/* {
-      assigned && loadingDrone 
-    ? (
-    <Box className={classes.pastOrderContainer}>
-        <Typography variant="h4">
-            <Box fontWeight="fontWeightBold">
-            A drone is being assigned to your order
-            </Box>
-        </Typography>
-    </Box>)
-    : noOrder && !loadingOrder
-      ? (
-        <Box className={classes.pastOrderContainer}>
-        <Typography variant="h4">
-            <Box fontWeight="fontWeightBold">
-            There is no order in progress
-            </Box>
-        </Typography>
-        </Box>
-      )
-      : (
-        <Box className={classes.pastOrderContainer}>
-        <Typography variant="h4">
-            <Box fontWeight="fontWeightBold">
-            
-            </Box>
-        </Typography>
-        </Box>
-      )
-    } */}
-    <Grid
-      container
-      direction="row"
+    <Box display={{sm: 'block', md: 'flex'}}
     >
-      <Grid 
-        item 
-        xs={12}
+      <Box 
+        flex={1}
+        borderBottom={matches ? 0 : 0.2}
+        
         >
-          <Box borderBottom={0.2}>
+          <Box >
           <Tracker entry={props.entry} />
           </Box>
-      </Grid>
-      <Grid 
-        item 
-        xs={12}
+      </Box>
+      <Box 
+        flex={3}
       >
           <Map google={props.google} zoom={12}
           initialCenter={{
@@ -366,7 +288,6 @@ const MapContainer = (props) => {
             lng: 103.81916601690331
           }}
           gestureHandling='cooperative'
-          // containerStyle={containerStyle}
           style={style}
           >
 
@@ -457,8 +378,8 @@ const MapContainer = (props) => {
 
 
           </Map>
-        </Grid>
-    </Grid>
+        </Box>
+    </Box>
   
   </Box>
 
