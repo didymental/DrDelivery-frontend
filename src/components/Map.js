@@ -268,19 +268,22 @@ const MapContainer = (props) => {
   return loading 
   ? <LinearProgress />
   : <Box>
-    <Box display={{sm: 'block', md: 'flex'}}
+    <Grid
+    container
+    direction={matches ? 'row' : 'column'}
     >
-      <Box 
-        flex={1}
-        borderBottom={matches ? 0 : 0.2}
+      <Grid 
+        item
+        xs={matches ? 3 : 12}
+        //borderBottom={matches ? 0 : 0.2}
         
         >
           <Box >
           <Tracker entry={props.entry} />
           </Box>
-      </Box>
-      <Box 
-        flex={3}
+      </Grid>
+      <Grid 
+        item
       >
           <Map google={props.google} zoom={12}
           initialCenter={{
@@ -378,8 +381,8 @@ const MapContainer = (props) => {
 
 
           </Map>
-        </Box>
-    </Box>
+        </Grid>
+    </Grid>
   
   </Box>
 
