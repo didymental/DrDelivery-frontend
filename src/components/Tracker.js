@@ -9,10 +9,12 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Tracker = (props) => {
     const ws = new WebSocket(websocketAPI + '?token=' + localStorage.getItem('token'));
     const entry = props.entry;
+    const matches = useMediaQuery('(min-width: 769px)');
 
     const [state, setState] = useState({
         ws: null,
@@ -111,7 +113,7 @@ const Tracker = (props) => {
                 </Box>
                     
                       
-                      <Box display='flex' overflow="auto" >
+                      <Box display={matches ? 'block': 'flex'} overflow="auto" >
                     {
                         orderTrackedArrForm.map(obj => (
                           
