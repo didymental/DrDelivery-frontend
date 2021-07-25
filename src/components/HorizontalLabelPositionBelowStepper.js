@@ -18,9 +18,11 @@ import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 
 const HorizontalLabelPositionBelowStepper = (props) => {
+  const matches = useMediaQuery('(min-width: 769px)');
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
@@ -115,15 +117,19 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
       <Container>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems="center">
                 { merchants.map(elem => (
-                  <Grid item xs>
-                    
+                  <Grid 
+                    item 
+                    xs={matches ? 4 : 12}
+                  >
+                    <Box className={classes.boxWrapper}>
                         <MerchantCard 
                           data={elem} 
                           action={props.action}
+                          style={{display: 'flex', alignSelf: 'center'}}
                           />
-                    
+                    </Box>
                     </Grid>
                   
                   ))
@@ -231,7 +237,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 }));
 
 const getSteps = () => {
