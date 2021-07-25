@@ -103,7 +103,13 @@ const Tracker = (props) => {
     return entry === 'order' || entry === 'menu'
       ? orderTrackedArrForm.filter(obj => obj.order.status !== "completed" 
           || state.show.get(obj.order_id)).length === 0 
-          ? null
+          ? (<Box>
+                <Box className={classes.outerbox}>
+                      <Typography variant="h5">
+                      <Box fontWeight="bold" className={classes.box}>You currently have no orders</Box>
+                      </Typography>
+              </Box>
+            </Box>)
           : (
               <Box >
                 <Box className={classes.outerbox}>

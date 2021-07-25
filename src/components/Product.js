@@ -56,7 +56,7 @@ const Product = (props) => {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        maxWidth: 345,
+        width: 345,
         //minHeight: 320,
     },
     rootDesktop: {

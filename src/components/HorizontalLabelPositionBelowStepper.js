@@ -17,6 +17,7 @@ import ProductDisplay from './ProductDisplay';
 import Container from '@material-ui/core/Container';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tooltip from '@material-ui/core/Tooltip';
+import Grid from '@material-ui/core/Grid';
 
 
 const HorizontalLabelPositionBelowStepper = (props) => {
@@ -114,22 +115,20 @@ const HorizontalLabelPositionBelowStepper = (props) => {
   const MerchantDisplay = (props) => {
     return loading ? <LinearProgress/>: (
       <Container>
-        <Box display={{sm: 'block', md: 'flex'}} >
+        <Grid container spacing={2}>
                 { merchants.map(elem => (
-                  
-                    <Box
-                      flex={1}
-                      className={classes.boxWrapper}
-                    >
+                  <Grid item xs>
+                    
                         <MerchantCard 
                           data={elem} 
                           action={props.action}
                           />
-                    </Box>
+                    
+                    </Grid>
                   
                   ))
                 } 
-          </Box>
+          </Grid>
       </Container>
     );
   }
