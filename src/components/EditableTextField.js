@@ -15,7 +15,9 @@ const EditableTextField = (props) => {
 
     const [editCount, setEditCount] = useState(0);
 
-    
+    const error = props.error;
+    const helperText = props.helperText;
+
     const classes = useStyles();
 
     useEffect(() => {
@@ -43,6 +45,8 @@ const EditableTextField = (props) => {
                     value={props.value}
                     margin="normal"
                     disabled={true}
+                    error={error}
+                    helperText={helperText}
                 />
                 
                 </div>
@@ -63,6 +67,8 @@ const EditableTextField = (props) => {
                 margin="normal"
                 onChange={handleChange}
                 disabled={!state.editMode}
+                error={error}
+                helperText={helperText}
                 
                 InputProps={{
                     endAdornment:

@@ -131,12 +131,6 @@ const Login = (props) => {
                         </Box>    
                     </Box>
                 </form>
-                {/* <Snackbar open={error.hasError}>
-                    <Alert severity="error" onClose={() => setError({...state, hasError: false, message: ''})}>
-                        <AlertTitle>Error</AlertTitle>
-                        {error.message}
-                    </Alert>
-                </Snackbar> */}
                 <Box className={classes.loadingWrapper}>
                 {loading ? <CircularProgress className={classes.loading} size={20}/> : null}
                 </Box>

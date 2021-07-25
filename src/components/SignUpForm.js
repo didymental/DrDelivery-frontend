@@ -8,6 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import {makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import Box from '@material-ui/core/Box';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -23,12 +25,10 @@ const SignUpForm = (props) => {
     const [state, setState] = useState(
         {
             name: '',
-            contact_no: parseInt(''),
+            contact_number: parseInt(''),
             email: '',
             password: '', 
             password_confirmation: '',
-            
-            
         });
     
     const [signupSuccess,setSignUpSuccess] = useState(false);
@@ -49,7 +49,7 @@ const SignUpForm = (props) => {
     };
 
     const handleNumberInput = (input) => {
-        setState({...state, contact_no: input.target.value});
+        setState({...state, contact_number: input.target.value});
     };
 
     const handlePasswordInput = (input) => {
@@ -58,6 +58,25 @@ const SignUpForm = (props) => {
 
     const handlePasswordConfirmation = (input) => {
         setState({...state, password_confirmation: input.target.value}); 
+    }
+
+    function findError(errArr, str) {
+        const relevantMessages = (
+            <Box>
+                {
+                    
+                    errArr.filter(msg => msg.includes(str)).map( msg => 
+                    <Box display='flex'>
+                        <Typography variant="caption" noWrap>
+                            {msg}
+                        </Typography>
+                    </Box>)
+                }
+            </Box>
+        )
+        
+        return relevantMessages;
+
     }
 
     const handleSubmit = (event) => {
@@ -92,60 +111,70 @@ const SignUpForm = (props) => {
             <Box bgcolor="#FFFFFF" borderRadius={10}>
             <Logo color='black'/>
             <form className={classes.root} onSubmit={handleSubmit}>
-                <div className={classes.actionCard}>
+                
                     <TextField
+                        className={classes.actionCard}
                         id="name"
                         label="Name"
                         variant="outlined"
                         onChange={handleNameInput}
-                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Name")}
+                        error={signupFail.fail}
+                        helperText={!signupFail.fail ? null : findError(signupFail.message, "Name")}
                     />
-                </div>
                 
-                <div className={classes.actionCard}>
+                
+                
                     <TextField
+                        className={classes.actionCard}
                         id="email"
                         label="Email"
                         variant="outlined"
                         onChange={handleEmailInput}
-                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Email")}
+                        error={signupFail.fail}
+                        helperText={!signupFail.fail ? null : findError(signupFail.message, "Email")}
                     />
-                </div>
                 
-                <div className={classes.actionCard}>
+                
+                
                     <TextField
+                        className={classes.actionCard}
                         id="contact-number"
                         label="Contact Number"
                         variant="outlined"
                         onChange={handleNumberInput}
-                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Contact")}
+                        error={signupFail.fail}
+                        helperText={!signupFail.fail ? null : findError(signupFail.message, "Contact")}
                     />
-                </div>
                 
-                <div className={classes.actionCard}>
+                
+                
                     <TextField
+                        className={classes.actionCard}
                         id="password-input"
                         label="Password"
                         type="password"
                         autoComplete="current-password"
                         variant="outlined"
                         onChange={handlePasswordInput}
-                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Password")}
-                        />
-                </div>
+                        error={signupFail.fail}
+                        helperText={!signupFail.fail ? null : findError(signupFail.message, "Password")}
+                    />
                 
-                <div className={classes.actionCard}>
+                
+                
                     <TextField
+                        className={classes.actionCard}
                         id="password-confirmation"
                         label="Password Confirmation"
                         type="password"
                         variant="outlined"
                         onChange={handlePasswordConfirmation}
-                        error={signupFail.message.reduce((acc, curr) => acc + curr, '').includes("Password")}
+                        error={signupFail.fail}
+                        helperText={!signupFail.fail ? null : findError(signupFail.message, "Password")}
                         />
-                </div>
                 
-                <div className={classes.actionButton}>
+                
+                <Box className={classes.actionButton}>
                         <Button
                             className={classes.signup}
                             onClick={handleSubmit}
@@ -159,7 +188,7 @@ const SignUpForm = (props) => {
                             Cancel
                         </Button>
                         </Link>
-                </div>
+                </Box>
             </form>
             <br/>
             <Snackbar open={signupSuccess} autoHideDuration={6000}>
@@ -171,7 +200,6 @@ const SignUpForm = (props) => {
             <Snackbar open={signupFail.fail}>
                 <Alert severity="error" onClose={() => setSignUpFail({...state, message: []})}>
                     <AlertTitle>Error</AlertTitle>
-                    {signupFail.message.map(err =>  err + '. \n')}
                 </Alert>
             </Snackbar>
             <Box className={classes.loadingWrapper}>
@@ -185,21 +213,20 @@ const SignUpForm = (props) => {
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      display: 'flex',
-      flexDirection: 'column',
+      display: 'block',
+      //flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       padding: theme.spacing(2),
     },
     actionCard: {
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         marginBottom: theme.spacing(1.5),
     },
     actionButton: {
-        display: 'inline-block',
-        alignItems: 'baseline'
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     signup: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',

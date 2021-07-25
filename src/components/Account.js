@@ -31,6 +31,7 @@ import AddressForm from './AddressForm';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 const Transition = React.forwardRef( (props, ref) => {
@@ -58,6 +59,7 @@ const Account = (props) => {
     const [del, setDel] = useState(false);
 
     const [success, setSuccess] = useState(false);
+    const [profileSuccess, setProfileSuccess] = useState(false);
     const [delSuccess, setDelSuccess] = useState(false);
     const [addSuccess, setAddSuccess] = useState(false);
     const [open, setOpen] = useState(false);
@@ -81,11 +83,11 @@ const Account = (props) => {
             setProfile({...profile, 
                 name: personalInfo.name, 
                 email: personalInfo.email, 
-                contactNum: personalInfo.contact_no, 
+                contactNum: personalInfo.contact_number, 
             })
             setLoadingProfile(false);
         }).catch(err => {
-            setError([...error, err.response.data.message]);;
+            setError(error.concat(err.response.data.message));;
         });
 
         axios.get(customerAPI + '/' + userid + '/addresses', {
@@ -114,7 +116,7 @@ const Account = (props) => {
         return () => {
             active = false;
         }
-    }, [success, delSuccess, addSuccess]);
+    }, [delSuccess, addSuccess]);
 
     const handleNameChange = (input) => {
         setProfile({...profile, name: input});
@@ -129,13 +131,13 @@ const Account = (props) => {
     const handleProfileChange = () => {
         let toPost = {
             name: '',
-            contact_no: '',
+            contact_number: '',
             email: '',
         };
 
         toPost = {...toPost, 
             name: profile.name, 
-            contact_no: profile.contactNum, 
+            contact_number: profile.contactNum, 
             email: profile.email,
         }
 
@@ -148,11 +150,15 @@ const Account = (props) => {
             if (response.statusText === "OK") {
                 setOpen(true);
                 setSuccess(true);
+                setProfileSuccess(!profileSuccess);
+                setError([]);
+                setEditProfile(false);
             }
         }).catch(err => {
-            setOpen(true);
+            //setOpen(true);
             setSuccess(false);
-            setError([...error, err.response.data.message]);;
+            setError(err.response.data.message);
+            setProfileSuccess(!profileSuccess);
         });
     }
 
@@ -187,6 +193,19 @@ const Account = (props) => {
             setOpen(true);
             setSuccess(false);
         });
+    }
+
+    function findError(errArr, str) {
+        const relevantMessages = (
+                <Box>
+                    {
+                        
+                        errArr.filter(msg => msg.includes(str)).map( msg => <MenuItem>{msg}</MenuItem>)
+                    }
+                </Box>
+            )
+            
+            return relevantMessages;
     }
 
     const deleteAddress = (add) => {
@@ -250,7 +269,7 @@ const Account = (props) => {
                                             variant="outlined" 
                                             className={classes.saveButton}
                                             onClick={() => {
-                                                setEditProfile(false)
+                                                // setEditProfile(false)
                                                 handleProfileChange();
                                             }}
                                         >
@@ -283,7 +302,12 @@ const Account = (props) => {
                                                 <EditableTextField
                                                     name={'Email'}
                                                     value={profile.email}
-                                                    handleChange={handleEmailChange}/>
+                                                    handleChange={handleEmailChange}
+                                                    error={error.length !== 0}
+                                                    helperText={error.length === 0 
+                                                                ? null 
+                                                                : findError(error, "Email")}
+                                                />
                                             </Box>
 
                                             <Box 
@@ -293,7 +317,12 @@ const Account = (props) => {
                                                 <EditableTextField 
                                                     name={'Name'} 
                                                     value={profile.name}
-                                                    handleChange={handleNameChange} />
+                                                    handleChange={handleNameChange} 
+                                                    error={error.length !== 0}
+                                                    helperText={error.length === 0 
+                                                                ? null 
+                                                                : findError(error, "Name")}
+                                                />
 
                                             </Box>
 
@@ -303,7 +332,12 @@ const Account = (props) => {
                                                 <EditableTextField
                                                     name={'Contact Number'}
                                                     value={profile.contactNum}
-                                                    handleChange={handleNumChange}/>
+                                                    handleChange={handleNumChange}
+                                                    error={error.length !== 0}
+                                                    helperText={error.length === 0 
+                                                                ? null 
+                                                                : findError(error, "Contact")}
+                                                />
 
                                             </Box>
                                             </Box>
@@ -392,6 +426,8 @@ const Account = (props) => {
                                                         ? <CardContent>
                                                             <EditAddress 
                                                                 address={add} 
+                                                                setAddSuccess={setAddSuccess}
+                                                                addSuccess={addSuccess}
                                                                 setSuccess={setSuccess}
                                                                 setOpen={setOpen}
                                                                 error={error}

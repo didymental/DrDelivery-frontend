@@ -1,15 +1,16 @@
 import React from 'react';
 import {makeStyles } from '@material-ui/core/styles';
 import SignUpForm from '../components/SignUpForm';
+import Box from '@material-ui/core/Box';
 
 const SignUpPage = (props) => {
     const classes = useStyles();
     return (
-        <div className={classes.main}>
-            <div className={classes.form}>
+        <Box className={classes.main}>
+            <Box className={classes.form}>
                 <SignUpForm handleLogin={props.handleLogin}/>
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 };
 
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     form: {
         marginTop: '2em',
         padding: '0 1em 1em 1em',
+        minHeight: '900px',
     },
 }));
 

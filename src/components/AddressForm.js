@@ -22,7 +22,7 @@ const AddressForm = (props) => {
             city: parseInt(''),
             country: '',
             postal_code: '', 
-            building_no: '',
+            building_number: '',
             unit_number: '',
             name: '',
             errorMessages: [],
@@ -46,7 +46,7 @@ const AddressForm = (props) => {
         setState({...state, postal_code: input.target.value}); 
     };
     const handleBuildingNumInput = (input) => {
-        setState({...state, building_no: input.target.value});
+        setState({...state, building_number: input.target.value});
     };
     const handleUnitNumInput = (input) => {
         setState({...state, unit_number: input.target.value});
@@ -56,6 +56,7 @@ const AddressForm = (props) => {
         event.preventDefault();
         let add = {...state};
         const token = localStorage.getItem('token');
+        console.log(add);
         axios.post(customerAPI + '/' + localStorage.getItem('userID') + '/addresses', add, {
             headers: {
                 'Accept': 'application/json',
@@ -67,6 +68,7 @@ const AddressForm = (props) => {
                 props.handleClose();
             }
         }).catch(err => {
+            console.log(err.response.data.message);
             if (err.response.data.message === undefined) {
                 setState({...state, errorMessages: ['We are currently facing an issue, please try again another time']})
             } else {
