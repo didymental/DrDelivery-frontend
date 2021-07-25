@@ -57,7 +57,7 @@ export const MerchantCard = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 345,
+    maxWidth: 345,
   },
   media: {
     height: 0,
