@@ -162,7 +162,7 @@ const SignUpForm = (props) => {
                 </div>
             </form>
             <br/>
-            <Snackbar open={signupSuccess}>
+            <Snackbar open={signupSuccess} autoHideDuration={6000}>
                 <Alert severity="info">
                     <AlertTitle>Authentication Needed</AlertTitle>
                     We have sent an authentication email to your email address. Once you have confirmed your email, you may login. 

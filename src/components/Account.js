@@ -4,16 +4,13 @@ import {useHistory} from 'react-router-dom';
 import {customerAPI} from '../apis/rails-backend';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from "@material-ui/core/InputAdornment";
 import SaveIcon from '@material-ui/icons/Save';
 import Box from '@material-ui/core/Box';
 import AppHeader from './AppHeader';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -23,102 +20,25 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import CheckIcon from '@material-ui/icons/Check';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import EditableTextField from './EditableTextField';
+import EditAddress from './EditAddress';
+import AddressForm from './AddressForm';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { AlertTitle } from '@material-ui/lab';
 
 
 const Transition = React.forwardRef( (props, ref) => {
     return <Slide direction="up" ref={ref} {...props}/>;
 });
 
-const EditableTextField = (props) => {
-    const [state, setState] = useState({
-        editMode: false,
-    })
-    const [text, setText] = useState(props.value);
-    const [editCount, setEditCount] = useState(0);
-
-    
-    const classes = useStyles();
-
-    useEffect(() => {
-        
-
-    }, [state.editMode])
-
-    const handleChange = (input) => {
-        setEditCount(editCount+1);
-        setText(input.target.value);
-    }
-
-    const handleSave = () => {
-        setState({...state, editMode: false});
-        props.handleChange(text);
-    }
- 
-    return props.name === 'Email' 
-        ? (
-            <Box className={classes.container}>
-                <div>
-                <Typography variant="h6">
-                    {props.name}
-                </Typography>
-                <div>
-                </div>
-                <TextField
-                    id={props.name}
-                    value={props.value}
-                    margin="normal"
-                    disabled={true}
-                />
-                
-                </div>
-    
-            </Box>
-        )
-        : (
-        <Box className={classes.container}>
-            <div>
-            <Typography variant="h6">
-                {props.name}
-            </Typography>
-            <div>
-            </div>
-            <TextField
-                id={props.name}
-                value={editCount === 0 ? props.value : text}
-                margin="normal"
-                onChange={handleChange}
-                disabled={!state.editMode}
-                
-                InputProps={{
-                    endAdornment:
-                    <InputAdornment position="end">
-                        {!state.editMode 
-                            ? (
-                                <IconButton onClick={() => setState({...state, editMode: true})}>
-                                    <EditIcon />
-                                </IconButton>
-                            )
-                            : (
-                                <div>
-                                    {/* <IconButton >
-                                        <SettingsBackupRestoreIcon onClick={()=> {setEditCount(0)}}/>
-                                    </IconButton> */}
-                                    <IconButton onClick={handleSave}>
-                                        <CheckIcon/>
-                                    </IconButton>
-                                </div>
-                            )
-                        }
-                        </InputAdornment>
-                }}
-            />
-            </div>
-        </Box>
-    )
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const Account = (props) => {
@@ -128,14 +48,18 @@ const Account = (props) => {
         name: '',
         contactNum: '',
     });
+    
     const history = useHistory();
+    const [editProfile, setEditProfile] = useState(false);
 
     const [addresses, setAddresses] = useState([]);
-    const [addressIDs, setAddressIDs] = useState(new Map());
+    const [editAddress, setEditAddress] = useState([]);
 
     const [del, setDel] = useState(false);
 
     const [success, setSuccess] = useState(false);
+    const [delSuccess, setDelSuccess] = useState(false);
+    const [addSuccess, setAddSuccess] = useState(false);
     const [open, setOpen] = useState(false);
     const [error, setError] = useState([]);
 
@@ -170,58 +94,27 @@ const Account = (props) => {
                 'Authorization': `Bearer ${token}`,
             }
         }).then(res => {
-            const savedAddresses = res.data;
+            const savedAddresses = res.data.sort((i, j) => i.id - j.id);
             setAddresses(savedAddresses);
+            setEditAddress(savedAddresses.map(i => false));
             setloadingAddress(false);
         });
-        // const personalInfo = await response.data;
-        // const savedAddresses = await addressResponse.data;
-        
-        // setProfile({...profile, 
-        //     name: personalInfo.name, 
-        //     email: personalInfo.email, 
-        //     contactNum: personalInfo.contact_no, 
-        // })
-        // setAddresses(savedAddresses);
         
     };
 
-    function searchAddress(id, arr) {
-        for (let i = 0; i < arr.length; i++) {
-            if (id === arr[i].id) {
-                return i;
-            }
-        }
-        
-        // // arr.sort((i, j) => i.id - j.id);
-        // if (arr.length === 0) {
-        //     return null;
-        // } else {
-        //     let len = arr.length;
-        //     let start = 0;
-        //     let end = len - 1;
-            
-        //     while (start < end) {
-        //         let mid = start + Math.floor((end - start)/2);
-        //         if (id <= arr[mid].id) {
-        //             end = mid;
-        //         } else {
-        //             start = mid + 1;
-        //         }
-        //     }
+    const [addAddressOpener, setAddAddressOpener] = useState(false);
 
-        //     if (arr[start].id === id) {
-        //         return start;
-        //     }
-
-        // }
-    }
-
-    
 
     useEffect(() => {
-        savedDetails();
-    }, []);
+        let active = true;
+        if (active) {
+            savedDetails();
+        }
+        
+        return () => {
+            active = false;
+        }
+    }, [success, delSuccess, addSuccess]);
 
     const handleNameChange = (input) => {
         setProfile({...profile, name: input});
@@ -262,58 +155,9 @@ const Account = (props) => {
             setError([...error, err.response.data.message]);;
         });
     }
-    const handleAddressChange = () => {
-        const arrAddressID = Array.from(addressIDs.keys());
-        
-
-        for (let i = 0; i < addressIDs.size; i++)  {
-            
-            let toPost = {
-                street_address: '',
-                city: '',
-                country: '',
-                postal_code: '',
-                building_no: '',
-                unit_number: '',
-                name: '',
-            }
-            const index = searchAddress(arrAddressID[i], addresses);
-            
-            toPost = {...toPost, 
-                street_address: addresses[index].street_address,
-                city: addresses[index].city,
-                country: addresses[index].country,
-                postal_code: addresses[index].postal_code,
-                building_no: addresses[index].building_no,
-                unit_number: addresses[index].unit_number,
-                name: addresses[index].name,
-            }
-            axios.patch(customerAPI + '/' + localStorage.getItem('userID') + '/addresses' + '/' + arrAddressID[i], toPost, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            }).then(response => {
-                if (response.statusText === "OK") {
-                    setOpen(true);
-                    setSuccess(true);
-                }
-            }).catch(err => {
-                setOpen(true);
-                setSuccess(false);
-                setError([...error, err.response.data.message]);;
-            });
-        }
-        
-    }
 
     const handleClose = () => {
         setOpen(false);
-    }
-
-    const saveChanges = () => {
-        handleAddressChange();
-        handleProfileChange();
     }
 
     const handleLogout = () => {
@@ -335,13 +179,27 @@ const Account = (props) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             }
         }).then(response => {
-            console.log(response);
             if (response.status === 204) {
                 handleLogout();
                 window.location.reload();
             }
         }).catch(err => {
-            console.log(err);
+            setOpen(true);
+            setSuccess(false);
+        });
+    }
+
+    const deleteAddress = (add) => {
+        axios.delete(customerAPI + '/' + localStorage.getItem('userID') + '/addresses/' + add.id, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            }
+        }).then(response => {
+            if (response.status === 204) {
+                setDelSuccess(!delSuccess);
+            }
+        }).catch(err => {
             setOpen(true);
             setSuccess(false);
         });
@@ -355,296 +213,236 @@ const Account = (props) => {
             order={props.order}
         />
         <Box className={classes.overallWrapper}>
-        <Box > 
-            <Box className={classes.profileWrapper} >
-                <Typography variant="h4">Personal Details </Typography>
-                {loadingProfile 
-                    ? <CircularProgress 
+            {loadingProfile ? <CircularProgress 
                         size={50} 
                         color="secondary"
                         className={classes.progress}
                     /> 
+                    :
+                    <Box >
+                        <Box border={0.5} borderRadius={5} className={classes.profileWrapper}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                        <Typography variant="h4"> 
+                                            <Box fontWeight="fontWeightBold">
+                                                {profile.name} 
+                                            </Box>
+                                        </Typography>
+                                    
+                                </Grid>
+                                <Grid item xs={10}>
+                                        <Grid 
+                                            container
+                                            spacing={2}
+                                        >
+                                            <Grid item>
+                                                <Typography variant="body1">Email: {profile.email}</Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="body1">Contact Number: {profile.contactNum}</Typography>
+                                            </Grid>
+                                        </Grid>
+                                </Grid>
+                                <Grid item>
+                                    {
+                                        editProfile 
+                                        ? <Button 
+                                            variant="outlined" 
+                                            className={classes.saveButton}
+                                            onClick={() => {
+                                                setEditProfile(false)
+                                                handleProfileChange();
+                                            }}
+                                        >
+                                                <IconButton className={classes.saveIcon}>
+                                                <SaveIcon/>
+                                                </IconButton>
+                                                Save Changes
+                                            </Button>
+                                        : <Button 
+                                        variant="outlined" 
+                                        className={classes.editButton}
+                                        onClick={() => setEditProfile(true)}
+                                    >
+                                            <IconButton className={classes.editButton}>
+                                            <EditIcon/>
+                                            </IconButton>
+                                            Edit Profile Details
+                                        </Button>
 
-                    : (
-                        <Grid 
-                    container 
-                    spacing={1}
-                    direction={matches ? "row" : "column"}
-                >
-                    <Box display={{sm: 'block', md: 'flex'}}>
-                        <Box 
-                            className={classes.container}
-                        >
-                            <EditableTextField
-                                name={'Email'}
-                                value={profile.email}
-                                handleChange={handleEmailChange}/>
+                                    }
+                                    
+                                </Grid>
+                                {
+                                    editProfile 
+                                    ? <Grid item xs={12}>
+                                         <Box display={{sm: 'block', md: 'flex'}}>
+                                            <Box 
+                                                className={classes.container}
+                                            >
+                                                <EditableTextField
+                                                    name={'Email'}
+                                                    value={profile.email}
+                                                    handleChange={handleEmailChange}/>
+                                            </Box>
+
+                                            <Box 
+                                                
+                                                className={classes.container}
+                                            >
+                                                <EditableTextField 
+                                                    name={'Name'} 
+                                                    value={profile.name}
+                                                    handleChange={handleNameChange} />
+
+                                            </Box>
+
+                                            <Box 
+                                                className={classes.container}
+                                            >
+                                                <EditableTextField
+                                                    name={'Contact Number'}
+                                                    value={profile.contactNum}
+                                                    handleChange={handleNumChange}/>
+
+                                            </Box>
+                                            </Box>
+                                    </Grid>
+
+                                    : null
+                                }
+                            </Grid>
                         </Box>
+                        
+                        <Box border={1} borderRadius={5} className={classes.profileWrapper}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                
+                                    <Typography variant="h4"> 
+                                        <Box fontWeight="fontWeightBold">
+                                            Saved Addresses
+                                        </Box>
+                                    </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormDialog 
+                                    open={addAddressOpener} 
+                                    setOpen={setAddAddressOpener} 
+                                    handleSuccess={() => setAddSuccess(!addSuccess)}/>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Box display={{sm: 'block', md: 'flex'}}>
+                                    {addresses.map( (add, index) => (
+                                        <Box flex={1} className={classes.overallWrapper}>
+                                            <Card variant="outlined">
+                                                <CardContent>
+                                                    <Typography variant="body1">
+                                                        <Box >
+                                                            {add.name}
+                                                        </Box>
+                                                    </Typography>
+                                                </CardContent>
+                                                <CardActions>
+                                                    { 
+                                                        editAddress[index]
+                                                        ? <Button onClick={() => {
+                                                            setEditAddress(editAddress.map( (item, i) => {
+                                                                if (i === index){
+                                                                    return false;
+                                                                } else {
+                                                                    return item;
+                                                                }
+                                                            }
+                                                            ));
 
-                        <Box 
+                                                        }
+                                                        }
+                                                            className={classes.hideDetails}
+                                                        >
+                                                            Hide Details
+                                                        </Button>
+                                                        : <Button 
+                                                            onClick={() => {
+                                                                setEditAddress(editAddress.map( (item, i) => {
+                                                                    if (i === index){
+                                                                        return true;
+                                                                    } else {
+                                                                        return item;
+                                                                    }
+                                                                }
+                                                                ))}
+                                                            }
+                                                            className={classes.editAddress}
+
+                                                            >
+                                                            Edit Details
+                                                        </Button>
+                                                    }
+                                                    <Button 
+                                                        onClick={() => deleteAddress(add)}
+                                                        className={classes.deleteAddress}
+                                                    >
+                                                        Delete Address
+                                                    </Button>
+                                                    
+                                                </CardActions>
+                                                
+                                                {
+                                                    editAddress[index]
+                                                        ? <CardContent>
+                                                            <EditAddress 
+                                                                address={add} 
+                                                                setSuccess={setSuccess}
+                                                                setOpen={setOpen}
+                                                                error={error}
+                                                                setError={setError}
+                                                            />
+                                                        </CardContent>
+                                                        : null
+                                                }
+                                            </Card>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            </Grid>
                             
-                            className={classes.container}
-                        >
-                            <EditableTextField 
-                                name={'Name'} 
-                                value={profile.name}
-                                handleChange={handleNameChange} />
-
+                        </Grid>
                         </Box>
+                        <Button onClick={() => {
+                            setDel(true);
+                            
+                        }} className={classes.deleteButtonWrapper}>
+                            <Grid 
+                                container
+                                direction="row"
+                                //spacing={1}
+                            >
+                                <Grid 
+                                    item
+                                    xs={2}
+                                >
+                                    <Container>
+                                    <DeleteIcon className={classes.deleteButton}/>
+                                    </Container>
+                                </Grid>
+                                
 
-                        <Box 
-                            className={classes.container}
-                        >
-                            <EditableTextField
-                                name={'Contact Number'}
-                                value={profile.contactNum}
-                                handleChange={handleNumChange}/>
-
-                        </Box>
+                                <Grid 
+                                    item
+                                    
+                                >
+                                    <Container>
+                                    <Typography variant="body1">
+                                        <Box fontWeight="fontWeightMedium" className={classes.deleteButton}>
+                                            Delete Account
+                                        </Box> 
+                                    </Typography>
+                                    </Container>
+                                </Grid>
+                            </Grid>
+                        </Button>
                     </Box>
-                </Grid>
-                    )
-                }
-            </Box>
-            
-            <Box className={classes.profileWrapper} >
-                {
-                    addresses.length === 0 
-                        ? null
-                        : <Typography variant="h4">
-                        Saved Addresses 
-                    </Typography>
-                }
-                
-                {
-                    loadingAddress 
-                        ? <CircularProgress 
-                        size={50} 
-                        color="secondary"
-                        className={classes.progress}
-                    /> 
-                    : (
-                        <Grid 
-                    container 
-                    //spacing={1}
-                    direction={matches ? "row" : "column"}
-                >
-                    {addresses.map(elem => {
-                        return (
-                            <Paper className={matches ? classes.paperWrap : classes.mobilePaperWrap} elevation={4}>
-                            <Box display={{sm: 'block', md: 'flex'}}>
-                                <Box className={classes.container}>
-                                    <EditableTextField
-                                    name={'Name'}
-                                    value={elem.name}
-                                    handleChange={(input) => {
-                                        let i = searchAddress(elem.id, addresses);
-                                        setAddresses(addresses.map((add, index) => {
-                                            if (index === i) {
-                                                return {...add, name: input};
-                                            } else {
-                                                return add;
-                                            }
-                                        }));
-                                        setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                    }}
-                                    />
-                                </Box>
-                                <Box className={classes.container}>
-                                    <EditableTextField
-                                    name={'Building Number'}
-                                    value={elem.building_no}
-                                    handleChange={(input) => {
-                                        let i = searchAddress(elem.id, addresses);
-                                        setAddresses(addresses.map((add, index) => {
-                                            if (index === i) {
-                                                return {...add, building_no: input};
-                                            } else {
-                                                return add;
-                                            }
-                                        }));
-                                        setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                    }}
-                                />
-                                </Box>
-                                <Box className={classes.container} >
-                                    <EditableTextField
-                                        name={'Street Address'}
-                                        value={elem.street_address}
-                                        handleChange={(input) => {
-                                            let i = searchAddress(elem.id, addresses);
-                                            setAddresses(addresses.map((add, index) => {
-                                                if (index === i) {
-                                                    return {...add, street_address: input};
-                                                } else {
-                                                    return add;
-                                                }
-                                            }));
-                                            setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                        }}
-                                    />
-                                </Box>
-                                <Box className={classes.container}>
-                                    <EditableTextField
-                                        name={'Unit Number'}
-                                        value={elem.unit_number}
-                                        handleChange={(input) => {
-                                            let i = searchAddress(elem.id, addresses);
-                                            setAddresses(addresses.map((add, index) => {
-                                                if (index === i) {
-                                                    return {...add, unit_number: input};
-                                                } else {
-                                                    return add;
-                                                }
-                                            }));
-                                            setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                        }}
-                                    />
-                                </Box>
-                                <Box className={classes.container} >
-                                    <EditableTextField
-                                        name={'Postal Code'}
-                                        value={elem.postal_code}
-                                        handleChange={(input) => {
-                                            let i = searchAddress(elem.id, addresses);
-                                            setAddresses(addresses.map((add, index) => {
-                                                if (index === i) {
-                                                    return {...add, postal_code: input};
-                                                } else {
-                                                    return add;
-                                                }
-                                            }));
-                                            setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                        }}
-                                    />
-                                </Box>
-                                <Box className={classes.container}>
-                                    <EditableTextField
-                                        name={'City'}
-                                        value={elem.city}
-                                        handleChange={(input) => {
-                                            let i = searchAddress(elem.id, addresses);
-                                            setAddresses(addresses.map((add, index) => {
-                                                if (index === i) {
-                                                    return {...add, city: input};
-                                                } else {
-                                                    return add;
-                                                }
-                                            }));
-                                            setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                        }}
-                                    />
-                                </Box>
-                                <Box className={classes.container}>
-                                    <EditableTextField
-                                        name={'Country'}
-                                        value={elem.country}
-                                        handleChange={(input) => {
-                                            let i = searchAddress(elem.id, addresses);
-                                            setAddresses(addresses.map((add, index) => {
-                                                if (index === i) {
-                                                    return {...add, country: input};
-                                                } else {
-                                                    return add;
-                                                }
-                                            }));
-                                            setAddressIDs(addressIDs.set(elem.id, elem.id));
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-                            </Paper>    
-                        )
-                        
-                    }
-                    )}
-                </Grid>
-                    )
-                }
-            </Box>
-        </Box>
-
-        <Grid 
-            container
-            direction={matches ? "row" : "column"}
-            spacing={4}
-        >
-            <Grid 
-                item
-            >
-                <Container>
-                <Button onClick={saveChanges} className={classes.saveButtonWrapper}>
-                    <Grid 
-                        container
-                        direction="row"
-                        //spacing={1}
-                    >
-                        <Grid 
-                            item
-                            xs={2}
-                        >
-                            <Container>
-                            <SaveIcon className={classes.saveButton}/>
-                            </Container>
-                        </Grid>
-
-                        <Grid 
-                            item
-                        >
-                            <Container>
-                            <Typography variant="body1">
-                                <Box fontWeight="fontWeightMedium" className={classes.saveButton}>
-                                    Save All Changes
-                                </Box> 
-                            </Typography>
-                            </Container>
-                        </Grid>
-                    </Grid>
-                </Button>
-                </Container>
-            </Grid>
-            <Grid 
-                item
-            >
-                <Container>
-                <Button onClick={() => {
-                    setDel(true);
-                    
-                }} className={classes.deleteButtonWrapper}>
-                    <Grid 
-                        container
-                        direction="row"
-                        //spacing={1}
-                    >
-                        <Grid 
-                            item
-                            xs={2}
-                        >
-                            <Container>
-                            <DeleteIcon className={classes.saveButton}/>
-                            </Container>
-                        </Grid>
-                        
-
-                        <Grid 
-                            item
-                            
-                        >
-                            <Container>
-                            <Typography variant="body1">
-                                <Box fontWeight="fontWeightMedium" className={classes.saveButton}>
-                                    Delete Account
-                                </Box> 
-                            </Typography>
-                            </Container>
-                        </Grid>
-                    </Grid>
-                </Button>
-                </Container>
-            </Grid>
-        </Grid>
-
-
+}
         <Dialog
             open={open}
             TransitionComponent={Transition}
@@ -723,19 +521,57 @@ const Account = (props) => {
                 </DialogActions>
             </div>    
         </Dialog>
+
+        
         </Box>
         </div>);
+}
+
+const FormDialog = ({open, setOpen, handleSuccess, success}) => {
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
+    
+    const classes = useStyles();
+
+    return (
+        <div>
+            <div>
+                 <Button 
+                     className={classes.addAddress}
+                     size="small"
+                     onClick={handleClickOpen}
+                 >
+                     <Typography variant="caption">Add Address</Typography>
+                 </Button> 
+                <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">Add Your Addresss</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            In order to make a delivery, we have to save your address! Rest assured that your information remains safe with us, abiding strictly to PDPA guidelines set out by your government. 
+                        </DialogContentText>
+                        <AddressForm handleClose={handleClose} handleSuccess={handleSuccess}/>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose} color="default">
+                        Skip
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+         </div>
+    )
+
 }
 
 const useStyles = makeStyles((theme) => ({
     profileWrapper: {
         marginBottom: theme.spacing(4),
-        //display: 'flex',
-        //flexDirection: 'column',
-        //padding: theme.spacing(3),
-        //minWidth: '330px',
-        //minHeight: '50vh',
-        // boxShadow: '0 3px 5px 2px rgba(135, 105, 235, .3)',
+        padding: theme.spacing(2),
+        display: 'flex',
     },
     container: {
         // display: 'flex',
@@ -765,19 +601,24 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     saveButton: {
-        display: 'flex',
-        alignSelf: 'flex-start',
+        //display: 'flex',
+        // alignSelf: 'flex-start',
         color: 'white',
+        background: '#1AA260',
+        padding: theme.spacing(0.5),
     },
     overallWrapper: {
-        marginTop: theme.spacing(2),
-        marginLeft: theme.spacing(5),
+        margin: theme.spacing(2),
     },
     saveButtonWrapper: {
         background: '#4285F4'
     },
+    saveIcon: {
+        color: 'white',
+        padding: theme.spacing(0.5),
+    },
     deleteButtonWrapper: {
-        background: '#C6C6C6',
+        background: 'red',
     },
     endButtonWrapper: {
         justifyContent: 'flex-end',
@@ -795,6 +636,31 @@ const useStyles = makeStyles((theme) => ({
     mobilePaperWrap: {
         marginRight: theme.spacing(10),
         paddingBottom: theme.spacing(2),
+    },
+    editButton: {
+        padding: theme.spacing(0.5),
+        borderColor: '#1AA260',
+        color: '#1AA260',
+    },
+    editAddress: {
+        color: '#1AA260',
+        margin: theme.spacing(1),
+    },
+    deleteButton: {
+        color: 'white',
+        display: 'flex',
+    },
+    deleteAddress: {
+        color: 'red',
+        margin: theme.spacing(1),
+    },
+    addAddress: {
+        // color: '#1AA260',
+        color: '#007AFF',
+        margin: theme.spacing(1),
+    },
+    hideDetails: {
+        margin: theme.spacing(1),
     }
   }));
 

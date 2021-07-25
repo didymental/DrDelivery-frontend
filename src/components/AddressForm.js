@@ -40,7 +40,6 @@ const AddressForm = (props) => {
         setState({...state, city: input.target.value});
     };
     const handleCountryInput = (input) => {
-        console.log(input.target.value);
         setState({...state, country: input.target.value});
     };
     const handlePostalCode = (input) => {

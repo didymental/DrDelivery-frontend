@@ -11,8 +11,6 @@ const TrackerCard = (props) => {
     const merchants = props.merchants;
     const merchantID = props.merchantID;
     const order = props.order;
-    console.log(props.entry);
-    console.log(status);
 
     const history = useHistory();
 
