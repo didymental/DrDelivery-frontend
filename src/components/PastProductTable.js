@@ -78,7 +78,7 @@ const ProductTable = (props) => {
         <TableRow>
             <TableCell align="left">{loading ? <CircularProgress size={10} /> : productName}</TableCell>
             <TableCell align="right">{props.order.units_bought}</TableCell>
-            <TableCell align="right">{props.order.total_unit_price}</TableCell>
+            <TableCell align="right">{props.order.total_unit_price.toFixed(2)}</TableCell>
         </TableRow>
     )
 
