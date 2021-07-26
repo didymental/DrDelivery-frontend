@@ -10,9 +10,14 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Typography from '@material-ui/core/Typography';
 
 const EditAddress = (props) => {
+    const matches = useMediaQuery('(min-width: 769px)');
     const address = props.address;
     const [state, setState] = useState({
         street_address: address.street_address,
@@ -60,6 +65,7 @@ const EditAddress = (props) => {
                 setState({...state, errorMessages: []});
             }
         }).catch(err => {
+            console.log(err);
             setState({...state, errorMessages: err.response.data.message})
         });
 
@@ -69,7 +75,7 @@ const EditAddress = (props) => {
 
     return (
         <Box>
-        <Grid container>
+        <Grid container spacing={2}>
             <Grid item>
                 <EditableTextField
                 name={'Name'}
@@ -135,34 +141,59 @@ const EditAddress = (props) => {
                             : findError(state.errorMessages, "Postal")}
                 />
             </Grid>
-            <Grid item>
-                <EditableTextField
-                    name={'City'}
-                    value={address.city}
-                    handleChange={(text) => {
-                        setState({...state, city: text});
-                    }}
-                    error={state.errorMessages.length !== 0}
-                    helperText={state.errorMessages.length === 0 
-                            ? null 
-                            : findError(state.errorMessages, "City")}
-                />
             </Grid>
-            <Grid item>
-                <EditableTextField
-                    name={'Country'}
-                    value={address.country}
-                    handleChange={(text, f) => {
-                        setState({...state, country: text});
-                        f(false);
-                    }}
-                    error={state.errorMessages.length !== 0}
-                    helperText={state.errorMessages.length === 0 
-                            ? null 
-                            : findError(state.errorMessages, "Country")}
-                />
+            <Grid container spacing={2}>
+            <Grid item xs={matches ? 6 : 12}>
+                <Typography variant="h6" className={classes.title}>
+                            City
+                </Typography>
+                <FormControl className={classes.actionCard}>
+                        <Select
+                            id="city"
+                            
+                            variant="outlined"
+                            value={address.city}
+                            onChange={() => {
+                                    setState({...state, city: 'Singapore'});
+                                }}
+                            error={state.errorMessages.length !== 0}
+                            helperText={state.errorMessages.length === 0 
+                                ? null 
+                                : findError(state.errorMessages, "City")
+                                }
+                        >
+                            <MenuItem value={'Singapore'}>
+                                Singapore
+                            </MenuItem>
+                        </Select>
+                        <FormHelperText error>{findError(state.errorMessages, "City")}</FormHelperText>
+                    </FormControl>                    
+            </Grid>
+
+            <Grid item xs={matches ? 6 : 12}>
+                <Typography variant="h6" className={classes.title}>
+                    Country
+                </Typography>
+                <FormControl className={classes.actionCard}>
+                    <Select
+                        id="country"
+                        //label="Country"
+                        value={address.country}
+                        variant="outlined"
+                        onChange={() => {
+                            setState({...state, country: 'Singapore'});
+                        }}
+                        error={state.errorMessages.length !== 0}
+                    ><MenuItem value={'Singapore'}>
+                        Singapore
+                    </MenuItem>
+                    </Select>
+                    <FormHelperText error>{findError(state.errorMessages, "City")}</FormHelperText>
+                    </FormControl>
             </Grid>
         </Grid>
+
+         
         <Button 
             className={classes.saveButton}
             onClick={saveAddress}
@@ -187,12 +218,22 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         background: '#1AA260',
         padding: theme.spacing(0.5),
+        marginTop: theme.spacing(2),
     },
     saveIcon: {
         color:'white',
         padding: theme.spacing(0.5),
 
+    },
+    actionCard: {
+        display: 'flex',
+        marginLeft: theme.spacing(2),    
+    },
+    title: {
+        marginLeft: theme.spacing(2),
+        marginBottom: theme.spacing(1),
     }
+
 }));
 
 export default EditAddress;

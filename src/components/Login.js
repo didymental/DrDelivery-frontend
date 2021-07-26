@@ -16,6 +16,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -53,7 +54,7 @@ const Login = (props) => {
 
     const [error, setError] = useState({
         hasError: false,
-        message: '',
+        message: [],
     });
 
     const [loading, setLoading] = useState(false);
@@ -70,6 +71,7 @@ const Login = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setError({...error, hasError: false, message: []});
         setLoading(true);
         let user = {...state};
         axios.post(loginAPI, user, {
@@ -82,13 +84,31 @@ const Login = (props) => {
             props.handleLogin(response.data.token, response.data.user_id);
             history.push("/home");
             
-        }).catch(error => {
-            if (error.response) {
-                setError({...error, hasError: true, message: error.response.data.message});
+        }).catch(err => {
+            if (err.response) {
+                setError({...error, hasError: true, message: [].concat(err.response.data.message)});
             }
             setLoading(false);
         });
-        setState({...state, email: '', password: ''});
+    }
+
+    function findError(errArr, str) {
+        const relevantMessages = (
+            <Box>
+                {
+                    
+                    errArr.filter(msg => msg.includes(str)).map( msg => 
+                    <Box display='flex'>
+                        <Typography variant="caption" noWrap>
+                            {msg}
+                        </Typography>
+                    </Box>)
+                }
+            </Box>
+        )
+        
+        return relevantMessages;
+
     }
 
     return (
@@ -104,7 +124,7 @@ const Login = (props) => {
                             variant="outlined"
                             onChange={handleEmailInput}
                             error={error.hasError}
-                            helperText={error.message}
+                            helperText={!error.hasError ? null : findError(error.message, "User")}
                         />
                     </Container>
                     
@@ -116,6 +136,8 @@ const Login = (props) => {
                             autoComplete="current-password"
                             variant="outlined"
                             onChange={handlePasswordInput}
+                            error={error.hasError}
+                            helperText={!error.hasError ? null : findError(error.message, "Password")}
                             />
                     </Container>
                     

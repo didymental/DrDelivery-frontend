@@ -20,6 +20,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AlertTitle } from '@material-ui/lab';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const Alert = (props) => {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -95,9 +100,9 @@ const AddressTextField = (props) => {
 
     useEffect(() => {
         let active = true;
-        if (!loading) {
-            return undefined;
-        }
+        // if (!loading) {
+        //     return undefined;
+        // }
 
         const source = axios.CancelToken.source();
 
@@ -126,7 +131,7 @@ const AddressTextField = (props) => {
             source.cancel('axios request cancelled');
             active = false;
         };
-    }, [loading, setError, setState, error, props, state]);
+    }, [open]);
 
     const displayAddressDetails = (event, value) => {
         let postcode = '';
@@ -148,6 +153,39 @@ const AddressTextField = (props) => {
         }
     }
 
+    // <Typography>Select a Saved Address</Typography>
+    // <FormControl style={{display: 'flex'}}> 
+    //     <Select
+    //         id="country"
+    //         //label="Country"
+    //         value={props.options}
+    //         variant="outlined"
+    //         onOpen={() => setOpen(!open)}
+    //         onChange={(event, value) => displayAddressDetails(event, value)}            
+    //         onClose={ () => {
+    //             setOpen(!open);
+    //             props.setOptions([]); // enable reload each time it is open
+    //         }}
+    //     >
+    //         {loading 
+    //         ? 
+    //         <MenuItem>
+    //             <CircularProgress color="inherit" size={10}/> 
+    //         </MenuItem>
+    //         : props.options.map(option => {
+    //             console.log(option);
+    //             return (
+    //                 <MenuItem value={option}>
+    //                     {option}
+    //                 </MenuItem>
+    //             )
+    //         })
+            
+    //         }
+    //     </Select>
+                
+    // </FormControl>
+    // <FormHelperText > We only deliver to addresses saved on our platform </FormHelperText> 
 
     return (
         
@@ -211,12 +249,6 @@ const Form = (props) => {
 
     return (
         <div>
-            {/* <Snackbar open={open} anchorOrigin={{vertical: 'top', horizontal: 'right'}}>
-                    <Alert severity="info" onClose={() => setOpen(false)}>
-                        <AlertTitle>Take Note</AlertTitle>
-                        Add an address if you have not never saved an address!
-                    </Alert>
-            </Snackbar> */}
             <Box className={classes.outerbox}>
                 <Box className={classes.box} boxShadow={1} borderRadius={1}>
                     <div>
