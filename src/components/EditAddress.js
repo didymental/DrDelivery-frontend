@@ -55,13 +55,11 @@ const EditAddress = (props) => {
             }
         }).then(response => {
             if (response.statusText === "OK") {
-                props.setOpen(true);
+                // props.setOpen(true);
                 props.setAddSuccess(!props.addSuccess);
                 setState({...state, errorMessages: []});
-                setState({...state});
             }
         }).catch(err => {
-            
             setState({...state, errorMessages: err.response.data.message})
         });
 
