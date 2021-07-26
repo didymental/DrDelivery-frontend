@@ -208,7 +208,7 @@ const MapContainer = (props) => {
                                       icon={{
                                         url: "https://res.cloudinary.com/didymusne/image/upload/v1626512578/recharge_station_coloured_vbwy8s.png",
                                         anchor: new props.google.maps.Point(16,16),
-                                        scaledSize: new props.google.maps.Size(32, 32),
+                                        scaledSize: new props.google.maps.Size(16, 16),
                                       }}
                                       position={{lat: arr.latitude, lng: arr.longitude}} 
                                     />
@@ -302,8 +302,8 @@ const MapContainer = (props) => {
               <Polyline 
               path={obj.routeCoord.map(coord => new window.google.maps.LatLng(coord.latitude, coord.longitude))}
               strokeColor={colors[index % 300]}
-              strokeOpacity={0.8}
-              strokeWeight={8}
+              strokeOpacity={0.5}
+              strokeWeight={6}
             />
             ))}
 
