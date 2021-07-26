@@ -147,11 +147,7 @@ const HorizontalLabelPositionBelowStepper = (props) => {
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map((label) => (
             <Tooltip title={label === 'Browse Our Merchants' ? "Return to Merchant Page" : ""}>
-              <Step key={label} onClick={ () => {
-                if (label === 'Browse Our Merchants') {
-                  handleReset();
-                }
-              } }>
+              <Step key={label} >
                 <StepLabel>{label}</StepLabel>
               </Step>
             </Tooltip>

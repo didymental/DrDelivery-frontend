@@ -81,6 +81,7 @@ const SignUpForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setSignUpFail({...signupFail, message: [], fail: false});
         setLoading(true);
         let user = {...state};
         axios.post(customerAPI, user, {
@@ -197,11 +198,11 @@ const SignUpForm = (props) => {
                     We have sent an authentication email to your email address. Once you have confirmed your email, you may login. 
                 </Alert>
             </Snackbar>
-            <Snackbar open={signupFail.fail}>
+            {/* <Snackbar open={signupFail.fail}>
                 <Alert severity="error" onClose={() => setSignUpFail({...state, message: []})}>
                     <AlertTitle>Error</AlertTitle>
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
             <Box className={classes.loadingWrapper}>
             {loading ? <CircularProgress className={classes.loading} size={20}/> : null}
             </Box>
